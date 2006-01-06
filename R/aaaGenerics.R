@@ -873,8 +873,12 @@ setMethod(".addHandler",
 gtkObjectDisconnectCallbackHack = function (obj, id) {
   checkPtrType(obj, "GObject")
   checkPtrType(id, "CallbackID")
-  .Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
-        PACKAGE = "RGtk2")
+  ID = try(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
+        PACKAGE = "RGtk2"), silent=TRUE)
+  if(inherits(ID,"try-error"))
+    return(FALSE)
+  else
+    return(TRUE)
 }
 
   ## removehandler
@@ -908,7 +912,8 @@ setMethod(".removehandler",
                   for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
                 isCallbackID = try(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
                 if(!inherits(isCallbackID,"try-error")) {
-                  retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
+                  retval[i] = try(gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]]),
+                          silent=TRUE)
                 } else {
                   cat("DEBUG: ID not of callbackID\n")
                   print(callbackIDs[[i]])

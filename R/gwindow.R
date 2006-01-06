@@ -17,9 +17,9 @@ setMethod(".gwindow",
 
             window$SetTitle(title)
             
-#            if (!is.null(handler)) {
-#              id <- addhandlerdestroy(obj, handler, action)
-#  }
+            if (!is.null(handler)) {
+              id <- addhandlerdestroy(obj, handler=handler, action=action)
+            }
 
             if(visible)
               window$Show()

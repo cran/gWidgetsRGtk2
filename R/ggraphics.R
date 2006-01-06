@@ -3,8 +3,6 @@
 ## seems to pop up a new plot container
 
 setClass("gGraphicsRGtk",
-         representation=representation("gComponentRGtk",
-           device="numeric"),
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
@@ -24,22 +22,25 @@ setMethod(".ggraphics",
             da$setSizeRequest(width, height)
             device <- asCairoDevice(da, pointsize=ps)
 
-            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit,
-              device = dev.cur()
-              )
+            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
+            tag(obj,"device") <- dev.cur()
 
+            ## in the new cairoDevice this gives problems
             ## close this device when unrealized
-            addhandlerunrealize(obj,
-                                handler = function(h,...) {
-                                  dev.off(h$obj@device)
-                                  return(TRUE)
-                                })
+#            addhandlerunrealize(obj,
+#                                handler = function(h,...) {
+#                                  ## if not windows, we shut down device
+#                                  if(.Platform$OS != "windows")
+#                                    try(dev.off(tag(obj,"device")), silent=TRUE)
+#                                  return(TRUE)
+#                                })
   
             ## raise this device when clicked
-            addhandlerclicked(obj,
-                              handler=function(h,...) {
-                                visible(h$obj) <- TRUE
-                              })
+            ID = addhandlerclicked(obj,
+              handler=function(h,...) {
+                visible(h$obj) <- TRUE
+              })
+
             ## attach?
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -76,7 +77,7 @@ setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
                  function(obj, toolkit, ..., value) {
                    if(is.logical(value) == TRUE) {
-                     dev.set(obj@device)
+                     dev.set(tag(obj,"device"))
                    }
                    return(obj)
                  })

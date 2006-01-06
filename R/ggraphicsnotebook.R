@@ -18,7 +18,7 @@ setMethod(".ggraphicsnotebook",
             
             ## make toolbar
             toolbargroup = ggroup(horizontal=TRUE, container=group)
-            notebook = gnotebook(closebuttons = TRUE)
+            notebook = gnotebook(closebuttons = TRUE,dontclosethese=1)
             add(group, notebook, expand=TRUE)
             
             ## store both gnotebook
@@ -43,7 +43,11 @@ setMethod(".ggraphicsnotebook",
             toolbar$New$icon = "new"
             
             toolbar$Close$handler = function(h,...) {
+              ## we need to close the current device
+              currentDevice = names(obj)[svalue(obj)]
+              currentDevice = as.numeric(gsub("^dev:","",currentDevice))
               dispose(obj)
+              dev.off(currentDevice)
             }
             toolbar$Close$icon = "close"
             toolbar$tmp2$separator = TRUE
@@ -82,9 +86,16 @@ setMethod(".ggraphicsnotebook",
 ## remove plot device when it is unrealized
 unrealizePage = function(h,...) {
   ## remove from list of devices
-  theDevice = h$action$device
-  if(!is.null(theDevice) && theDevice > 1)
-    dev.off(theDevice)
+  ## in the new cairoDevice ths gives errors
+##    theDevice = h$action$device
+##    if(!is.null(theDevice) && theDevice > 1) {
+##    if(.Platform$OS != "windows")
+##      try(dev.off(theDevice), silent=TRUE)
+    ## doesn't work! we get problems with devices here big time
+##    else
+##      if(theDevice %in% dev.list()) dev.off(theDevice)
+##    }
+  return(TRUE)
 }
 
   
