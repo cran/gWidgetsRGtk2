@@ -1,0 +1,5 @@
+2006-09-28    <verzani@math.csi.cuny.edu>
+
+	* R/gnotebook.R: put return(TRUE) into close button handler. Was
+	giving ERROR otherwise regrading conversion of logical
+

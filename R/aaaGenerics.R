@@ -1,0 +1,1312 @@
+## toolkit class
+## register classes here for toolkits
+setClass("guiWidgetsToolkitRGtk2",
+         contains="guiWidgetsToolkit",
+         prototype=prototype(new("guiWidgetsToolkit"))
+         )
+
+
+
+
+## a base class which is virtual
+
+
+##################################################
+## A virtual class to hold either RGTK or these guys
+setClass("guiWidgetORgWidgetRGtkORRGtkObject")
+
+## A virtual class for our newly defined objects
+setClass("gWidgetRGtk")
+
+
+## subclss
+setClass("gComponentRGtk",
+         representation(
+                        block="guiWidgetORgWidgetRGtkORRGtkObject",
+                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        toolkit="guiWidgetsToolkit"
+                        ),
+         contains="gWidgetRGtk",
+         )
+setClass("gContainerRGtk",
+         representation(
+                        block="guiWidgetORgWidgetRGtkORRGtkObject",
+                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        toolkit="guiWidgetsToolkit"
+                   ),
+         contains="gWidgetRGtk",
+         )
+
+##################################################
+## put S3 classes from RGtk2 into S4 classes
+## got these from apropos("New") -> try(class(do.call(i,list())))
+oldClasses =
+c(
+  "AtkNoOpObjectFactory",
+  "AtkObjectFactory",
+  "AtkRelationSet",
+  "AtkStateSet",
+"GBoxed",
+"GObject",
+  "GScanner",
+  "GdkDragContext",
+  "GdkPixbufLoader",
+  "GdkRegion",
+  "GtkAboutDialog",
+  "GtkAccelGroup", 
+  "GtkAccelLabel",
+  "GtkAction",
+  "GtkActionGroup",
+"GtkAdjustment",
+"GtkAlignment",
+  "GtkArrow",
+  "GtkAspectFrame",
+"GtkBin",
+"GtkBox",
+"GtkButton",
+"GtkButtonBox",
+  "GtkCList",
+  "GtkCTree",
+"GtkCalendar",
+"GtkCellRenderer",
+"GtkCellRendererCombo",
+  "GtkCellRendererPixbuf",
+  "GtkCellRendererProgress",
+"GtkCellRendererText",
+  "GtkCellRendererToggle",
+"GtkCellView",
+"GtkCheckButton",
+"GtkCheckMenuItem",
+  "GtkColorButton",
+  "GtkColorSelection",
+  "GtkColorSelectionDialog",
+"GtkCombo",
+"GtkComboBox",
+"GtkComboBoxEntry",
+"GtkContainer",
+  "GtkCurve",
+"GtkDialog",
+  "GtkDrawingArea",
+"GtkEntry",
+  "GtkEntryCompletion",
+"GtkEventBox",
+"GtkExpander",
+"GtkFileFilter",
+"GtkFileSelection",
+"GtkFixed",
+  "GtkFontButton",
+  "GtkFontSelection",
+  "GtkFontSelectionDialog",
+"GtkFrame",
+  "GtkGammaCurve",
+"GtkHBox",
+"GtkHButtonBox",
+"GtkHPaned",
+"GtkHRuler",
+"GtkHScale",
+"GtkHScrollbar",
+"GtkHSeparator",
+"GtkHandleBox",
+  "GtkIMContext",
+  "GtkIMContextSimple",
+  "GtkIMMulticontext",
+  "GtkIconFactory",
+  "GtkIconSet",
+  "GtkIconSource",
+  "GtkIconTheme",
+  "GtkIconView",
+"GtkImage",
+"GtkImageMenuItem",
+"GtkInputDialog",
+"GtkInvisible",
+"GtkItem",
+"GtkLabel",
+"GtkLayout",
+"GtkList",
+"GtkListItem",
+"GtkMenu",
+"GtkMenuBar",
+"GtkMenuItem",
+"GtkMenuShell",
+"GtkMisc",
+"GtkNotebook",
+"GtkObject",
+  "GtkOptionMenu",
+"GtkPaned",
+  "GtkProgress",
+  "GtkProgressBar",
+"GtkRadioAction",
+"GtkRadioButton",
+  "GtkRange",
+  "GtkRcStyle",
+  "GtkRuler",
+  "GtkScale",
+"GtkScrollbar",
+"GtkScrolledWindow",
+"GtkSeparator",
+"GtkSeparatorMenuItem",
+"GtkSeparatorToolItem",
+  "GtkSizeGroup",
+  "GtkSocket",
+"GtkSpinButton",
+"GtkStatusbar",
+  "GtkStyle",
+"GtkTable",
+  "GtkTearoffMenuItem",
+"GtkTextAttributes",
+"GtkTextBuffer",
+"GtkTextChildAnchor",
+"GtkTextTag",
+"GtkTextTagTable",
+"GtkTextView",
+  "GtkTipsQuery",
+  "GtkToggleAction",
+  "GtkToggleButton",
+  "GtkToggleToolButton",
+"GtkToolButton",
+"GtkToolItem",
+"GtkToolbar",
+"GtkTooltips",
+"GtkTreeModelSort",
+"GtkTreePath",
+"GtkTreeStore",
+"GtkTreeView",
+"GtkTreeViewColumn",
+  "GtkUIManager",
+"GtkVBox",
+"GtkVButtonBox",
+"GtkVPaned",
+"GtkVRuler",
+"GtkVScale",
+"GtkVScrollbar",
+"GtkVSeparator",
+"GtkViewport",
+"GtkWidget",
+"GtkWindow",
+"GtkWindowGroup",
+  "PangoAttrList",
+  "PangoCairoFcFontMap",
+  "PangoCoverage",
+  "PangoFcFontMap",
+  "PangoFontDescription",
+  "PangoFontMap",
+  "PangoGlyphString",
+"PangoItem",
+"GObject",
+"RGtkDataFrame")
+
+
+setOldClass("RGtkObject")
+sapply(oldClasses, function(i) {
+  setOldClass(i)
+  setIs(i,"RGtkObject")
+})
+
+
+##
+setIs("guiWidget","guiWidgetORgWidgetRGtkORRGtkObject")
+setIs("gWidgetRGtk","guiWidgetORgWidgetRGtkORRGtkObject")
+setIs("RGtkObject","guiWidgetORgWidgetRGtkORRGtkObject")
+
+
+##################################################
+### Common methods.    Specific to a class are put into the file for that class
+
+## we have two definitions. For instance, "svalue" and ".svalue". The "svalue" method dispatches on the object to the .svalue method. This allows us to use svalue instead of .svalue when defining the methods/constructors inside this package.
+
+
+setMethod("svalue",signature(obj="gWidgetRGtk"),
+          function(obj, index=NULL, drop=NULL, ...) {
+            .svalue(obj, obj@toolkit, index=NULL, drop=NULL, ...)
+          })
+
+
+
+## svalue
+## need method for character
+setMethod("svalue",signature(obj="character"),
+          function(obj, index=NULL, drop=NULL, ...)  {
+            ifelse(length(obj) == 1,
+                   return(getObjectFromString(obj)),
+                   return(obj)
+                   )
+          })
+setMethod(".svalue",signature(toolkit = "guiWidgetsToolkitRGtk2", obj="character"),
+          function(obj, toolkit, index=NULL, drop=NULL,  ...)  {
+            ifelse(length(obj) == 1,
+                   return(getObjectFromString(obj)),
+                   return(NA)
+                   )
+          })
+
+## svalue<- -- objec specific
+setReplaceMethod("svalue",signature(obj="gWidgetRGtk"),
+          function(obj, index=NULL, ...,value) {
+            .svalue(obj, obj@toolkit, index=NULL, ...) <- value
+            obj
+          })
+
+## [
+setMethod("[",
+          signature(x="gWidgetRGtk"),
+          function(x,i,j,...,drop=TRUE) {
+            
+            return(.leftBracket(x, x@toolkit,i,j,...,drop=TRUE))
+#            if(missing(i) && missing(j))
+#              .leftBracket(x@widget, toolkit,,,...,drop=TRUE)
+#            else if(missing(j))
+#              .leftBracket(x@widget, toolkit,i,,...,drop=TRUE)
+#            else
+#              .leftBracket(x@widget, toolkit,i,j,...,drop=TRUE)
+          })
+
+## [<-
+setReplaceMethod("[",signature(x="gWidgetRGtk"),
+          function(x,i,j,...,value) {
+            if(missing(i) && missing(j))
+              .leftBracket(x, x@toolkit,...) <- value
+            else if(missing(j))
+              .leftBracket(x, x@toolkit,i,...) <- value
+            else 
+              .leftBracket(x, x@toolkit,i,j,...) <- value
+            return(x)
+          })
+
+## size ## return size -- not implemented
+setMethod("size",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            warning("size not defined, Set window size with size<-()")
+            return()
+            .size(obj, obj@toolkit,...)
+          })
+setMethod(".size",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
+          function(obj, toolkit, ...) {
+            print("returning size information not yet implemented.")
+          })
+
+## size<-
+setReplaceMethod("size",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            .size(obj, obj@toolkit,...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".size", 
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   width = value[1]; height=value[2]
+
+                   widget = obj@widget
+                   widget$SetSizeRequest(width,height)
+
+                   return(obj)
+                 })
+
+## visible
+setMethod("visible",signature(obj="gWidgetRGtk"),
+          function(obj, set=NULL, ...) {
+            .visible(obj,obj@toolkit, set=set, ...)
+          })
+
+setMethod(".visible",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, set=TRUE, ...) {
+            widget = obj@widget
+            if(as.logical(set))
+              widget$Show()
+            else
+              widget$Hide()
+          })
+
+
+## visible<-
+setReplaceMethod("visible",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            .visible(obj, obj@toolkit, ...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".visible",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   .visible(obj@widget, toolkit, set=as.logical(value))
+                   return(obj)
+                 })
+
+## enabled -- not implemeneted, don't   know how to find sensitive. Would need to keep in
+##            in the widget using tag or somesuch
+setMethod("enabled",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            warning("enable not defined, try enabled<-()")
+            return(NA)
+            .enabled(obj, obj@toolkit,...)
+          })
+setMethod(".enabled",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
+          function(obj, toolkit, ...) {
+            print("returning enabled information not yet implemented.")
+          })
+
+## enabled<-
+setReplaceMethod("enabled",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            .enabled(obj, obj@toolkit,...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".enabled",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   widget = getWidget(obj)
+                   .enabled(widget, toolkit, ...) <- value
+                   return(obj)
+                 })
+setReplaceMethod(".enabled",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+                 function(obj, toolkit, ..., value) {
+                   obj$SetSensitive(as.logical(value))
+                   return(obj)
+                 })
+
+## focus
+setMethod("focus",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            .focus(obj, obj@toolkit,...)
+          })
+
+setMethod(".focus",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) focus(obj) <- TRUE)
+
+## focus<-
+setReplaceMethod("focus",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            .focus(obj, obj@toolkit,...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".focus",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ..., value) {
+            focus(obj@widget, toolkit, ...) <- value
+            return(obj)
+          })
+                 
+setReplaceMethod(".focus",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
+          function(obj, toolkit, ..., value) {
+            value = as.logical(value)
+            if(value)
+              obj$GetWindow()$Raise()
+            else
+              obj$GetWindow()$Lower()
+            return(obj)
+          })
+
+setReplaceMethod(".focus",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, ..., value) {
+            value = as.logical(value)
+            if(value) {
+              obj$GrabFocus()
+              obj$GetWindow()$Raise()
+            } else {
+              obj$GetWindow()$Lower()
+            }
+            return(obj)
+
+          })
+
+## font
+.font.styles = list(
+  families = c("normal","sans","serif","monospace"),
+  weights = c("normal","oblique","italic"),
+  styles = c("ultra-light","light","normal","bold","ultra-bold","heavy"),
+  colors = c("black","blue","red","green","brown","yellow","pink")
+)  
+
+setMethod("font",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            warning("font() not defined. Set fonts with font<-")
+            return()
+            .font(obj, obj@toolkit,...)
+          })
+
+setMethod(".font",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
+          function(obj, toolkit, ...) {
+            print("returning font information not yet implemented.")
+          })
+## font<-
+setReplaceMethod("font",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            .font(obj, obj@toolkit,...) <- value
+            return(obj)
+          })
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   .font(obj@widget, toolkit, ...) <- value
+                   return(obj)
+                 })
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+                 function(obj, toolkit, ..., value) {
+                   string = ""
+                   if(!is.null(value$family) && value$family %in% .font.styles$families)
+                     string = Paste(string," ",value$family)
+                   if(!is.null(value$weight) && value$weight %in% .font.styles$weights)
+                     string = Paste(string," ",value$weight)
+                   if(!is.null(value$style) && value$style %in% .font.styles$styles)
+                     string = Paste(string," ",value$style)
+                   if(!is.null(value$color) && value$color %in% .font.styles$colors)
+                     string = Paste(string," ",value$color)
+                   if(!is.null(value$size))
+                     string = Paste(string," ",as.integer(value$size))
+                   
+                   fontDescr = pangoFontDescriptionFromString(string)
+                   obj$ModifyFont(fontDescr)
+                   
+                   return(obj)
+                 })
+## tag, tag<-
+setMethod("tag",signature(obj="gWidgetRGtk"),
+          function(obj,i,drop=TRUE, ...) {
+            if(missing(drop)) drop <- TRUE
+            .tag(obj, obj@toolkit,i, drop=drop,...)
+          })
+## dispatch in *this* toolkit, not present in obj
+setMethod("tag",signature(obj="RGtkObject"),
+          function(obj,i,drop=TRUE, ...) {
+            if(missing(drop)) drop <- TRUE            
+            .tag(obj, guiToolkit("RGtk2"),i, drop=drop,...)
+          })
+
+setMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="guiWidget"),
+          function(obj, toolkit, i, drop=TRUE, ...) {
+            if(missing(i)) i = NULL
+            if(missing(drop)) drop <- TRUE                        
+            .tag(obj@widget,toolkit,  i, drop=drop,  ...)
+          })
+setMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, i, drop=TRUE, ...) {
+            if(missing(i)) i = NULL
+            if(missing(drop)) drop <- TRUE                                    
+            .tag( obj@block,toolkit,  i, drop=drop,  ...)
+          })
+setMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, i, drop=TRUE, ...) {
+            if(missing(i)) i = NULL
+
+            lst = obj$GetData(".tagKey")
+            if(is.null(i))
+              return(lst)
+            if(drop) {
+              if(length(i) == 1)
+                return(lst[[i]])
+              else
+                return(sapply(i, function(j) lst[j]))
+            } else {
+              return(sapply(i, function(j) lst[j]))
+            }
+          })
+
+## tag <-
+setReplaceMethod("tag",signature(obj="gWidgetRGtk"),
+          function(obj, i, replace=TRUE, ..., value) {
+            .tag(obj, obj@toolkit,i,replace, ...) <- value
+            return(obj)
+          })
+## dispatch in *this* toolkit, not present in obj
+setReplaceMethod("tag",signature(obj="RGtkObject"),
+          function(obj,i, replace=TRUE, ..., value) {
+            .tag(obj, guiToolkit("RGtk2"),i, replace, ...) <- value
+            return(obj)
+          })
+
+## objects can be in many different flavors: guiWIdget, gWidgetRGtk2, RGtkObject
+setReplaceMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="guiWidget"),
+          function(obj, toolkit, i, replace=TRUE, ..., value) {
+            if(missing(i)) i = NULL
+            .tag(obj@widget,toolkit,  i, replace, ...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, i, replace=TRUE, ..., value) {
+            if(missing(i)) i = NULL
+            .tag( obj@block, toolkit,  i, replace, ...) <- value
+            return(obj)
+          })
+setReplaceMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, i, replace=TRUE, ..., value) {
+            if(missing(i) || is.null(i)) {
+              warning("Need to specify a key to the 'i' argument of tag<-")
+            } else {
+              theArgs = list(...)
+              replaceIt = as.logical(replace)
+
+              
+              allData = obj$GetData(".tagKey")
+              if(is.null(allData)) allData = list()
+              
+              if(replaceIt) {
+                allData[[i]] <- value
+              } else {
+                allData[[i]] <- c(allData[[i]], value)
+              }
+              obj$SetData(".tagKey", allData)
+            }
+            return(obj)
+          })
+
+
+##################################################
+## id -- define for "ANY" as well
+setMethod("id",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            tag(obj,".gtkID")
+          })
+setMethod("id",signature(obj="RGtkObject"),
+          function(obj, ...) {
+            tag(obj, ".gtkID", ...)
+            return(obj)
+          })
+setMethod("id",signature(obj="ANY"),
+          function(obj, ...) {
+            if(!is.null(theID<- attr(obj,"id"))) {
+              return(theID)
+            } else {
+              if(is.character(obj)) {
+                return(obj[1])
+              } else {
+                dps = deparse(substitute(obj))
+                attr(obj,"id") <- dps
+                return(dps)
+              }
+            }
+          })
+
+
+setMethod(".id", signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) {
+            tag(obj,".gtkID", ...)
+          })
+setMethod(".id", signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit,  ...) {
+            return(tag(obj,".gtkID"))
+          })
+
+
+## id<-
+setReplaceMethod("id",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            tag(obj,".gtkID", ...) <- value
+            return(obj)
+          })
+## dispatch in *this* toolkit, not present in obj
+setReplaceMethod("id",signature(obj="RGtkObject"),
+          function(obj, ..., value) {
+            tag(obj, ".gtkID", ...) <- value
+            return(obj)
+          })
+setReplaceMethod("id",signature(obj="ANY"),
+          function(obj, ..., value) {
+            attr(obj,"id") <- value
+            return(obj)
+          })
+
+
+## we need a .id to handle dispatch from guiWidgets, otherwise, we use id()
+setReplaceMethod(".id", signature(toolkit="guiWidgetsToolkitRGtk2",
+                                  obj="gWidgetRGtk"),
+          function(obj, toolkit, ..., value) {
+            id(obj, ...) <- value
+            return(obj)
+          })
+
+
+
+## add method is biggie
+## we have several levels of classes here guiWidget -- gWidgetRGkt -- RGtkObject, when
+## we get down to that level we can finally add
+setMethod("add",signature(obj="gWidgetRGtk"),
+          function(obj, value, ...) {
+            .add(obj, obj@toolkit,value,...)
+          })
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",
+                    obj="guiWidget", value="ANY"),
+          function(obj, toolkit, value, ...) {
+            cat("Can't add without a value\n")
+          })
+## pushdonw
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",
+                    obj="guiWidget", value="guiWidgetORgWidgetRGtkORRGtkObject"),
+          function(obj, toolkit, value, ...) {
+            .add(obj@widget, toolkit, value, ...)
+          })
+
+## for gWindow
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",
+                    obj="gContainerRGtk", value="guiWidget"),
+          function(obj, toolkit, value, ...) {
+            .add(obj, toolkit, value@widget, ...)
+          })
+
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gContainerRGtk", value="gWidgetRGtk"),
+          function(obj, toolkit, value, ...) {
+            .add(obj, toolkit, value@block, ...)
+          })
+
+
+
+
+## addSPring, addSpace
+setMethod("addSpring",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            .addSpring(obj, obj@toolkit,...)
+          })
+
+setMethod(".addSpring",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gContainerRGtk"),
+          function(obj, toolkit, ...) {
+            obj@widget$PackStart(gtkHBoxNew(),TRUE,TRUE,0) # expand and fill set to TRUE
+          })
+
+setMethod("addSpace",signature(obj="gWidgetRGtk"),
+          function(obj, value, ...) {
+            .addSpace(obj,obj@toolkit,value,...)
+          })
+
+setMethod(".addSpace",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gContainerRGtk"),
+          function(obj, toolkit, value, ...) {
+            theArgs = list(...)
+            horizontal = ifelse(is.null(theArgs$horizontal),
+              TRUE,
+              as.logical(theArgs$horizontal))
+
+            if(horizontal) {
+              tmp = ggroup(); size(tmp) <- c(value,1)
+            } else {
+              tmp = ggroup(); size(tmp) <- c(1, value)
+            }
+            add(obj, tmp)
+          })
+
+## delete -- get down to two RGtkObjects
+setMethod("delete",signature(obj="gWidgetRGtk"),
+          function(obj, widget, ...) {
+            .delete(obj, obj@toolkit,widget,...)
+          })
+
+## push down to RGtk vs RGtk. Can be 9 possiblities!
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gContainerRGtk",widget="guiWidget"),
+          function(obj, toolkit, widget, ...) {
+            .delete(obj, toolkit, widget@widget, ...)
+          })
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gContainerRGtk",widget="gWidgetRGtk"),
+          function(obj, toolkit, widget, ...) {
+            .delete(obj@widget, toolkit, widget, ...)
+          })
+
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject",widget="gWidgetRGtk"),
+          function(obj, toolkit, widget, ...) {
+            .delete(obj, toolkit, getBlock(widget), ...)
+          })
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject",widget="guiWidget"),
+          function(obj, toolkit, widget, ...) {
+            .delete(obj, toolkit, widget@widget, ...)
+          })
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk",widget="RGtkObject"),
+          function(obj, toolkit, widget, ...) {
+            .delete(obj@widget, toolkit, widget, ...)
+          })
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject",widget="RGtkObject"),
+          function(obj, toolkit, widget, ...) {
+            obj$Remove(widget)
+          })
+
+## dispose -- delete the parent window, or something else
+setMethod("dispose",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            .dispose(obj, obj@toolkit,...)
+          })
+
+setMethod(".dispose",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) {
+            if(is.invalid(obj)) return() # nothing to do, its been done
+            widget = obj@widget
+            ## find parent, then destroy
+            while(!is.null(widget) && !("GtkWindow" %in% class(widget))) {
+              widget = widget$GetParent()
+            }
+            if(!is.null(widget))
+              widget$destroy()
+          })
+
+
+
+
+## update
+setMethod("update",signature(object="gWidgetRGtk"),
+          function(object, ...) {
+            .update(object, object@toolkit, ...)
+          })
+
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkitRGtk2",object="gComponentRGtk"),
+          function(object, toolkit, ...) {
+            object@widget$QueueDraw()
+          })
+
+##
+##
+##################################################
+
+
+##################################################
+## handlers
+##
+## basic handler for adding with a signal. Not exported.
+setGeneric("addhandler", function(obj, signal, handler, action=NULL, ...)
+           standardGeneric("addhandler"))
+setMethod("addhandler",signature(obj="guiWidget"),
+          function(obj, signal, handler, action=NULL, ...) {
+            .addHandler(obj@widget, obj@toolkit, signal, handler, action, ...)
+          })
+setMethod("addhandler",signature(obj="gWidgetRGtk"),
+          function(obj, signal, handler, action=NULL, ...) {
+            .addHandler(obj, obj@toolkit, signal, handler, action, ...)
+          })
+setMethod("addhandler",signature(obj="RGtkObject"),
+          function(obj, signal, handler, action=NULL, ...) {
+            .addHandler(obj, guiToolkit("RGtk2"), signal, handler, action, ...)
+          })
+
+## method for dispatch
+setGeneric(".addHandler",
+           function(obj, toolkit,
+                  signal, handler, action=NULL, ...)
+           standardGeneric(".addHandler"))
+
+
+setMethod(".addHandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="guiWidget"),
+          function(obj, toolkit,
+                   signal, handler, action=NULL, ...) {
+            .addHandler(obj@widget, toolkit, signal, handler, action, ...)
+          })
+
+setMethod(".addHandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   signal, handler, action=NULL, ...) {
+            
+            ## need to return TRUE
+            modifyHandler = function(...) {
+              handler(...)
+              return(TRUE)
+            }
+            
+            callbackID <- try(connectSignal(getWidget(obj), ### issue: getWidget(obj),
+                                            signal=signal,
+                                            f=modifyHandler,
+                                            data=list(obj=obj, action=action,...),
+                                            user.data.first = TRUE,
+                                            after = FALSE), silent=FALSE)
+            if(inherits(callbackID,"try-error")) {
+              cat("Couldn't add signal: ",signal," for object of class:")
+              cat(class(obj))
+              return(NA)
+            } else {
+              ## now put handler into object
+              handler.ID = tag(obj, "handler.id")
+              if(is.null(handler.ID))
+                handler.ID =list()
+              handler.ID[[length(handler.ID)+1]] = callbackID
+              tag(obj, "handler.id") <- handler.ID
+              
+              ##
+              ##            addhandlerdestroy(obj, handler=function(h,...)
+              ##                              removehandler(h$obj,h$action),
+              ##                              action=ID)
+              ## return ID
+              invisible(callbackID)
+            }
+          })
+
+setMethod(".addHandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, signal, handler, action=NULL, ...) {
+            callbackID <- try(connectSignal(obj,
+                                            signal=signal,
+                                            f=handler,
+                                            data=list(obj=obj, action=action, ...),
+                                            user.data.first = TRUE,
+                                            after = FALSE),
+                              silent=TRUE)
+            ## can't' stuff in handler IDS
+            if(inherits(callbackID,"try-error")) {
+              cat("Couldn't connect signal:",signal,"for")
+              print(obj)
+              return(NA)
+            } else {
+              invisible(callbackID)
+            }
+          })
+
+## removew handler
+## this hack is to change id
+gtkObjectDisconnectCallbackHack = function (obj, id) {
+  checkPtrType(obj, "GObject")
+  checkPtrType(id, "CallbackID")
+  .Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
+        PACKAGE = "RGtk2")
+}
+
+  ## removehandler
+setMethod("removehandler", signature("gWidgetRGtk"),
+          function(obj, ID=NULL, ...) {
+            .removehandler(obj, obj@toolkit, ID, ...)
+          })
+setMethod("removehandler", signature("RGtkObject"),
+          function(obj, ID=NULL, ...) {
+            .removehandler(obj, guiToolkit("RGtk2"), ID, ...)
+          })
+
+### JV: Need to consolidate this and the next, The difference is the callbackIDS?
+setMethod(".removehandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            if(missing(ID))
+              callbackIDs = .tag(obj,toolkit,"handler.id")
+            else
+              callbackIDs = ID
+            
+            if(!is.null(callbackIDs)) {
+              if(!is.list(callbackIDs)) {
+                callbackIDs = list(callbackIDs)
+              }
+              
+              widget = obj@widget
+              retval = logical(length(callbackIDs))
+              for(i in 1:length(callbackIDs)) {
+                if(is.list(callbackIDs[[i]])) # recurse if a list
+                  for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
+                isCallbackID = try(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
+                if(!inherits(isCallbackID,"try-error")) {
+                  retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
+                } else {
+                  cat("DEBUG: ID not of callbackID\n")
+                  print(callbackIDs[[i]])
+                  retval[i] = FALSE
+                }
+              }
+              for(i in rev(which(retval==TRUE)))
+                callbackIDs[[i]] <- NULL
+              .tag(obj,toolkit, "handler.id", replace=FALSE) <- callbackIDs
+              return(retval)
+            } else {
+              return(FALSE)
+            }
+          })
+
+## for RGtkObject
+setMethod(".removehandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, ID=NULL, ...) {
+            if(missing(ID))
+              callbackIDs = .tag(obj,toolkit,"handler.id")
+            else
+              callbackIDs = ID
+            
+            if(!is.null(callbackIDs)) {
+              if(!is.list(callbackIDs)) {
+                callbackIDs = list(callbackIDs)
+              }
+              widget = obj
+              retval = c()
+              for(i in 1:length(callbackIDs)) {
+                if(is.list(callbackIDs[[i]])) # recurse if a list
+                  for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
+                isCallbackID = try(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
+                if(!inherits(isCallbackID,"try-error")) {
+                  retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
+                } else {
+                  cat("DEBUG: ID not of callbackID\n")
+                  print(callbackIDs[[i]])
+                  retval[i] = FALSE
+                }
+              }
+
+              for(i in rev(which(retval==TRUE)))
+                callbackIDs[[i]] <- NULL
+              .tag(obj,toolkit, "handler.id", replace=FALSE) <- callbackIDs
+              return(retval)
+            } else {
+              return(FALSE)
+            }
+          })
+
+## addhandlerchanged
+setMethod("addhandlerchanged",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerchanged(obj, obj@toolkit, handler, action, ...)
+          })
+setMethod("addhandlerchanged",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerchanged(obj, guiToolkit("RGtk2"), handler, action, ...)
+          })
+setMethod("addhandlerchanged",signature(obj="ANY"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            warning("No method addhandlerchanged for object of class",class(obj),"\n")
+          })
+
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="changed",
+                        handler=handler, action=action, ...)
+          })
+
+
+## expose: expose-event or realize
+setMethod("addhandlerexpose",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerexpose(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerexpose",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerexpose(obj, guiToolkit("RGtk2"), handler, action, ...)
+          })
+
+setMethod(".addhandlerexpose",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="expose-event",
+                        handler=handler, action=action, ...)
+          })
+
+setMethod(".addhandlerexpose",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gComponentRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj,toolkit, signal="realize",
+                        handler=handler, action=action, ...)
+          })
+
+## unrealize: unrealize
+setMethod("addhandlerunrealize",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerunrealize(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerunrealize",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerunrealize(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerunrealize",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="unrealize",
+                        handler=handler, action=action, ...)
+          })
+
+## destroy: destroy
+setMethod("addhandlerdestroy",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerdestroy(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerdestroy",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerdestroy(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerdestroy",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="destroy",
+                        handler=handler, action=action, ...)
+          })
+
+## keystroke: changed
+setMethod("addhandlerkeystroke",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerkeystroke(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerkeystroke",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerkeystroke(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerkeystroke",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="changed",
+                        handler=handler, action=action, ...)
+          })
+
+## clicked: clicked
+setMethod("addhandlerclicked",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerclicked(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerclicked",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerclicked(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="clicked",
+                        handler=handler, action=action, ...)
+          })
+
+## doubleclick: no default
+setMethod("addhandlerdoubleclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerdoubleclick(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerdoubleclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerdoubleclick(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerdoubleclick",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            warning("No default handler for double click")
+          })
+
+## rightclick: button-press-event -- handle separately
+setMethod("addhandlerrightclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerrightclick(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerrightclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerrightclick(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerrightclick",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            connectSignal(obj@widget,
+                          signal = "button-press-event",
+                          f = function(h, eventButton,...) {
+                            if(eventButton$GetButton() == 3) {
+                              h$handler(h,...)
+                            }
+                            return(FALSE)         # continue propagation
+                          },
+                          data = list(obj=obj, action=action, handler=handler),
+                          user.data.first = TRUE,
+                          after = FALSE
+                        )
+          })
+
+## idle
+setMethod("addhandleridle",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, interval=1000, ...) {
+            .addhandleridle(obj, obj@toolkit,
+                            handler=handler, action=action, interval=interval, ...)
+          })
+setMethod("addhandleridle",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, interval=1000, ...) {
+            .addhandleridle(obj, guiToolkit("RGtk2"),
+                            handler=handler, action=action, interval=interval, ...)
+          })
+
+setMethod(".addhandleridle",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler=NULL, action=NULL, interval=1000, ...) {
+
+            idlehandler = function(h,...) {
+              if(!is.null(h$handler) && is.function(h$handler))
+                h$handler(h,...)
+              invisible(TRUE)
+            }
+            
+            ID = gtkAddTimeout(
+              interval,
+              idlehandler,
+              data=list(obj=obj, action=action, handler=handler)
+              )
+            
+            ## tidy up when done
+            .addhandlerdestroy(obj,toolkit, handler=function(h,...) {
+              gtkRemoveTimeout(h$action)
+            },action=ID)
+            
+            invisible(ID)
+            
+          })
+
+
+## addpopumenu
+setMethod("addpopupmenu",signature(obj="gWidgetRGtk"),
+          function(obj, menulist, action=NULL, ...) {
+            .addpopupmenu(obj, obj@toolkit,menulist, action, ...)
+          })
+setMethod("addpopupmenu",signature(obj="RGtkObject"),
+          function(obj, menulist, action=NULL, ...) {
+            .addpopupmenu(obj, guiToolkit("RGtk2"), menulist, action, ...)
+          })
+
+
+## this does not get exported
+addPopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="button-press-event", ...) {
+  theArgs = list(...)                      
+              
+  f = function(h, ...) {
+    mb = gmenu(h$action, popup = TRUE)
+    event = gdkEventNew(GdkEventType["button-press"])
+    mb = tag(mb,"mb")                   # the real menu bar
+    gtkMenuPopupHack(mb, button = event$GetButton(),
+                     activate.time=event$GetTime()
+                     )
+  }
+  ## .addhandler not exported
+  callbackID = .addHandler(obj,toolkit, signal = signal,handler=f, action=menulist)
+  invisible(callbackID)
+}
+
+add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="button-press-event", ...) {
+  f = function(h, widget, event,...) {
+    if(event$GetButton() != 3) {
+      return(FALSE)                     # propogate signal
+    } else {
+      mb = gmenu(h$action$menulist, popup = TRUE, action=h$action$passedaction)
+      mb = tag(mb,"mb")                 # actual widget
+      gtkMenuPopupHack(mb,button = event$GetButton(),
+                       activate.time=event$GetTime()
+                       )
+    }
+  }
+  callbackID = .addHandler(obj,toolkit, signal = "button-press-event",handler=f, action=list(menulist=menulist, passedaction=action))
+  invisible(callbackID)
+}
+
+
+  
+### need to deal with action
+setMethod(".addpopupmenu",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, menulist, action=NULL, ...) {
+            addPopupMenuWithSignal(obj, toolkit, menulist, ..)
+})
+
+
+## add3rdmousepopupmenu
+setMethod("add3rdmousepopupmenu",signature(obj="gWidgetRGtk"),
+          function(obj, menulist, action=NULL, ...) {
+            .add3rdmousepopupmenu(obj, obj@toolkit,menulist, action, ...)
+          })
+
+setMethod("add3rdmousepopupmenu",signature(obj="RGtkObject"),
+          function(obj, menulist, action=NULL,...) {
+            .add3rdmousepopupmenu(obj, guiToolkit("RGtk2"),menulist, action,...)
+          })
+
+setMethod(".add3rdmousepopupmenu",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, menulist,action=NULL, ...) {
+            add3rdMousePopupMenuWithSignal(obj, toolkit,
+                                           menulist, action, ...)
+          })
+setMethod(".add3rdmousepopupmenu",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, menulist, action=NULL, ...) {
+            add3rdMousePopupMenuWithSignal(obj, toolkit,
+                                           menulist, action, ...)
+          })
+
+
+## "dotmethods" defined in dnd.R
+## adddropsource
+setMethod("adddropsource",signature(obj="gWidgetRGtk"),
+          function(obj, targetType="text", handler=NULL, action=NULL, ...) {
+            .adddropsource(obj, obj@toolkit,targetType=targetType,
+                           handler=handler, action=action, ...)
+          })
+setMethod("adddropsource",signature(obj="RGtkObject"),
+          function(obj, targetType="text", handler=NULL, action=NULL, ...) {
+            .adddropsource(obj, guiToolkit("RGtk2"),targetType=targetType,
+                           handler=handler, action=action, ...)
+          })
+
+## adddropmotion
+setMethod("adddropmotion",signature(obj="gWidgetRGtk"),
+          function(obj,  handler=NULL, action=NULL, ...) {
+            .adddropmotion(obj, obj@toolkit,
+                           handler=handler, action=action, ...)
+          })
+setMethod("adddropmotion",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .adddropmotion(obj, guiToolkit("RGtk2"),
+                           handler=handler, action=action, ...)
+          })
+
+## adddroptarget
+setMethod("adddroptarget",signature(obj="gWidgetRGtk"),
+          function(obj, targetType="text", handler=NULL, action=NULL, ...) {
+            .adddroptarget(obj, obj@toolkit,targetType=targetType,
+                           handler=handler, action=action, ...)
+          })
+
+setMethod("adddroptarget",signature(obj="RGtkObject"),
+          function(obj, targetType="text", handler=NULL, action=NULL, ...) {
+            .adddroptarget(obj, guiToolkit("RGtk2"),targetType=targetType,
+                           handler=handler, action=action, ...)
+          })
+
+
+## R Methods
+setMethod("dim", "gWidgetRGtk", function(x) .dim(x,x@toolkit))
+setMethod("length", "gWidgetRGtk", function(x) .length(x,x@toolkit))
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gWidgetRGtk"),
+          function(x,toolkit) {
+            cat("Define length for x of class:")
+            print(class(x))
+})
+          
+setMethod("dimnames", "gWidgetRGtk", function(x) .dimnames(x,x@toolkit))
+setReplaceMethod("dimnames",
+                 signature(x="gWidgetRGtk"),
+                 function(x,value) {
+                   .dimnames(x,x@toolkit) <- value
+                   return(x)
+                 })
+setGeneric("names")
+setMethod("names", "gWidgetRGtk", function(x) .names(x,x@toolkit))
+setGeneric("names<-")
+setReplaceMethod("names",
+                 signature(x="gWidgetRGtk"),
+                 function(x,value) {
+                   .names(x,x@toolkit) <- value
+                   return(x)
+                 })
