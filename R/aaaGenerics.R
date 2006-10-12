@@ -8,35 +8,6 @@ setClass("guiWidgetsToolkitRGtk2",
 
 
 
-## a base class which is virtual
-
-
-##################################################
-## A virtual class to hold either RGTK or these guys
-setClass("guiWidgetORgWidgetRGtkORRGtkObject")
-
-## A virtual class for our newly defined objects
-setClass("gWidgetRGtk")
-
-
-## subclss
-setClass("gComponentRGtk",
-         representation(
-                        block="guiWidgetORgWidgetRGtkORRGtkObject",
-                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
-                        toolkit="guiWidgetsToolkit"
-                        ),
-         contains="gWidgetRGtk",
-         )
-setClass("gContainerRGtk",
-         representation(
-                        block="guiWidgetORgWidgetRGtkORRGtkObject",
-                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
-                        toolkit="guiWidgetsToolkit"
-                   ),
-         contains="gWidgetRGtk",
-         )
-
 ##################################################
 ## put S3 classes from RGtk2 into S4 classes
 ## got these from apropos("New") -> try(class(do.call(i,list())))
@@ -203,10 +174,46 @@ sapply(oldClasses, function(i) {
 })
 
 
-##
-setIs("guiWidget","guiWidgetORgWidgetRGtkORRGtkObject")
-setIs("gWidgetRGtk","guiWidgetORgWidgetRGtkORRGtkObject")
-setIs("RGtkObject","guiWidgetORgWidgetRGtkORRGtkObject")
+
+
+## a base class which is virtual
+
+
+##################################################
+## A virtual class to hold either RGTK or these guys
+
+## A virtual class for our newly defined objects
+setClass("gWidgetRGtk")
+
+
+## this worked in 2.4.0 but not later, remove
+##setIs("guiWidget","guiWidgetORgWidgetRGtkORRGtkObject")
+##setIs("gWidgetRGtk","guiWidgetORgWidgetRGtkORRGtkObject")
+##setIs("RGtkObject","guiWidgetORgWidgetRGtkORRGtkObject")
+
+setClassUnion("guiWidgetORgWidgetRGtkORRGtkObject",
+              c("guiWidget","gWidgetRGtk","RGtkObject"))
+
+## subclss
+setClass("gComponentRGtk",
+         representation(
+                        block="guiWidgetORgWidgetRGtkORRGtkObject",
+                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        toolkit="guiWidgetsToolkit"
+                        ),
+         contains="gWidgetRGtk",
+         )
+setClass("gContainerRGtk",
+         representation(
+                        block="guiWidgetORgWidgetRGtkORRGtkObject",
+                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        toolkit="guiWidgetsToolkit"
+                   ),
+         contains="gWidgetRGtk",
+         )
+
+
+
 
 
 ##################################################
