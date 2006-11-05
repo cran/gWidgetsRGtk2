@@ -9,7 +9,7 @@ setClass("gImageRGtk",
 setMethod(".gimage",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   filename, dirname="",
+                   filename = "", dirname="",
                    size="",
                    handler=NULL, action=NULL, 
                    container=NULL, ...) {
@@ -35,7 +35,8 @@ setMethod(".gimage",
             } else {
               if(nchar(dirname) >0 )
                 filename = Paste(dirname,"/",filename) # / works for windows and unix?
-              image$SetFromFile(filename)
+              if(!missing(filename) && file.exists(filename))
+                image$SetFromFile(filename)
             }
             
             ## pack into an event box so that we can get signals
@@ -72,8 +73,12 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gImageRGtk"),
                  function(obj, toolkit, index=NULL,  ..., value) {
                    ## value is a full filename
-                   obj@widget$SetFromFile(value)
-                   obj@filename=value
+                   if(value != "" & file.exists(value))  {
+                     obj@widget$SetFromFile(value)
+                     obj@filename=value
+                   } else {
+                     cat("File",value,"does not exist.\n")
+                   }
                    return(obj)
                  })
 

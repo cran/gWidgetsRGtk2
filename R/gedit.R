@@ -159,6 +159,7 @@ setMethod(".addhandlerchanged",
               }
             }
             id = addhandler(obj,signal="key-release-event",handler=f, action=action)
+
             return(id)
           })
 

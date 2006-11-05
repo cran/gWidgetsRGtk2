@@ -14,6 +14,7 @@ setClass("gCommandlineRGtk",
            width="numeric",
            height="numeric",
            prompt="character",
+           useGUI = "logical",
            useConsole="logical"),
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
@@ -25,16 +26,22 @@ setMethod(".gcommandline",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    command = "", assignto=NULL,
+                   useGUI = TRUE, 
                    useConsole = FALSE,
                    prompt = getOption("prompt"),
                    width = 500, height = .6*width,
                    container = NULL,
-                   ...) {
+                   ...) { 
             
             ## adjust command if need be
             if(nchar(command) > 0 && !is.null(assignto))
               command = addAssignto(command, assignto)
-            
+
+
+          ##
+          if(useGUI == FALSE) {
+            container = NULL
+          }
             
             ## the main widgets
             group = ggroup(horizontal = FALSE, container = container)
@@ -141,7 +148,9 @@ setMethod(".gcommandline",
               editButton = editButton, clearButton=clearButton,
               runButton = runButton, historyButton = historyButton, 
               width=width, height=height,
-              prompt =prompt, useConsole = useConsole)
+              prompt =prompt,
+              useGUI = useGUI,
+              useConsole = useConsole)
             
             tag(obj,"showText")<-showText
             tag(obj,"editText")<-editText # delete doesn't work if it makes copis using @ slot
@@ -202,12 +211,13 @@ setReplaceMethod(".svalue",
                    if(!is.null(assignto)) {
                      command = addAssignto(command, assignto)
                    }
-                   svalue(obj@editText,font.attr = "monospace") <-  command # why font.attr here?
+                   if(obj@useGUI)
+                     svalue(obj@editText,font.attr = "monospace") <-  command 
 
                    ## add to history
                    tag(obj, "history", replace=FALSE) <- command
 
-                   evalChunk(command, obj@showText, obj@prompt, obj@useConsole)
+                   evalChunk(command, obj@showText, obj@prompt, obj@useConsole, obj@useGUI)
 
                    ## switch widgets -- if not correct
 ##                   textGroupState = obj@textGroupState
@@ -266,11 +276,12 @@ addAssignto = function(command,assignto) {
 ## taken from Sweave
 ## takes a chunk, iterweaves command and output
 evalChunk = function(chunk, widget, prompt = getOption("prompt"),
-  useConsole=FALSE) {
+  useConsole=FALSE, useGUI = TRUE) {
   svalue(widget) <- ""                 # clear out
   chunkexps <- try(parse(text=chunk), silent=TRUE)
   if(inherits(chunkexps,"try-error")) {
-    add(widget, chunkexps, font.attr = c("monospace"))
+    if(useGUI)
+      add(widget, chunkexps, font.attr = c("monospace"))
 #    addTextWidget(widget, chunkexps)
     cat("Houston, we have a problem with:\n",chunk,"\n")
     return(c())
@@ -285,7 +296,8 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
     command = Paste(prompt,
       paste(dce,collapse=paste("\n", getOption("continue"), sep=""))
       )
-    add(widget, command, font.attr = c("monospace","red","italic"))
+    if(useGUI)
+      add(widget, command, font.attr = c("monospace","red","italic"))
 
     if(useConsole)
       cat(command,"\n")
@@ -301,12 +313,14 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
     if(length(theOutput)==1 & theOutput[1]=="") theOutput <- NULL
     
     if(inherits(err, "try-error")) {
-      add(widget, err, font.attr=c("monospace","red","bold"))
+      if(useGUI)
+        add(widget, err, font.attr=c("monospace","red","bold"))
       if(useConsole)
         cat(err,"\n")
     } else {
       if(!is.null(theOutput)) {
-        add(widget, theOutput, font.attr = c("monospace"))
+        if(useGUI)
+          add(widget, theOutput, font.attr = c("monospace"))
         if(useConsole) 
           cat(paste(theOutput,sep="",collapse="\n"),"\n")
       }

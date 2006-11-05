@@ -150,7 +150,7 @@ setMethod(".gfilebrowse",
 
             ## put entry as widget to pick up gEdit methods
             obj = new("gFilebrowseRGtk",
-              block=group, widget=entry, toolkit=toolkit)
+              block=group, widget=entry@widget@widget, toolkit=toolkit)
 
             invisible(obj)
           })

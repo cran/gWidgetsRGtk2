@@ -229,7 +229,9 @@ setMethod(".ggenericwidget",
               ## send to fcommandline instance
               if(is.null(h$action$cli)) {
                 cli = gcommandline(command=str, assignto=assignto,
-                  container=gwindow(visible=TRUE))
+                  useGUI = FALSE, useConsole = TRUE,
+                  container=NULL)
+#                  container=gwindow(visible=TRUE))
               } else {
                 cli = h$action$cli
               }

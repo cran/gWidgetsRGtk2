@@ -12,10 +12,12 @@ setMethod(".gcalendar",
           function(toolkit,
                    text="",
                    format="%Y-%m-%d",
+                   handler = NULL, action=NULL,
                    container=NULL,...) {
 
             group = ggroup(horizontal=TRUE, container=container)
-            entry = gedit(text=text, container=group, ...)
+            entry = gedit(text=text, container=group,
+              handler=handler,action=action,...)
 
             calendar.cb = function(h,...) {
               ## called when button is clicked
@@ -32,6 +34,16 @@ setMethod(".gcalendar",
                 ## format date
                 dateselected = format(as.Date(dateselected,format=format))
                 svalue(entry) <- dateselected
+
+                ## call handler if present
+                if(!is.null(handler)) {
+                  h = list()
+                  h$obj = entry
+                  h$action = action
+                  handler(h)
+                }
+                
+                ## call change event on entry widget
                 win$Destroy()
               })
             }
@@ -39,7 +51,7 @@ setMethod(".gcalendar",
             gbutton("calendar",handler=calendar.cb, container=group)
 
             obj = new("gCalendarRGtk",
-              block=group, widget = entry@widget, toolkit=toolkit)
+              block=group, widget = entry@widget@widget, toolkit=toolkit)
 
             invisible(obj)
           })
