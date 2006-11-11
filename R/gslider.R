@@ -11,6 +11,9 @@ setMethod(".gslider",
                    horizontal=TRUE,
                    handler=NULL, action=NULL,
                    container=NULL, ...) {
+
+            force(toolkit)
+            
             if (horizontal)
               scale <- gtkHScaleNewWithRange(from, to, by)
             else scale <- gtkVScaleNewWithRange(from, to, by)

@@ -10,6 +10,8 @@ setMethod(".gedit",
                    ...
                    ) {
             
+            force(toolkit)
+
             if (is.null(text)) text<-""
   
             entry <- gtkEntryNew()

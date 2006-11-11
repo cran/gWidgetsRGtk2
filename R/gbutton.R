@@ -9,7 +9,8 @@ setMethod(".gbutton",
           function(toolkit,
                    text="", handler=NULL, action=NULL, container=NULL,...
                    ) {
-
+            force(toolkit)
+            
             iconname = getstockiconname(tolower(text))
             if(!is.na(iconname)) {
               button <- gtkButtonNewFromStock(iconname)
@@ -24,7 +25,7 @@ setMethod(".gbutton",
             ## add to container
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
-                container = gwindow(visible=TRUE)
+                container = gwindow(visible=TRUE, toolkit=toolkit)
               add(container, obj)
             }
 
@@ -70,6 +71,11 @@ setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             addhandler(obj,"pressed",handler, action)
+          })
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            addhandlerclicked(obj, handler, action)
           })
 
 ## for popup menu

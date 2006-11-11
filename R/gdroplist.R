@@ -13,6 +13,8 @@ setMethod(".gdroplist",
                    container=NULL,
                    ...               # do.quote = TRUE for quote of answer
                    ) {
+
+            force(toolkit)
             
             ## items must be a vector here
             items = as.vector(items)              # undoes factor

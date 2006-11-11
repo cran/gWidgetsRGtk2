@@ -13,6 +13,8 @@ setMethod(".gdfnotebook",
                    ... # passed to Group, gnotebook = nb,
                        # notebook = nb$notebook)
     ) {
+
+            force(toolkit)
             
             ## set up notebook
             ## put notebook into a group
@@ -278,10 +280,13 @@ savePageDfNotebook = function(nb, ...) {
     stop("Must be a dfNotebook to use me")
   
   ## dataframe
-  df = nb[svalue(nb)]                   # widget store
-  df = df[,, drop=FALSE]
-  ## dataframe name comes from tab label
-  dfName = names(nb)[svalue(nb)]
+
+  ## nb stores gridobject, and tab is name
+  gridObj = nb[svalue(nb)]                   # widget store
+  dfName = names(nb)[svalue(nb)]             # for tab label
+  df = gridObj[,, drop=FALSE]
+  names(df) <- names(gridObj)           # fix names
+
   
   ## if name match *scratch:no* then we save variables, not as data frame
   if(length(grep("^\\*scratch:[[:digit:]]+\\*$", dfName)) > 0) {

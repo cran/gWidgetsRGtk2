@@ -173,7 +173,7 @@ sapply(oldClasses, function(i) {
   setIs(i,"RGtkObject")
 })
 
-
+setOldClass("try-error")                # for handling try-errors
 
 
 ## a base class which is virtual
@@ -224,7 +224,7 @@ setClass("gContainerRGtk",
 
 setMethod("svalue",signature(obj="gWidgetRGtk"),
           function(obj, index=NULL, drop=NULL, ...) {
-            .svalue(obj, obj@toolkit, index=NULL, drop=NULL, ...)
+            .svalue(obj, obj@toolkit, index=index, drop=drop, ...)
           })
 
 
@@ -249,7 +249,7 @@ setMethod(".svalue",signature(toolkit = "guiWidgetsToolkitRGtk2", obj="character
 ## svalue<- -- objec specific
 setReplaceMethod("svalue",signature(obj="gWidgetRGtk"),
           function(obj, index=NULL, ...,value) {
-            .svalue(obj, obj@toolkit, index=NULL, ...) <- value
+            .svalue(obj, obj@toolkit, index=index, ...) <- value
             obj
           })
 
@@ -306,6 +306,7 @@ setReplaceMethod(".size",
 
                    widget = obj@widget
                    widget$SetSizeRequest(width,height)
+#                   widget$SetDefaultSize(width,height)
 
                    return(obj)
                  })
@@ -647,6 +648,12 @@ setMethod(".add",
                     obj="guiWidget", value="ANY"),
           function(obj, toolkit, value, ...) {
             cat("Can't add without a value\n")
+          })
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",
+                    obj="gWidgetRGtk", value="try-error"),
+          function(obj, toolkit, value, ...) {
+            gmessage(paste("Error:",value))
           })
 ## pushdonw
 setMethod(".add",

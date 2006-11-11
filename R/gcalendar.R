@@ -15,6 +15,8 @@ setMethod(".gcalendar",
                    handler = NULL, action=NULL,
                    container=NULL,...) {
 
+            force(toolkit)
+
             group = ggroup(horizontal=TRUE, container=container)
             entry = gedit(text=text, container=group,
               handler=handler,action=action,...)

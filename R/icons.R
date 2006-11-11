@@ -144,41 +144,50 @@ getstockiconname = function(name=NULL) {
 ## functions to deal with icons
 ## class to icon translation -- return stock name
 ## with prefix
-stockIconFromClass = function(theClass=NULL) {
-  default = "symbol_star"
-  
-  if(is.null(theClass) ||
-     is.na(theClass) ||
-     length(theClass) == 0
-     )
-    return(NA)
-  
-  if(theClass %in% .models)
-    return(getstockiconname("lines"))
-  if(theClass %in% .ts)
-    return(getstockiconname("ts"))
-  if(theClass %in% .functions)
-    return(getstockiconname("function"))
+## find the stock icons. This includes those added bia loadGWidgetIcons()
 
-  ret = switch(theClass,
-    "numeric"= "numeric",
-    "integer"= "numeric",
-    "logical" = "logical",
-    "character"="select-font",
-    "matrix" = "matrix",
-    "data.frame" = "dataframe",
-    "list" = "dataframe",
-    "complex"="numeric",
-    "factor"="factor",
-    "recordedplot" = "plot",
-    NA)
+
+setMethod(".stockIconFromClass",
+          signature(toolkit="guiWidgetsToolkitRGtk2"),
+          function(toolkit,theClass, ...) {
+            default = "symbol_star"
+            
+            if(is.null(theClass) ||
+               is.na(theClass) ||
+               length(theClass) == 0
+               )
+              return(NA)
+
+            theClass = theClass[1]
+            
+            if(theClass %in% .models)
+              return(getstockiconname("lines"))
+            if(theClass %in% .ts)
+              return(getstockiconname("ts"))
+            if(theClass %in% .functions)
+              return(getstockiconname("function"))
+            
+            ret = switch(theClass,
+              "numeric"= "numeric",
+              "integer"= "numeric",
+              "logical" = "logical",
+              "character"="select-font",
+              "matrix" = "matrix",
+              "data.frame" = "dataframe",
+              "list" = "dataframe",
+              "complex"="numeric",
+              "factor"="factor",
+              "recordedplot" = "plot",
+              NA)
   
-  return(getstockiconname(ret))
-}
+            return(getstockiconname(ret))
+          })
 
-stockIconFromObject = function(obj)
-  stockIconFromClass(class(obj)[1])
-
+setMethod(".stockIconFromObject",
+          signature(toolkit="guiWidgetsToolkitRGtk2"),
+          function(toolkit,obj, ...) {
+            .stockIconFromClass(class(obj)[1])
+          })
 
 
 ##

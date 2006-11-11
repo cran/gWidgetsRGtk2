@@ -2,6 +2,9 @@
 ## would like to get size from par("fin"), but this isn't so easy as it
 ## seems to pop up a new plot container
 
+### Trouble when adding to a notebook. Currently when a notebook page is closed the signal to close the widget is not propogated.
+
+
 setClass("gGraphicsRGtk",
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
@@ -13,14 +16,18 @@ setMethod(".ggraphics",
                    width=dpi*6, height=dpi*6,
                    dpi=75, ps=12,
                    container=NULL,...) {
+
+            force(toolkit)
             
             require(cairoDevice)
             
             da <- gtkDrawingAreaNew()
             ## allow events on this widget
             da$AddEvents(GdkEventMask["all-events-mask"])
-            da$setSizeRequest(width, height)
-            device <- asCairoDevice(da, pointsize=ps)
+            if(!is.null(width) & !is.null(height))
+              da$setSizeRequest(width, height)
+
+            asCairoDevice(da, pointsize=ps) # turn into cairo device
 
             obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
             tag(obj,"device") <- dev.cur()
@@ -70,6 +77,7 @@ setMethod(".add",
           function(obj, toolkit, value, ...) {
             getWidget(obj)$PackStart(value@block, TRUE, TRUE, 0) # expand to fill if TRUE
           })
+
 
 
 ## raise this device

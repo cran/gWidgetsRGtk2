@@ -7,7 +7,11 @@
 \alias{str2}
 \alias{untaintName}
 \alias{stockIconFromClass}
+\alias{.stockIconFromClass-methods}
+\alias{.stockIconFromClass,guiWidgetsToolkitRGtk2-method} 
 \alias{stockIconFromObject}
+\alias{.stockIconFromObject-methods}
+\alias{.stockIconFromObject,guiWidgetsToolkitRGtk2-method} 
 \alias{Timestamp}
 \alias{Timestamp<-}
        

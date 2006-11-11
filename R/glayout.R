@@ -15,6 +15,8 @@ setMethod(".glayout",
                    spacing = 10,        # amount (pixels) between row, cols, NULL=0
                    container = NULL, ...
                    ) {
+
+            force(toolkit)
             
             ## how to add in per column adjusments?
             adjust = "center"                             # left or right or center

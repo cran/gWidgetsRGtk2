@@ -1,5 +1,8 @@
 \name{gWidgetsRGtk2-undocumented}
 \alias{gWidgetsRGtk2-undocumented}
+%% these are by hand
+\alias{editSubsetDialog}
+\alias{editSelectDialog}
 %% These are found using FindAllGenerics.R
 \alias{[-methods}
 \alias{[,gWidgetRGtk-method}
@@ -262,6 +265,8 @@
 \alias{.svalue,gVarbrowserRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gAddargRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gUnivariateRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gUnivariateTableRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gFileURLRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gBivariateRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gModelRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gLmerRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
@@ -364,7 +369,9 @@
 \alias{.add,gTextRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.add,gTextRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gToolbarRGtk,guiWidgetsToolkitRGtk2,list-method}
-\alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method} 
+\alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
+\alias{.add,gWidgetRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
+\alias{.add,gWidgetRGtk,guiWidgetsToolkitRGtk2,try-error-method} 
 %%
 %% --  addSpace --
 %%
@@ -422,7 +429,8 @@
 \alias{.dispose-methods}
 \alias{.dispose,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.dispose,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.dispose,gTextRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.dispose,gTextRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.dispose,gHelpRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  visible --
 %%
@@ -484,7 +492,8 @@
 %% --  .size --
 %%
 \alias{.size-methods}
-\alias{.size,GtkWindow,guiWidgetsToolkitRGtk2-method} 
+\alias{.size,GtkWindow,guiWidgetsToolkitRGtk2-method}
+\alias{.size,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  size<- --
 %%
@@ -631,6 +640,7 @@
 %%
 \alias{.addhandlerchanged-methods}
 \alias{.addhandlerchanged,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
@@ -818,7 +828,8 @@
 \alias{.adddroptarget-methods}
 \alias{.adddroptarget,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.adddroptarget,RGtkObject,guiWidgetsToolkitRGtk2-method}
-\alias{.adddroptarget,gLabelRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.adddroptarget,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.adddroptarget,gImageRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .gmessage --
 %%
@@ -859,7 +870,8 @@
 \alias{.length-methods}
 \alias{.length,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gGridRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.length,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.length,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.length,gHelpRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  dim --
 %%

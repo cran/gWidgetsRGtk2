@@ -17,7 +17,7 @@
 
 knownTypes = list(
   "data sets and models"=c(.datasets, .models, .ts),
-  "data sets"= .datasets,
+  "data sets"= c(.datasets,ts),
   "model objects" = .models,
   "time series objects" = .ts,
   "functions"=.functions,
@@ -107,16 +107,25 @@ setClass("gVarbrowserRGtk",
 setMethod(".gvarbrowser",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   handler = function(h,...) {
-                     values = h$obj[]                   # was values(h$obj)
-                     value = paste(values,collapse="$")
-                     if(!is.null(action))
-                       print(do.call(h$action,list(svalue(value))))
-                   },
+                   handler = NULL,
                    action = "summary",
                    container = NULL,
                    ...) {
+
+            force(toolkit)
             
+
+            ## fix handler if action is non-null
+            if(is.null(handler) && !is.null(action)) {
+              handler = function(h, ...) {
+                values = h$obj[]
+                value = paste(values, collapse = "$")
+                if (!is.null(action))
+                        print(do.call(h$action, list(svalue(value))))
+              }
+            }
+
+            ## begin
             group = ggroup(horizontal=FALSE, container=container)
             filterGroup = ggroup(container=group)
             glabel("Filter by:",container=filterGroup)
@@ -142,8 +151,8 @@ setMethod(".gvarbrowser",
                               },
                               action=tree)
             
-            ## add an idle handler for updating tree every 5 seconds
-            idleid = addhandleridle(tree, interval=5000, handler = function(h,...) {
+            ## add an idle handler for updating tree every  second
+            idleid = addhandleridle(tree, interval=1000, handler = function(h,...) {
               key = svalue(filterPopup)
               offspring.data = knownTypes[[key]]
               update(h$obj, offspring.data)
@@ -182,7 +191,10 @@ setMethod(".gvarbrowser",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gVarbrowserRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            svalue(obj@widget,...)
+            values = obj@widget[]       # from tree
+            value = paste(values, collapse = "$")
+
+            return(value)
           })
 setMethod("[",
           signature(x="gVarbrowserRGtk"),

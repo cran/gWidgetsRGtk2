@@ -8,6 +8,8 @@ setMethod(".gnotebook",
                    container=NULL,                           # add to this container
                    ...) {
             
+            force(toolkit)
+
             ## beginvv
             notebook = gtkNotebookNew()
             notebook$SetScrollable(TRUE)
@@ -47,13 +49,13 @@ setReplaceMethod(".size",
                    return(obj)
                  })
 
-## close buttons? Call this by default
-defaultCloseButtonHandler = function(h,...) {
-  notebook = h$action@notebook             # gtk notebook, not gnotebook
-  currentPage = notebook$GetCurrentPage()
-  notebook$RemovePage(currentPage)
-  svalue(h$action)  <- currentPage
-}
+## ## close buttons? Call this by default
+## defaultCloseButtonHandler = function(h,...) {
+##   notebook = h$action@notebook             # gtk notebook, not gnotebook
+##   currentPage = notebook$GetCurrentPage()
+##   notebook$RemovePage(currentPage)
+##   svalue(h$action)  <- currentPage
+## }
 
 
 
@@ -137,7 +139,12 @@ setMethod(".dispose",
                 for(i in no.right:1) {
                   if(!is.null(dontCloseThese) &&
                      !((cur.page - 1 + i + 1) %in% dontCloseThese)) {
+
+                    ## destroy widget
+                    theWidget = obj@widget$getNthPage(cur.page - 1 + 1)
                     obj@widget$RemovePage(cur.page - 1 +i) # cur.page 1-based
+                    try(theWidget$destroy())
+                    
                     svalue(obj) <- cur.page
                   }
                 }
@@ -146,12 +153,16 @@ setMethod(".dispose",
               ## just this page
               if(!is.null(dontCloseThese)) {
                 if(!((cur.page - 1 + 1) %in% dontCloseThese)) {
+                  theWidget = obj@widget$getNthPage(cur.page - 1)                  
                   obj@widget$RemovePage(cur.page - 1) # value is 1 based, not 0
+                  try(theWidget$destroy())
                   svalue(obj) <- cur.page
                 }
               } else {
       ## no restriction of closing page
+                theWidget = obj@widget$getNthPage(cur.page - 1)                                  
                 obj@widget$RemovePage(cur.page - 1) # value is 1 based, not 0
+                try(theWidget$destroy())
                 svalue(obj) <-cur.page
               }
             }

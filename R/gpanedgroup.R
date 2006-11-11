@@ -10,6 +10,8 @@ setMethod(".gpanedgroup",
                    widget1, widget2, horizontal=TRUE, container=NULL, ...) {
             ## add a paned group
             
+            force(toolkit)
+            
             if(horizontal) {
               panedWindow = gtkHPanedNew()
             } else {

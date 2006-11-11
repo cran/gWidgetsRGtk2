@@ -7,18 +7,19 @@ setMethod(".gmessage",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    message,
+                   title = "message",
                    icon = c("info","warning","error","question"),
-                   button = c("close","ok","cancel"),
-                   handler = defaultHandler,
+                   handler = NULL,
                    action = NULL,
                    ...
                    ) {
             
+            force(toolkit)
+
             icon = match.arg(icon)
-            button = match.arg(button)
             
             icon = Paste("GTK_MESSAGE_",toupper(match.arg(icon)))
-            button = Paste("GTK_BUTTONS_",toupper(match.arg(button)))
+            button = Paste("GTK_BUTTONS_",toupper(match.arg("ok")))
             
             ## use message dialog for Gtk
             dlg = gtkMessageDialogNew(
@@ -53,6 +54,7 @@ setMethod(".gconfirm",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    message,
+                   title = "Confirm",
                    icon = c("info", "warning", "error", "question"), 
                    handler = NULL,
                    action = NULL,
@@ -103,7 +105,9 @@ setMethod(".ginput",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    message,
-                   icon = c("info","warning","error","question"),
+                   text="",
+                   title = "Input",
+                   icon = c("info", "warning", "error", "question"), 
                    handler = NULL,
                    action = NULL,
                    ...
@@ -123,7 +127,7 @@ setMethod(".ginput",
 
             group = ggroup(horizontal=FALSE)
             glabel(message, container=group)
-            input = gedit(container=group)
+            input = gedit(text,container=group)
             
             ## find the area to pack the entry widget
             dlg$GetVbox()[[1]]$PackStart(getBlock(group)) 
@@ -136,14 +140,16 @@ setMethod(".ginput",
             h = list(obj=dlg, ref=dlg, action=action, input=svalue(input))
             if(response == GtkResponseType["cancel"]) {
               dlg$Destroy()
-              return(FALSE)
+              return("")
             } else if (response == GtkResponseType["close"]) {
               dlg$Destroy()
-              return(FALSE)
+              return("")
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
               dlg$Destroy()
-              return(svalue(input))
+              return(input)
+              ## was this but, why ??
+              ## return(svalue(input))
             } else {
               print(response)
             }
@@ -176,7 +182,7 @@ setMethod(".gbasicdialog",
             add(group, widget, expand=TRUE)
             
             ## find the area to pack the entry widget
-            dlg$GetVbox()$PackStart(group$ref)
+            dlg$GetVbox()$PackStart(getBlock(group))
             
             ## run in modal mode
             response = dlg$Run()
@@ -192,7 +198,7 @@ setMethod(".gbasicdialog",
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
               dlg$Destroy()
-              return(widget)
+              return(TRUE)              # was widget, but TRUE now
             } else {
               ## default action
               dlg$Destroy()

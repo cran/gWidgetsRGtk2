@@ -13,6 +13,8 @@ setMethod(".gimage",
                    size="",
                    handler=NULL, action=NULL, 
                    container=NULL, ...) {
+
+            force(toolkit)
             
             ## size if for Stock: one of MENU, SMALL_TOOLBAR, LARGE_TOOLBAR, BUTTON, DND, DIALOG
             image = gtkImageNew()
@@ -61,6 +63,15 @@ setMethod(".gimage",
           })
           
 ### methods
+### need to fuss with evb vs. label
+setMethod(".adddroptarget",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gImageRGtk"),
+          function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
+            ## problem -- we want to add drop target to obj@block evb,
+            ## but have handler refer to obj@widgeg=label. 
+            addDropTarget(obj@block, toolkit, targetType, handler, action, overrideobj=obj)
+            
+          })
           
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gImageRGtk"),

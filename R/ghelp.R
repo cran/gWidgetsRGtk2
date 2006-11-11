@@ -10,6 +10,7 @@ setMethod(".ghelp",
                    topic=NULL, package=NULL,
                    container = NULL,
                    ...) {                                # passed to gnotebook
+            force(toolkit)
             
             group = ggroup(horizontal=FALSE, container = container)
             notebook = gnotebook(...)
@@ -59,11 +60,10 @@ setMethod(".add",
               if(length(possiblePackages) > 0) {
                 package = possiblePackages
               } else {
-                warning(Paste("Can't find a package containing", topic,"\n"))
+                warning(Paste("Can't find a package containing ", topic,"\n"))
                 return()
               }
             }
-            
             ## add a page for each package
             for(pkg in package) {
               helpPage = makeHelpPage(topic, pkg)
@@ -71,6 +71,7 @@ setMethod(".add",
               tag(helpPage,"package") <- pkg
               add(obj@widget, helpPage, label = Paste("Help on ",pkg,"::",topic))
             }
+            return()
           })
 
 ## value returns the topic of the current page or the one give by index
@@ -83,7 +84,19 @@ setMethod(".svalue",
             package = tag(widget,"package")
             return(list(topic=topic, package=package))
           })
-  
+
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gHelpRGtk"),
+          function(x, toolkit) {
+            length(x@widget)
+          })
+
+setMethod(".dispose",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gHelpRGtk"),
+          function(obj, toolkit, ...) {
+            dispose(obj@widget)
+          })
+
 ##################################################
 ## helpers
 
@@ -96,17 +109,19 @@ makeHelpPage = function(topic, pkg) {
     helpPage = gtext(text[1],font.attr=c("bold"))
     add(helpPage, text[2])
     add(helpPage, text[3], font.attr=c("bold","big","blue"))
-    sapply(text[-(1:3)], function(x) {
-      if( length(grep("^\\w+:", x)) > 0) {
-        tmp = unlist(strsplit(x,":"))
-        add(helpPage,Paste(tmp[1],":"),font.attr=c("blue"), do.newline=FALSE)
-        add(helpPage,paste(tmp[-1], sep="", collapse=":"))
-      } else {
-        add(helpPage,x)
-      }
-    })
+    add(helpPage, text[-(1:3)])
+    ## This gave troubles when there were more than a few pages open!
+##     sapply(text[-(1:3)], function(x) {
+##       if( length(grep("^\\w+:", x)) > 0) {
+##         tmp = unlist(strsplit(x,":"))
+##         add(helpPage,Paste(tmp[1],":"),font.attr=c("blue"), do.newline=FALSE)
+##         add(helpPage,paste(tmp[-1], sep="", collapse=":"))
+##       } else {
+##         add(helpPage,x)
+##       }
+##     })
   } else {
-    helpPage = gtext(Paste("Page for ",topic," in package ",pkg," was not found."))
+    helpPage = gtext(paste("Page for ",topic," in package ",pkg," was not found.",collapse=" "))
   }
   return(helpPage)
 }
@@ -126,7 +141,7 @@ getPossiblePackages = function(topic) {
   }
   
   if(length(possiblePackages) == 0) {
-    warning("Adios, can't find a package to match",topic,"\n")
+    warning("Adios, can't find a package to match ",topic,"\n")
     return()
   }
   return(possiblePackages)
@@ -232,6 +247,8 @@ setMethod(".ghelpbrowser",
                    title = "Help browser", maxTerms=100,
                    width=550, height=600) {
 
+            force(toolkit)
+            
             win = gwindow("Help browser", v=T)
             size(win) <-  c(width,height)
 
@@ -308,16 +325,14 @@ setMethod(".ghelpbrowser",
                                     handler=function(h,...) {
                                       topic = svalue(h$obj)
                                       package = h$action
-                                      svalue(statusBar) <- Paste("Getting help page for",topic)
-                                      add(obj,
-                                          list(topic=topic, package=package)
-                                          )
+                                      svalue(statusBar) <- Paste("Getting help page for ",topic)
+                                      add(help.notebook,list(topic=topic, package=package))
                                       svalue(statusBar)
                                       svalue(nb) <- 1 # help page
-                                      svalue(statusBar)
                                       visible(expgp) <- FALSE
+                                      return(FALSE)
                                     })
-              
+              return(FALSE)             # doubleclick return for no more propogation
             })
             
 ##################################################
@@ -325,11 +340,9 @@ setMethod(".ghelpbrowser",
             add(gp,nb, expand=TRUE)
             
             help.notebook  = ghelp(tab.pos=1,closebuttons=TRUE)     # bottom tab
-            tag(obj,"help.notebook") <- help.notebook
             emptyDataFrame = data.frame(Title=c(""), Package=c(""),Descr=c(""))
             for(j in 1:3) emptyDataFrame[,j] <- as.character(emptyDataFrame[,j])
             search.results = gtable(emptyDataFrame, filter.column=2)
-            tag(obj,"search.results") <- search.results
             
             add(nb, help.notebook, label="Help pages")
             add(nb, search.results, label="Search results")
@@ -340,19 +353,17 @@ setMethod(".ghelpbrowser",
             ## actions
             ## double click on search results
             addhandlerdoubleclick(search.results,
-                                  action =obj,
                                   handler = function(h,...) {
-                                    vals = svalue(h$obj, index=TRUE)
-                                    help.notebook = tag(h$action, "help.notebook")
+                                    vals = svalue(search.results, drop=FALSE) # a data frame
                                     topic = vals[,1,drop=TRUE]
                                     package = vals[,2,drop=TRUE]
                                     svalue(statusBar) <-
-                                      Paste("Getting help page for",topic)
-                                    add(obj, list(topic=topic, package=package))
+                                      Paste("Getting help page for ",topic)
+                                    add(help.notebook, list(topic=topic, package=package))
                                     svalue(statusBar) # pops statusbar?
                                     ## swap tabs
                                     svalue(nb) <- 1
-                                    svalue(statusBar)
+                                    return(FALSE) # no mas
                                   })
             ## make search resuslts -- return dataframe with title, package, description
             ## as character vectors
@@ -386,11 +397,11 @@ setMethod(".ghelpbrowser",
             
             addhandlerchanged(searchBox, handler = function(h,...) {
               searchType = svalue(searchOptions, index=TRUE)
-              svalue(statusBar) <- "Getting to work, but I am a little slow"
+              svalue(statusBar) <- "Getting to work"
               if(searchType == 1) {
                 ## first one is show help page
                 topic = svalue(h$obj)
-                add(obj,topic)
+                add(help.notebook,topic)
               } else {
                 df = searchOptionsList[[searchType]](svalue(h$obj))
                 ## set value in widget
@@ -405,14 +416,6 @@ setMethod(".ghelpbrowser",
             
             return(obj)
           })
-
-## passtrhough for add.gHelp
-setMethod(".add",
-          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gHelpbrowserRGtk"),
-          function(obj, toolkit, value, ...) {
-            add(tag(obj,"help.notebook"), value)
-          })
-
 
 
 ##################################################

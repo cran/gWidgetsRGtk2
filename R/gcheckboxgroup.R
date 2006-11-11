@@ -10,6 +10,8 @@ setMethod(".gcheckboxgroup",
                    items, checked = FALSE,
                    horizontal=FALSE, 
                    handler = NULL, action = NULL, container = NULL, ...) {
+
+            force(toolkit)
             
             if(missing(items) || length(items) == 0)
               stop("Need items to be a vector of items")

@@ -32,6 +32,8 @@ setMethod(".gcommandline",
                    width = 500, height = .6*width,
                    container = NULL,
                    ...) { 
+
+            force(toolkit)
             
             ## adjust command if need be
             if(nchar(command) > 0 && !is.null(assignto))
@@ -69,7 +71,7 @@ setMethod(".gcommandline",
             }
             saveFile = function(h,...) {
               icl = h$action
-              win = gwindow("Save buffer contents",v)
+              win = gwindow("Save buffer contents",v, toolkit=toolkit)
               group = ggroup(horizontal=FALSE, container=win)
               saveFileName = gfilebrowse("",type="save")
               add(group, saveFileName)

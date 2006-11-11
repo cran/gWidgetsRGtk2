@@ -11,7 +11,8 @@ setMethod(".gwindow",
                    handler=NULL, action = NULL,
                    ...
                    ) {
-
+            force(toolkit)
+            
             window <- gtkWindowNew("toplevel", show = FALSE)
             obj = new("gWindowRGtk",block=window, widget=window, toolkit=toolkit)
 
@@ -64,6 +65,13 @@ setMethod(".visible<-",
             return(obj)
           })
 
+
+setMethod(".size",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
+          function(obj, toolkit, ...) {
+            theSize = getWidget(obj)$GetSize()
+            return(unlist(theSize[2:3]))
+          })
 
 ##################################################
 ## handlers

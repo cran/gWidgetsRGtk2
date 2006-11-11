@@ -7,7 +7,8 @@ importFrom(gWidgets,
 "ghelpbrowser", "ggenericwidget", "gvarbrowser", "gwindow", "ggroup",
 "gframe", "gexpandgroup", "gnotebook", "glayout", "gpanedgroup",
 "gmessage", "ginput", "gconfirm", "gbasicdialog",
-"addStockIcons","getStockIcons"
+"addStockIcons","getStockIcons",
+           "stockIconFromClass","stockIconFromObject"
 )
 
 importClassesFrom(gWidgets, 
@@ -45,6 +46,7 @@ importMethodsFrom(gWidgets,
 ".adddropsource", ".adddropmotion", ".adddroptarget", ".gmessage",
 ".ginput", ".gconfirm", ".gbasicdialog",
 ".addStockIcons",".getStockIcons",
+                  ".stockIconFromClass",".stockIconFromObject",
 ".removehandler",
 "update",".update",
 "length",".length",
@@ -57,11 +59,12 @@ importMethodsFrom(gWidgets,
 
 import(RGtk2)
 
-export("Paste","stripWhiteSpace","rpel","str1","str2","untaintName",
-       "stockIconFromClass","stockIconFromObject",
-       "Timestamp","Timestamp<-"
-       )
+## export("Paste","stripWhiteSpace","rpel","str1","str2","untaintName",
+##        "stockIconFromClass","stockIconFromObject",
+##        "Timestamp","Timestamp<-"
+##        )
 
+export("editSubsetDialog","editSelectDialog")
 
 exportMethods(
 "[", 
@@ -93,6 +96,7 @@ exportMethods(
 ".adddropsource", ".adddropmotion", ".adddroptarget", ".gmessage",
 ".ginput", ".gconfirm", ".gbasicdialog",
 ".addStockIcons",".getStockIcons",
+              ".stockIconFromClass",".stockIconFromObject",
 ".removehandler",
 ".svalue",
 "update",".update",

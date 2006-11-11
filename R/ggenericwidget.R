@@ -117,13 +117,17 @@ setMethod(".ggenericwidget",
             if(!is.null(lst$variableType)) {
               
               if(lst$variableType == "univariate") {
-                vals$Data = gunivariate(container=mainGroup)
+                vals$Data = gunivariate(...,container=mainGroup)
+              } else if(lst$variableType == "univariatetable") {
+                vals$Data = gunivariatetable(...,container = mainGroup) 
+              } else if(lst$variableType == "fileurl") {
+                vals$Data = gfileurl(...,container = mainGroup) 
               } else if(lst$variableType == "bivariate") {
-                vals$Data = gbivariate(container = mainGroup) 
+                vals$Data = gbivariate(...,container = mainGroup) 
               } else if(lst$variableType == "model") {
-                vals$Data = gmodel(container = mainGroup) 
+                vals$Data = gmodel(...,container = mainGroup) 
               } else if(lst$variableType == "lattice") {
-                vals$Data = glattice(container = mainGroup) 
+                vals$Data = glattice(...,container = mainGroup) 
               } else {
                 warning(Paste("Need to implent variableType",lst$variableType))
               }
@@ -158,7 +162,7 @@ setMethod(".ggenericwidget",
                   trow <<- trow+1; tcol <<- 1
                 } else {
                   ## the listelement use the argument names so do.call just works.
-                  if(!is.list(lstele$type) && lstele$type == "ilabel") {
+                  if(!is.list(lstele$type) && lstele$type == "glabel") {
                     table[trow,2:4] <<- glabel(lstele$text)
                     trow <<- trow+1; tcol <<- 1
                     ##        glabel(lstele$text, container=group)

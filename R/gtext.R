@@ -13,6 +13,8 @@ setMethod(".gtext",
                    handler = NULL, action=NULL,
                    container=NULL, ...) {
 
+            force(toolkit)
+            
             group = ggroup()
             sw = gtkScrolledWindowNew()
             add(group, sw, expand=TRUE)

@@ -10,6 +10,8 @@ setMethod(".gcheckbox",
                    text, checked=FALSE,
                    handler=NULL, action=NULL,
                    container=NULL,...) {
+
+            force(toolkit)
             
             check <- gtkCheckButtonNewWithLabel(text)
             check$SetActive(checked)
@@ -18,7 +20,7 @@ setMethod(".gcheckbox",
               toolkit=toolkit)
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
-                container = gwindow(visible=TRUE)
+                container = gwindow(visible=TRUE, toolkit=toolkit)
               add(container, obj)
             }
             

@@ -11,6 +11,8 @@ setMethod(".gspinbutton",
                    handler=NULL, action=NULL,
                    container=NULL, ...) {
 
+            force(toolkit)
+                        
             adjustment = gtkAdjustmentNew(value=value, lower=from,
               upper=to,step.incr=by)
             spin = gtkSpinButtonNew(adjustment,climb.rate=0.6, digits=digits)

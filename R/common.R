@@ -32,6 +32,15 @@ stripWhiteSpace = function(str) {
   return(str)
 }
 
+
+quoteIfNeeded = function(str) {
+  if(length(grep('^\\".*\\"$', str, perl=TRUE)) > 0 ||
+     length(grep("^\\'.*\\'$", str, perl=TRUE)) > 0 )
+    return(str)
+  else
+    return(paste('"',str,'"',sep="",collapse=""))
+}
+
 ## ReadParseEvaL -- saves typing
 rpel = function(string, envir=.GlobalEnv) {
   eval(parse(text=string), envir=envir)
@@ -397,7 +406,10 @@ stockIconFromClass = function(theClass=NULL) {
      length(theClass) == 0
      )
     return(NA)
-  
+
+
+  theClass = theClass[1]
+
   if(theClass %in% .models)
     return(getstockiconname("lines"))
   if(theClass %in% .ts)

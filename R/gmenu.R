@@ -37,6 +37,7 @@ setMethod(".gmenu",
                    action = NULL,
                    container=NULL, ...) {
             
+            force(toolkit)
             
             if(popup) {
               mb = gtkMenuNew()

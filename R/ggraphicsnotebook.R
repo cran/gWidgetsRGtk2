@@ -13,6 +13,7 @@ setMethod(".ggraphicsnotebook",
                    container = NULL,
                    ...) {
             ## ... passed onto gnotebook
+            force(toolkit)
             
             group = ggroup(horizontal = FALSE, container=container)
             
@@ -43,11 +44,11 @@ setMethod(".ggraphicsnotebook",
             toolbar$New$icon = "new"
             
             toolbar$Close$handler = function(h,...) {
-              ## we need to close the current device
-              currentDevice = names(obj)[svalue(obj)]
-              currentDevice = as.numeric(gsub("^dev:","",currentDevice))
+              ## we need to close the current device -- this was fixed??
+              ##currentDevice = names(obj)[svalue(obj)]
+              ##currentDevice = as.numeric(gsub("^dev:","",currentDevice))
               dispose(obj)
-              dev.off(currentDevice)
+              ##dev.off(currentDevice) 
             }
             toolbar$Close$icon = "close"
             toolbar$tmp2$separator = TRUE
@@ -61,7 +62,9 @@ setMethod(".ggraphicsnotebook",
               saveCurrentPage(obj)
             }
             toolbar$Save$icon="save"
-            
+
+            toolbar$tmp3$separator = TRUE
+
             toolbar$Record$handler = function(h,...) {
               recordCurrentPage(obj)
             }

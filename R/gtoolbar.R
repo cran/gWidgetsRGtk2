@@ -14,6 +14,8 @@ setMethod(".gtoolbar",
                    style = c("both","icons","text","both-horiz"),
                    action=NULL,
                    container=NULL, ...) {
+
+            force(toolkit)
             
             style = match.arg(style)
             toolbar = mapListToToolBar(toolbarlist, style)

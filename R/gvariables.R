@@ -23,9 +23,11 @@
 ## ivarariables(
 
 gvariables = function(variableType=NULL,..., toolkit=guiToolkit()) {
-  if(variableType %in% c("univariate","bivariate","model","lattice")) {
+  if(variableType %in% c("univariate","univariatetable","bivariate","model","lattice")) {
     tmp = switch(variableType,
       "univariate" = gunivariate(...,toolkit=toolkit),
+      "univariatetable" = gunivariatetable(...,toolkit=toolkit),
+      "fileurl" = gfileurl(...,toolkit=toolkit),
       "bivariate" = gbivariate(...,toolkit=toolkit),
       "model" = gmodel(...,toolkit=toolkit),
       "lattice" = glattice(...,toolkit=toolkit),
@@ -78,7 +80,10 @@ setMethod(".svalue",
                       arg == "...") {
               return(val)
             } else {
-              return(Paste(arg,"=",val))
+              if(is.null(drop) || drop==FALSE)
+                return(Paste(arg,"=",val))
+              else
+                return(val)
             }
           })
 
@@ -91,6 +96,8 @@ setReplaceMethod(".svalue",
 
 ## the most basic drop handler 
 basicdrophandler = function(h,...) svalue(h$obj) <- h$dropdata
+
+##################################################
 
 ### UNIVARIATE
 ## returns gedit vaRlue
@@ -113,6 +120,69 @@ setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gUnivariateRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL,  ...) {
             svalue(obj@widgets[[1]])
+          })
+
+#######################################################################
+## returns gedit value, perhaps in table()
+setClass("gUnivariateTableRGtk",
+         representation(widgets="list"),
+         contains="gComponentRGtk"
+         )
+
+gunivariatetable = function(xlabel="x",container=NULL, ..., toolkit=guiToolkit()) {
+
+  frame = gframe(text = "<b>data</b>",markup=TRUE, horizontal=TRUE, container=container)
+  glabel(xlabel, container=frame)
+  xentry = gedit(text="",width=40, container=frame)
+##  xarg = addArg(argument=xlabel, xentry, container=frame)
+  glabel(" Tabulate data?",container=frame)
+  doTable=gdroplist(c(TRUE,FALSE),container=frame)
+  obj = new("gUnivariateTableRGtk",block=frame, widget=frame, toolkit=toolkit, widgets=list(x=xentry, doTable=doTable))
+  return(obj)
+}
+
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gUnivariateTableRGtk"),
+          function(obj, toolkit, index=NULL, drop=NULL,  ...) {
+            vals = svalue(obj@widgets[[1]], drop=TRUE)
+            if(length(grep(vals,"=")) >0)
+              vals = unlist(strsplit(vals,"\\s+=\\s+"))[2]
+            doTable = as.logical(svalue(obj@widgets[[2]])) # TRUE of FALSE
+            if(doTable)
+              vals = paste("table(",vals,")", sep="", collapse="")
+            return(vals)
+          })
+
+
+#################################################
+## a File browser with a switch for wrapping in url
+## returns gedit value, perhaps in table()
+setClass("gFileURLRGtk",
+         representation(widgets="list"),
+         contains="gComponentRGtk"
+         )
+
+gfileurl = function(xlabel="x",container=NULL, ..., toolkit=guiToolkit()) {
+
+  frame = gframe(text = "<b>file</b>",markup=TRUE, horizontal=TRUE, container=container)
+  xentry = gfilebrowse(text="",width=40, container=frame)
+  glabel("A url?",container=frame)
+  doURL=gdroplist(c(FALSE,TRUE),container=frame)
+  obj = new("gFileURLRGtk",block=frame, widget=frame, toolkit=toolkit, widgets=list(x=xentry, doURL=doURL))
+  return(obj)
+}
+
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gFileURLRGtk"),
+          function(obj, toolkit, index=NULL, drop=NULL,  ...) {
+            vals = svalue(obj@widgets[[1]])
+            print(vals)
+            if(length(grep(vals,"=")) >0)
+              vals = paste(unlist(strsplit(vals,"\\s+=\\s+"))[-1], collapse="=")
+            doURL = as.logical(svalue(obj@widgets[[2]])) # TRUE of FALSE
+            if(doURL)
+              vals = paste("url(",quoteIfNeeded(vals),")", sep="", collapse="")
+            return(vals)
           })
 
 ##################################################
@@ -412,7 +482,7 @@ editFormulaDialog = function(
   }
 
   if(is.na(data) || is.null(data)) {
-    warning("Can't find data set")
+    gmessage("There is no data set specified.")
     return(NA)
   }
 
@@ -566,6 +636,9 @@ editFormulaDialog = function(
   })
 }
 
+
+
+
 editSubsetDialog = function(
   data=NULL,
   widget = NULL                         # what to write to, start with
@@ -579,7 +652,7 @@ editSubsetDialog = function(
   
   if(is.character(data)) {
     if(data == "") {
-      warning("A data set needs to be set")
+      gmessage("A data set needs to be set first")
       return()
     }
     dataName = data

@@ -21,6 +21,8 @@ setMethod(".gfile",
                    ...
                    ) {
             
+            force(toolkit)
+
             args = list(...)
             
             type = match.arg(type)
@@ -116,7 +118,7 @@ setMethod(".gfile",
 
 
 ##################################################
-## gfilebrowser is not modal, like gfile
+## gfilebrowse is not modal, like gfile
 setClass("gFilebrowseRGtk",
          contains="gEditRGtk",
          prototype=prototype(new("gEditRGtk"))
@@ -127,26 +129,26 @@ setClass("gFilebrowseRGtk",
 setMethod(".gfilebrowse",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   text="Select a file...", type="open",  quote=TRUE,
+                   text="Select or drag name here...", type="open",  quote=TRUE,
                    container=NULL, ...) {
 
 
             group = ggroup(horizontal=TRUE, container=container)
-            entry = gedit(text=text, width=75, container=group, ...)
+            entry = gedit(text=text, container=group, ...)
 
             file.cb = function(h,...) {
               ## called when button is clicked
               ## pop up a calendar, when date selected, copy to entry
               
               ## in this h is gFile object, not gBrowse object
-              gfile(text=text,
-                    type = type,
-                    action=entry,
-                    quote = TRUE
-                    )
+              val = gfile(text=text,
+                type = type,
+                quote = TRUE
+                )
+              svalue(entry) <- val
             }
 
-            gbutton("browse",handler=file.cb, action = obj, container=group)
+            gbutton("browse",handler=file.cb, container=group)
 
             ## put entry as widget to pick up gEdit methods
             obj = new("gFilebrowseRGtk",

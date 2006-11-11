@@ -8,6 +8,9 @@ setMethod(".gstatusbar",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    text="", container=NULL, ...) {
+
+            force(toolkit)
+            
             statusbar <- gtkStatusbarNew()
             statusbar$setHasResizeGrip(TRUE)
             statusbar$push(statusbar$getContextId("message"), text)

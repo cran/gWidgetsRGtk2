@@ -12,6 +12,8 @@ setMethod(".gframe",
                    container=NULL,
                    ...) {
             
+            force(toolkit)
+
             frame = gtkFrameNew()
             if(markup) {
               label = gtkLabelNew()

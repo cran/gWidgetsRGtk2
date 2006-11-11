@@ -12,7 +12,9 @@ setMethod(".glabel",
                    ...
                    ) {
 
+            force(toolkit)
 
+            
             label <- gtkLabelNew()
 
             ## pack into an event box so that we can get signals

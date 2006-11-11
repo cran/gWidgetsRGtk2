@@ -25,6 +25,8 @@ setMethod(".gtree",
                    ...
                    ) {
             
+            force(toolkit)
+
             ## do we have first col. for icons?
             iconFudge = ifelse(is.null(icon.FUN), 0, 1)
             

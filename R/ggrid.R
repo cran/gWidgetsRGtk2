@@ -29,6 +29,9 @@ setMethod(".gtable",
                    container = NULL,
                    ...) {
             
+
+            force(toolkit)
+            
             obj = .ggrid(
               toolkit,
               items=items,
@@ -57,6 +60,7 @@ setMethod(".gdf",
                    do.subset = FALSE,
                    container=NULL,...)  {
 
+            force(toolkit)
             ## the colors
             theArgs = list(...)
             colors = theArgs$colors
@@ -73,7 +77,7 @@ setMethod(".gdf",
               group = ggroup(horizontal=FALSE)
               tbl = glayout(); add(group, tbl, expand=TRUE)
               theName = gedit("X1")
-              theType = gdroplist(c("numeric","character","factor"))
+              theType = gdroplist(c("numeric","character"))##,"factor"))
               theNoRows = gspinbutton(from=1,to=100,by=1,value=1)
               tbl[1,1] = glabel("First variable name:");tbl[1,2] = theName
               tbl[2,1] = glabel("Its type:");tbl[2,2] = theType
@@ -148,6 +152,26 @@ setMethod(".gdf",
               ##      cr = view.col$GetCellRenderers()[[1]] 
               ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
             }
+            ## can't easily do this, as obj[,] wants to keep the same types
+##             lst$"Coerce column type"$handler = function(h,...) {
+##               colNum = h$action
+##               theData = obj[,colNum,drop=TRUE]
+##               theClass = class(theData)
+##               allClasses = c("numeric","integer","character","factor","logical")
+##               win = gwindow("Coerce column data")
+##               g = ggroup(horizontal=FALSE, cont=win)
+##               add(g,glabel("Select the new column type"))
+##               gdroplist(allClasses,cont=g,selected = which(theClass == allClasses),
+##                         handler = function(h,...) {
+##                           newClass = svalue(h$obj)
+##                           theData = do.call(paste("as.",newClass,sep="",collapse=""),list(theData))
+##                           df = obj[,]; df[,colNum] <- theData
+##                           obj[,] <- df
+##                           dispose(win)
+##                         })
+##               add(g, gbutton("close",handler = function(...) dispose(win)))
+##             }
+            ## rename -- tedious. Was better when label was editable
             lst$"Rename column"$handler = function(h,...) {
               col.no = h$action
               view.col = tag(obj,"view")$GetColumn(
@@ -158,7 +182,10 @@ setMethod(".gdf",
               ok.handler = function(h,...) {
                 names(obj)[col.no] <- svalue(h$action)
                 dispose(win)
-                if(tag(obj,"doSubsetBy")) update(subsetBy)
+                if(tag(obj,"doSubsetBy")) {
+                  subsetBy = tag(obj,"subsetBy")
+                  update(subsetBy)
+                }
                 return(FALSE)
               }
               newName = gedit(id(view.col),container=group)
@@ -239,6 +266,8 @@ setMethod(".ggrid",
                    action = NULL,                        # passed to handler
                    container = NULL,                     # optional container
                    ...) {
+            
+            force(toolkit)
             
             theArgs = list(...)                   # for colors
             if(is.null(theArgs$colors)) {
@@ -661,15 +690,14 @@ setReplaceMethod(".leftBracket",
                 ## finished with rows,
                 ## now we need to add columns. We do so one column at a time
                 for(j in (n+1):dv[2]) {
+                  newVals = value[,j,drop=TRUE]
                   newPart = data.frame(
-                    a=value[,j,drop=TRUE],
+                    a=newVals,
                     b=rep(theColors['fg'],length=dv[1]),
-                    c=rep(theColors['bg'],length=dv[1])
+                    c=rep(theColors['bg'],length=dv[1]),
+                    stringsAsFactors = FALSE
                     )
                   names(newPart)[1] <- colnames(value)[j]
-                  if(is.character(value[,j,drop=FALSE]))
-                    newPart[,1] = as.character(newPart[,1])
-                  for(k in 2:3)  newPart[,k] = as.character(newPart[,k])
                   frame[,(3*(j+1)):(3*(j+1)+2)] = newPart
                 }
                                         #      frame = adjustNA(value, frame)
@@ -1100,6 +1128,7 @@ edit.handler = function(h,cell,path,newtext) {
 
   ## coerce newtext from text to proper class
   theColData = obj[,j]
+
   if(is.integer(theColData)) {
     newtext = as.integer(newtext)
   } else if(is.numeric(theColData)) {
@@ -1110,9 +1139,9 @@ edit.handler = function(h,cell,path,newtext) {
     if(newtext %in% levels(theColData)) {
       ## nothing
     } else {
-      levels(df[,j]) = c(levels(df[,j]), newtext)
+      levels(obj[,j]) = c(levels(theColData), newtext) ## was df
         ## tried a popup window, didn't work
-      }
+    }
   } else if(is.logical(theColData)) {
     newtext = as.logical(newtext)
   } else {
@@ -1121,9 +1150,14 @@ edit.handler = function(h,cell,path,newtext) {
 
 
   ## update foreground color == if was NA then fg=bg
-  store[i,3*(j+1)] = newtext                    
-  store[i,3*(j+1)+1] = tag(obj,"theColors")['fg']  
-  store[i,3*(j+1)+2] = tag(obj,"theColors")['bg']  
+  store[i,3*(j+1)] = newtext
+  if(j == 0) {
+    store[i,3*(j+1)+1] = tag(obj,"theColors")['rfg']  
+    store[i,3*(j+1)+2] = tag(obj,"theColors")['rbg']
+  } else {
+    store[i,3*(j+1)+1] = tag(obj,"theColors")['fg']  
+    store[i,3*(j+1)+2] = tag(obj,"theColors")['bg']
+  }
   
   ## update subsetby if there
   doSubsetBy = tag(obj,"doSubsetBy")    # a logical or noull
@@ -1314,6 +1348,7 @@ addKeyMotionHandler = function(obj, ...) {
         setCursorAtCell(obj, i, j + 1, start.editing=TRUE)
       }
     }
+    return(TRUE)
   })
 }
 
@@ -1326,7 +1361,7 @@ addNewColumnDialog = function(obj, i, j, ...) {
   tbl = glayout()
   colName = gedit(paste("X",j+1,sep=""))
   ## logical is a problem in showing (shows as TRUE even if NA)
-  colClass = gdroplist(c("numeric","character","factor"))##,"logical"))
+  colClass = gdroplist(c("numeric","character"))##,"factor"))##,"logical"))
   tbl[1,1] = glabel("Column name:")
   tbl[1,2] = colName
   tbl[2,1] = glabel("Column class")
@@ -1338,10 +1373,19 @@ addNewColumnDialog = function(obj, i, j, ...) {
   addSpring(buttonGroup)
   gbutton("ok",container=buttonGroup, handler =function(h,...) {
     frame = obj[,,drop=FALSE]
-    x = rep(NA,length=dim(obj)[1])
     type = svalue(colClass)
-    x = do.call(paste("as.",type,sep=""),list(x))
-    newframe = cbind(frame, x)
+    nRows = dim(obj)[1]
+    if(type == "numeric") {
+      x = rep(NA,length=nRows)
+      x = as.numeric(x)
+      newframe = data.frame(frame,x)
+    } else if(type == "character") {
+      x = character(dim(obj)[1])
+      newframe = data.frame(frame,x,stringsAsFactors=FALSE)
+    } else if(type == "factor") {
+      x = character(dim(obj)[1])
+      newframe = data.frame(frame,x,stringsAsFactors=TRUE)
+    }
     names(newframe)[dim(obj)[2]+1] <- svalue(colName)
     obj[,] <- newframe
     
@@ -1445,7 +1489,8 @@ setMethod("gsubsetby",
               if(varName == "NA") {
                 subsetHow[] = c("")
               } else {
-                theValues = gridObj[,varName]
+                theColumn = which(varName == names(gridObj))
+                theValues = gridObj[,theColumn, drop=TRUE]
                 theValues = sort(unique(theValues))
                 if(is.factor(theValues))
                   theValues = as.character(theValues)
@@ -1461,7 +1506,8 @@ setMethod("gsubsetby",
               if(is.empty(how)) {
                 visible(gridObj) <- rep(TRUE, nrow(gridObj))
               } else {
-                theValues =  gridObj[,svalue(subsetVar)] # using name to extract column
+                theColumn = which(svalue(subsetVar) == names(gridObj))
+                theValues =  gridObj[,theColumn] # using name to extract column
                 if(is.factor(theValues))
                   theValues = as.character(theValues)
                 ## subsetHow of the form '== value'

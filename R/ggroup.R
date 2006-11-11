@@ -5,6 +5,8 @@ setMethod(".ggroup",
           function(toolkit,
                    horizontal = TRUE, spacing = 5, container = NULL, ... 
                    ) {
+
+            force(toolkit)
             
             theArgs = list(...)                   # raise.on.dragmotion
             
@@ -23,7 +25,7 @@ setMethod(".ggroup",
             ## attach to container if there
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
-                container = gwindow()
+                container = gwindow(visible=TRUE, toolkit=toolkit)
               add(container, obj)
             }
 

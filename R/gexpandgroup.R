@@ -12,6 +12,8 @@ setMethod(".gexpandgroup",
                    handler=NULL, action=NULL,
                    container = NULL, ...){
 
+            force(toolkit)
+            
             expander = gtkExpanderNew()
             if(markup)
               expander$SetUseMarkup(TRUE)

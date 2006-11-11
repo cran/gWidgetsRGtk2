@@ -13,7 +13,8 @@ setMethod(".gradio",
                    ...
                    ) {
 
-
+            force(toolkit)
+            
             if (length(items)<2)
               stop("Radio button group makes sense only with at least two items.")
             

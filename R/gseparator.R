@@ -11,12 +11,16 @@ setMethod(".gseparator",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    horizontal = TRUE, container = NULL, ...) {
+
+            force(toolkit)
+            
             if(horizontal) {
               separator = gtkHSeparatorNew()
             } else {
               separator = gtkVSeparatorNew()
             }
 
+            
             obj = new("gSeparatorRGtk", block=separator, widget=separator, toolkit=toolkit)
 
             if (!is.null(container)) {
