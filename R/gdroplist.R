@@ -21,9 +21,10 @@ setMethod(".gdroplist",
             items = unique(items)                 # unique
             
             theArgs = list(...)
+
             ## keep this, but don't advertise
             if(!is.null(theArgs$do.quote)) {
-              coerce.with = function(x) paste("'",x,"'")
+              coerce.with = function(x) paste("'",x,"'",sep="",collapse="")
             }
             
             

@@ -87,19 +87,22 @@ setMethod(".ggenericwidget",
             rpel = function(string, envir=.GlobalEnv) {
               eval(parse(text=string), envir=envir)
             }
-
             
             ## if lst is not a list, but refers to a function, autogenerate
-            if(!is.list(lst) && is.character(lst)) {
-              if(rpel(Paste("is.function(",lst,")"))) {
-                ## run automenugenerator
-                lst = rpel(autogenerategeneric(lst))
-              } else if(is.function(lst)) {
-                lst = rpel(autogenerategeneric(lst))
+            if(!is.list(lst)) {
+              if(is.function(lst)) {
+                cat("give the function name as a string, not the function.\n")
+              } else if(is.character(lst)) {
+                if(rpel(Paste("is.function(",lst,")"))) {
+                  ## run automenugenerator
+                  lst = rpel(autogenerategeneric(lst))
+                } else {
+                  cat("Can't do a thing here with",lst,"\n")
+                }
               }
             }
-            
-            ## error check
+
+            ## error check. lst is now a list
             if(!is.list(lst)) {
               warning("ggenericwidget needs to be called with a list, a function name or a function to work\n")
               return()
@@ -432,6 +435,7 @@ autogenerategeneric = function(f,
     }
   }
   ## finish up
+  out = gsub(",$","",out,perl=TRUE)     # trim off trailing ,
   out = Paste(out, "))\n")              # trimmed a ) for Arguments
 
 

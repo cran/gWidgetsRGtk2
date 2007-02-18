@@ -750,6 +750,7 @@ setMethod(".delete",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject",widget="RGtkObject"),
           function(obj, toolkit, widget, ...) {
             obj$Remove(widget)
+            return(TRUE)
           })
 
 ## dispose -- delete the parent window, or something else
@@ -769,6 +770,8 @@ setMethod(".dispose",
             }
             if(!is.null(widget))
               widget$destroy()
+
+            return(TRUE)
           })
 
 

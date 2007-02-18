@@ -71,6 +71,8 @@ loadGWidgetIcons = function() {
     system.file("images",name, package="gWidgetsRGtk2")
   })
 
+
+  
   addToGtkStockIcons(iconNames, iconFiles)
 }
 
