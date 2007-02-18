@@ -505,6 +505,7 @@
 %%
 \alias{.size<--methods}
 \alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  focus --
@@ -642,6 +643,7 @@
 \alias{.addhandlerchanged,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gGridRGtk,guiWidgetsToolkitRGtk2-method}

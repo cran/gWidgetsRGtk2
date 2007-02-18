@@ -132,7 +132,7 @@ setMethod(".ggenericwidget",
               } else if(lst$variableType == "lattice") {
                 vals$Data = glattice(...,container = mainGroup) 
               } else {
-                warning(Paste("Need to implent variableType",lst$variableType))
+                cat(Paste("Need to implent variableType:",lst$variableType))
               }
             }
             ## arguments

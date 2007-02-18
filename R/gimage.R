@@ -48,6 +48,10 @@ setMethod(".gimage",
             obj = new("gImageRGtk", block=evb, widget=image, toolkit=toolkit,
               filename=filename)
 
+            tag(obj,"doStock") <- dirname=="stock"
+            if(dirname == "stock") {
+              tag(obj,"size") <- size
+            }
             if(!is.null(handler)) {
               id = addhandlerclicked(obj, handler=handler, action=action)
             }
@@ -87,8 +91,11 @@ setReplaceMethod(".svalue",
                    if(value != "" & file.exists(value))  {
                      obj@widget$SetFromFile(value)
                      obj@filename=value
+                   } else if(value != "" & tag(obj,"doStock")) {
+                     iconname = getstockiconname(value)
+                     obj@widget$SetFromStock(iconname,size=tag(obj,"size"))
                    } else {
-                     cat("File",value,"does not exist.\n")
+                     cat("File",value,"does not exist nor is a stock name.\n")
                    }
                    return(obj)
                  })

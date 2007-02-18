@@ -669,6 +669,7 @@ editSubsetDialog = function(
     }
     data = tmp
   }
+
   varNames = names(data)
   
   

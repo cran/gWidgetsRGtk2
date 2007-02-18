@@ -102,7 +102,8 @@ setMethod(".dispose",
 
 ## Return gtext widget with help page
 makeHelpPage = function(topic, pkg) {
-  helpFile = system.file("help",topic,package=pkg)
+  helpFile = help(topic, package=force(pkg), verbose=TRUE)[1]
+#  helpFile = system.file("help",topic,package=pkg)
   if(helpFile != "") {
     text = readLines(helpFile)
     text = sapply(text, function(i) gsub("\\_\\\b","",i))
@@ -192,7 +193,8 @@ showHelpAtArgument = function(argument, topic, package=NULL,
   add(group, textwindow, expand=TRUE)
 
   for(pkg in package) {
-    helpFile = system.file("help",topic,package=pkg)
+##    helpFile = system.file("help",topic,package=pkg)
+    helpFile = help(topic, package=force(pkg), verbose=TRUE)[1]
     if(helpFile != "") {
       text = readLines(helpFile)
       text = sapply(text, function(i) gsub("\\_\\\b","",i))

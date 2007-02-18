@@ -7,7 +7,7 @@ setClass("gButtonRGtk",
 setMethod(".gbutton",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   text="", handler=NULL, action=NULL, container=NULL,...
+                   text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
                    ) {
             force(toolkit)
             
@@ -19,6 +19,12 @@ setMethod(".gbutton",
               button <- gtkButtonNewWithLabel(text)
             }
 
+            ## look for border request
+            if(border == FALSE) {
+              button$SetRelief(as.integer(2))
+            }
+
+            
             obj = new("gButtonRGtk",
               block=button, widget=button, toolkit=toolkit)
 

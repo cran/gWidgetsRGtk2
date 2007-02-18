@@ -3,7 +3,9 @@
 setMethod(".ggroup",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   horizontal = TRUE, spacing = 5, container = NULL, ... 
+                   horizontal = TRUE, spacing = 5,
+                   use.scrollwindow = FALSE, 
+                   container = NULL, ... 
                    ) {
 
             force(toolkit)
@@ -19,9 +21,20 @@ setMethod(".ggroup",
             
             ## let breath a little
             group$SetBorderWidth(2)
-            
-            obj = new("gGroupRGtk", block=group, widget=group, toolkit=toolkit)
 
+            ## do we pack into a scroll window?
+            theArgs = list(...)
+            if(use.scrollwindow == TRUE) {
+              ## put into a scroll window
+              sw = gtkScrolledWindowNew()
+              sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
+              sw$AddWithViewport(group)
+              
+              obj = new("gGroupRGtk", block=sw, widget=group, toolkit=toolkit)
+            } else {
+              obj = new("gGroupRGtk", block=group, widget=group, toolkit=toolkit)
+            }
+            
             ## attach to container if there
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -60,6 +73,17 @@ setReplaceMethod(".svalue",
             ## adds some breathing room to object
             ## value is pixels
             getWidget(obj)$SetBorderWidth(as.numeric(value))
+            return(obj)
+          })
+
+
+setReplaceMethod(".size",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk"),
+          function(obj, toolkit, ...,value) {
+            width = value[1]; height = value[2]
+            block = obj@block           # use block not widget here in case its a sw
+            block$SetSizeRequest(width, height)
+
             return(obj)
           })
 

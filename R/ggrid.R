@@ -201,7 +201,12 @@ setMethod(".gdf",
               if(event$GetButton() != 3) {
                 return(FALSE)                     # propogate signal
               } else {
-                column.number = tag(widget$GetCursor()[["focus_column"]],"column.number")
+                cursor = widget$GetCursor()                
+                view.col = cursor[["focus_column"]]
+                if(is.null(view.col)) {
+                  view.col = cursor[['focus.column']] # view.col is the column
+                }
+                column.number = tag(view.col,"column.number")
                 if(is.null(column.number)) {
                   cat("Select a cell first by clicking once\n")
                   return()
@@ -212,9 +217,14 @@ setMethod(".gdf",
                 
                 mb = gmenu(h$action, popup = TRUE, action=column.number) #  action argument?
                 mb = tag(mb,"mb")                 # actual gtkwidget
-                gtkMenuPopupHack(mb,button = event$GetButton(),
-                                 activate.time=event$GetTime()
-                                 )
+                print(class(mb))
+                gtkMenuPopupHack(mb,
+                             button = event$GetButton(),
+                             activate.time=event$GetTime(),
+                             func = NULL
+                             )
+                return(TRUE)
+                
               }
             }
             addhandler(tag(obj,"view"),signal = "button-press-event",
@@ -1316,6 +1326,9 @@ addKeyMotionHandler = function(obj, ...) {
     i = cursor$path$ToString()
     i = as.numeric(i) + 1               # in 1:m coordinates
     view.col = cursor[['focus_column']] # view.col is the column
+    if(is.null(view.col)) {
+      view.col = cursor[['focus.column']] # view.col is the column
+    }
     j = tag(view.col,"column.number")
     ## where to move to
     if( keyval == GDK_Down ) {

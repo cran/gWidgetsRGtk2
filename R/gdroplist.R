@@ -267,3 +267,9 @@ setMethod(".addhandlerclicked",
             addhandler(obj,"changed",handler,action)
           })
 
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDroplistRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            addhandler(obj,"changed",handler,action)
+          })
+

@@ -9,21 +9,41 @@ setClass("gMenuRGtk",
 
 
 ## override the defaults of Michael
-gtkMenuPopupHack = function (object, parent.menu.shell=NULL,
-  parent.menu.item=NULL, func=NULL, 
-  data = NULL, button, activate.time) 
+
+gtkMenuPopupHack <-
+function (object, parent.menu.shell = NULL, parent.menu.item = NULL,
+    func = NULL, data = NULL, button, activate.time)
 {
     checkPtrType(object, "GtkMenu")
-#    checkPtrType(parent.menu.shell, "GtkWidget")
-#    checkPtrType(parent.menu.item, "GtkWidget")
-#    func <- as.function(func)
+    if (!is.null(parent.menu.shell))
+        checkPtrType(parent.menu.shell, "GtkWidget")
+    if (!is.null(parent.menu.item))
+        checkPtrType(parent.menu.item, "GtkWidget")
+    if(!is.null(func))
+      func <- as.function(func)
     button <- as.numeric(button)
     activate.time <- as.numeric(activate.time)
-    w <- RGtk2:::.RGtkCall("S_gtk_menu_popup", object, parent.menu.shell, 
-        parent.menu.item, func, data, button, activate.time, 
+    w <- RGtk2:::.RGtkCall("S_gtk_menu_popup", object, parent.menu.shell,
+        parent.menu.item, func, data, button, activate.time,
         PACKAGE = "RGtk2")
     return(invisible(w))
 }
+
+## gtkMenuPopupHack = function (object, parent.menu.shell=NULL,
+##   parent.menu.item=NULL, func=NULL, 
+##   data = NULL, button, activate.time) 
+## {
+##     checkPtrType(object, "GtkMenu")
+## #    checkPtrType(parent.menu.shell, "GtkWidget")
+## #    checkPtrType(parent.menu.item, "GtkWidget")
+## #    func <- as.function(func)
+##     button <- as.numeric(button)
+##     activate.time <- as.numeric(activate.time)
+##     w <- RGtk2:::.RGtkCall("S_gtk_menu_popup", object, parent.menu.shell, 
+##         parent.menu.item, func, data, button, activate.time, 
+##         PACKAGE = "RGtk2")
+##     return(invisible(w))
+## }
 
 
 ## put menu in group,

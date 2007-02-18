@@ -19,7 +19,7 @@ setMethod(".gmessage",
             icon = match.arg(icon)
             
             icon = Paste("GTK_MESSAGE_",toupper(match.arg(icon)))
-            button = Paste("GTK_BUTTONS_",toupper(match.arg("ok")))
+            button = "GTK_BUTTONS_OK"
             
             ## use message dialog for Gtk
             dlg = gtkMessageDialogNew(
