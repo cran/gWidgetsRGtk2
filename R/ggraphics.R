@@ -27,10 +27,26 @@ setMethod(".ggraphics",
             if(!is.null(width) & !is.null(height))
               da$setSizeRequest(width, height)
 
-            asCairoDevice(da, pointsize=ps) # turn into cairo device
-
             obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
-            tag(obj,"device") <- dev.cur()
+
+
+##            asCairoDevice(da, pointsize = ps)
+
+            ## Woah Nelly! since 2.0.1 the device needs to be realized before we can make it
+            ## so we put this in: 
+            ## when a device is clicked.
+
+             addhandler(obj,signal="map",handler = function(...) {
+               if(is.null(tag(obj,"device"))) {
+                 asCairoDevice(da, pointsize=ps) # turn into cairo device
+                 tag(obj,"device") <- dev.cur()  # now we can set device, as it is realized and now drawable
+               }
+               return(TRUE)             # don't propogate
+             })
+##             addhandler(obj,signal="unmap", handler = function(...) {
+##               print("unmap")
+##               return(TRUE)
+##             })
 
             ## in the new cairoDevice this gives problems
             ## close this device when unrealized
@@ -40,13 +56,15 @@ setMethod(".ggraphics",
 #                                  if(.Platform$OS != "windows")
 #                                    try(dev.off(tag(obj,"device")), silent=TRUE)
 #                                  return(TRUE)
-#                                })
   
             ## raise this device when clicked
-            ID = addhandlerclicked(obj,
-              handler=function(h,...) {
-                visible(h$obj) <- TRUE
-              })
+##            ID = addhandlerclicked(obj,
+##               handler=function(h,...) {
+##                 ### visible(h$obj) <- TRUE
+##                 theDevice = tag(obj,"device")
+##                 dev.set(theDevice)      # working?
+##                 return(TRUE)
+##               })
 
             ## attach?
             if (!is.null(container)) {

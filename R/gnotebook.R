@@ -391,14 +391,14 @@ setReplaceMethod(".leftBracket",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gNotebookRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"switch-page", handler,action)
+            addhandler(obj,"switch-page",handler,action)
           })
 
 
 setMethod(".addhandlerexpose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gNotebookRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"switch-page",handler, action)
+            addhandlerchanged(obj,handler, action)
           })
 
 ### helpers

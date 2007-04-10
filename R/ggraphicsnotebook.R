@@ -77,6 +77,24 @@ setMethod(".ggraphicsnotebook",
             
             gtoolbar(toolbar, container=toolbargroup)
             
+
+            ## add handler to raise device when page is changed
+            addhandler(obj, signal="switch-page", function(h,...) {
+              ## we need the new page not the old page
+              
+
+              theArgs = list(...)
+##              oldPage = svalue(obj)
+              newPage = theArgs[[3]] + 1
+              
+              
+              plotWidget = obj[newPage]
+              devNo = tag(plotWidget, "device")
+              if(!is.null(devNo)) dev.set(devNo)
+              return(TRUE)
+            })
+            
+
             ## start with a plot
             addNewPage(obj)
             
@@ -118,14 +136,20 @@ addNewPage = function(obj,  ...) {
   width = obj@width;height=obj@height
   plotwindow = ggraphics(width,height)
 
-  addhandlerexpose(plotwindow,
-                   handler = enterPage, action=list(device=dev.cur()))
+  ## These two are now made obsolete
+##  addhandlerexpose(plotwindow,
+##             handler=enterPage, action=list(device=dev.cur()))
 
-  addhandlerunrealize(plotwindow,
-             handler=unrealizePage, action=list(device=dev.cur()))
+##  addhandlerunrealize(plotwindow,
+##             handler=unrealizePage, action=list(device=dev.cur()))
 
-  label = paste("dev:",dev.cur(),sep="",collapse="")
+  noPlots = tag(obj,"noPlots")
+  if(is.null(noPlots)) noPlots = 0
+  
+  label = paste("plot:",noPlots + 1,sep="",collapse="")
   add(obj, plotwindow@widget, label=label)
+
+  tag(obj,"noPlots") = noPlots+1
 }
 
 

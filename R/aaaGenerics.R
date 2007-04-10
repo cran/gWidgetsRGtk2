@@ -929,8 +929,10 @@ setMethod(".removehandler",
                   for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
                 isCallbackID = try(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
                 if(!inherits(isCallbackID,"try-error")) {
-                  retval[i] = try(gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]]),
-                          silent=TRUE)
+                  retval[i] = try(gSignalHandlerDisconnect(widget, callbackIDs[[1]]), silent=TRUE)
+
+#                  retval[i] = try(gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]]),
+#                          silent=TRUE)
                 } else {
                   cat("DEBUG: ID not of callbackID\n")
                   print(callbackIDs[[i]])
