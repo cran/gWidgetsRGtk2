@@ -54,7 +54,8 @@ importMethodsFrom(gWidgets,
 "dimnames",".dimnames",
 "dimnames<-",".dimnames<-",
 "names",".names",
-"names<-",".names<-"
+"names<-",".names<-",
+                  ".getToolkitWidget"
 )
 
 import(RGtk2)
@@ -105,7 +106,8 @@ exportMethods(
 "dimnames",".dimnames",
 "dimnames<-",".dimnames<-",
 "names",".names",
-"names<-",".names<-"
+"names<-",".names<-",
+              ".getToolkitWidget"
 )
 
 exportClasses(

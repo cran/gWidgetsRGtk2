@@ -923,6 +923,9 @@
 \alias{.names<-,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.names<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
+%% -- .getToolkitWidget --
+\alias{.getToolkitWidget,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+%%
 %% -- [<-
 \alias{[<-,gWidgetRGtk-method}
 \alias{[<-,gCheckboxRGtk-method}

@@ -50,6 +50,12 @@ setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gLayoutRGtk"),
           function(x, toolkit, i, j, ..., value) {
             ## check that all is good
+            if(is.character(value)) {
+              ## wrap characters into labels
+              value = glabel(value,...)
+            }
+
+            
             if(is.guiWidget(value)  || is.gWidget(value)) {
               nrows = tag(x,"nrows")
               ncols = tag(x,"ncols")
@@ -62,7 +68,7 @@ setReplaceMethod(".leftBracket",
               tag(x,"nrows") <- nrows
               tag(x,"ncols") <- ncols
               tag(x,"val.lst") <- val.lst
-            } else {
+            }  else {
               print(class(value))
               warning("Value is not an gWidget\n")
             }

@@ -1325,9 +1325,15 @@ setReplaceMethod("dimnames",
                    .dimnames(x,x@toolkit) <- value
                    return(x)
                  })
-setGeneric("names")
+## as of 2.5.0 this became primiive
+if(as.numeric(R.Version()$major) <= 2 &
+   as.numeric(R.Version()$minor) <= 4.1) {
+  setGeneric("names")
+  setGeneric("names<-")
+}
+
+
 setMethod("names", "gWidgetRGtk", function(x) .names(x,x@toolkit))
-setGeneric("names<-")
 setReplaceMethod("names",
                  signature(x="gWidgetRGtk"),
                  function(x,value) {

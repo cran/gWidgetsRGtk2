@@ -129,17 +129,16 @@ getstockiconname = function(name=NULL) {
       ## already a stock name?
       if(name %in% .stockicons)
         return(name)
-      
-      if(is.null(.stockicons[[name]])) {
-        return(NA)
-      } else {
+
+      if(name %in% names(.stockicons)) {
         return(.stockicons[[name]])
+      } else {
+        return(NA)
       }
     })
   }
-  
   return(tmpfun(name))
-}
+} 
 
 
 #################################################

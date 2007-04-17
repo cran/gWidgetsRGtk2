@@ -36,11 +36,16 @@ setMethod(".ggraphics",
             ## so we put this in: 
             ## when a device is clicked.
 
-             addhandler(obj,signal="map",handler = function(...) {
-               if(is.null(tag(obj,"device"))) {
+            addhandler(obj,signal="map",handler = function(...) {
+              ## in cairoDevice (>= 2.2.0) the device is stored in da$GetData(".devnum")
+              if(is.null(da$GetData(".devnum"))) {
                  asCairoDevice(da, pointsize=ps) # turn into cairo device
-                 tag(obj,"device") <- dev.cur()  # now we can set device, as it is realized and now drawable
+                 tag(obj,"device") <- da$GetData(".devnum")
                }
+##                if(is.null(tag(obj,"device"))) {
+##                  asCairoDevice(da, pointsize=ps) # turn into cairo device
+##                  tag(obj,"device") <- dev.cur()  # now we can set device, as it is realized and now drawable
+##                }
                return(TRUE)             # don't propogate
              })
 ##             addhandler(obj,signal="unmap", handler = function(...) {

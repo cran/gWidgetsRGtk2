@@ -14,6 +14,11 @@ getWidget = function(widget) {
     widget = widget@widget
   widget
 }
+setMethod(".getToolkitWidget",
+          signature(obj="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
+          function(obj, toolkit) getWidget(obj))
+
+
 #Paste = function(x,...) paste(x,...,sep="",collapse="")
 Paste = function(..., sep="", collapse="") {
   x = unlist(list(...))
