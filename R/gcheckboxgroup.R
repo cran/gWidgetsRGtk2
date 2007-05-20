@@ -48,7 +48,7 @@ setMethod(".svalue",
             
             lst = tag(obj, "itemlist")
             vals = sapply(lst, svalue)         # logicals
-
+            
             if(!is.null(index) && index == TRUE) {
               return(vals)
             } else {
@@ -118,3 +118,10 @@ setReplaceMethod(".leftBracket",
           })
 
 ## handlers
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            lst = tag(obj,"itemlist")
+            sapply(lst, function(i) addhandlerchanged(i,handler=handler, action=action, ...))
+          })
+          

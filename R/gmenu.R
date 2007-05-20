@@ -92,7 +92,7 @@ setMethod(".gmenu",
               if(is.logical(container) && container == TRUE) {
                 add(gwindow(visible=TRUE), obj)
               } else {
-                add(container, obj)
+                add(container, obj,...)
               }
             }
             

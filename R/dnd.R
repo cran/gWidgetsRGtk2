@@ -24,9 +24,14 @@ gWidgetTargetTypes = list(
 
 ## function used by RGtkObject and gWidgetRGtk
 addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
-  
+
+  ver = getRGtk2Version()
   tmp = gtkDragSourceSet(getWidget(obj),
-    GdkModifierType[c("button1-mask", "button3-mask")],
+    if(ver['major'] == "2" && as.numeric(ver['minor']) < 10) {
+      GdkModifierType[c("button1-mask","button3-mask")]
+    } else {
+      GdkModifierType["button1-mask"] | GdkModifierType["button3-mask"]
+    },
     list(gWidgetTargetTypes[[targetType]]), #    targets,
     GdkDragAction["copy"])
   

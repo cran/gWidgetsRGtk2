@@ -12,7 +12,7 @@ importFrom(gWidgets,
 )
 
 importClassesFrom(gWidgets, 
-	"guiWidgetsToolkit",	"guiWidgetsToolkitRGtk2",
+	"guiWidgetsToolkit", "guiWidgetsToolkitRGtk2",
 	"guiWidget","guiComponent","guiContainer","guiDialog"
 )
 
@@ -58,6 +58,7 @@ importMethodsFrom(gWidgets,
                   ".getToolkitWidget"
 )
 
+### WAS RGTK2 -- not we upgrade
 import(RGtk2)
 
 ## export("Paste","stripWhiteSpace","rpel","str1","str2","untaintName",

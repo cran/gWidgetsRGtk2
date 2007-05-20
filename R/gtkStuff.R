@@ -106,3 +106,13 @@ setMethod(".leftBracket",
               frame[i,j,drop=drop]
           })
 
+
+
+## which versino of RGtk2
+getRGtk2Version = function() {
+  m = installed.packages()
+  ver = m["RGtk2","Version"]
+  ver = unlist(strsplit(ver,"\\."))
+  names(ver) <- c("major","minor","version")
+  return(ver)
+}

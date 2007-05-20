@@ -208,7 +208,7 @@ addPopupToPage = function(obj, nb) {    # obj is gdf instance
         gbutton("ok",container=buttonGroup,handler = function(h,...) {
           FUN = Paste("function(x) {",svalue(FUN),"}")
           f = eval(parse(text=FUN))
-          col.no = getdata(view.col,"column.number") - 1 # rownames offset
+          col.no = tag(view.col,"column.number") - 1 # rownames offset
           theNewVals = f(obj[,col.no, drop=FALSE])
           obj[,col.no] = theNewVals
           dispose(win)

@@ -60,7 +60,7 @@ setMethod(".gimage",
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE)
-              add(container, obj)
+              add(container, obj,...)
             }
             
             invisible(obj)

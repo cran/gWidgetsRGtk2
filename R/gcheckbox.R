@@ -21,7 +21,7 @@ setMethod(".gcheckbox",
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE, toolkit=toolkit)
-              add(container, obj)
+              add(container, obj,...)
             }
             
             

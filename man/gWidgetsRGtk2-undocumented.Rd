@@ -643,6 +643,7 @@
 \alias{.addhandlerchanged,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
