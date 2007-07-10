@@ -31,10 +31,10 @@ lsType = function(type, envir=.GlobalEnv) {
   objects = names(x)[sapply(x, function(i) any(i %in% type))]
   return(objects)
 }
-lsDatasets = function(envir=.GlobalEnv())  lsType(.datasets, envir)
-lsModels = function(envir=.GlobalEnv())  lsType(.models, envir)
-lsTs = function(envir=.GlobalEnv())  lsType(.ts, envir)
-lsFunctions = function(envir=.GlobalEnv())  lsType(.functions, envir)
+lsDatasets = function(envir=.GlobalEnv)  lsType(.datasets, envir)
+lsModels = function(envir=.GlobalEnv)  lsType(.models, envir)
+lsTs = function(envir=.GlobalEnv)  lsType(.ts, envir)
+lsFunctions = function(envir=.GlobalEnv)  lsType(.functions, envir)
 
 
 
@@ -126,7 +126,7 @@ setMethod(".gvarbrowser",
             }
 
             ## begin
-            group = ggroup(horizontal=FALSE, container=container)
+            group = ggroup(horizontal=FALSE, container=container,...)
             filterGroup = ggroup(container=group)
             glabel("Filter by:",container=filterGroup)
             filterPopup = gdroplist(names(knownTypes), container=filterGroup)

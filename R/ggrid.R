@@ -290,7 +290,7 @@ setMethod(".ggrid",
             } 
             
             ## define the object
-            group = ggroup(horizontal=FALSE, container = container)
+            group = ggroup(horizontal=FALSE, container = container, ...)
             ## make widget=group, later set to view
             obj = new("gGridRGtk", block=group, widget=group, toolkit=toolkit)
 
@@ -1285,8 +1285,8 @@ addPopupMenuToViewCol = function(view.col) {
       ##        try(cr$SignalEmit("edited"), silent=TRUE) # notify
       
       dispose(win)
-      if(tag(obj,"doSubsetBy"))
-        update(tag(obj,"subsetBy"))                # update
+      if(tag(h$obj,"doSubsetBy"))                    #
+        update(tag(h$obj,"subsetBy"))                # update
       
       return(FALSE)
     }
@@ -1479,7 +1479,7 @@ setMethod("gsubsetby",
                    container=NULL, ...) {
             
             vars = names(gridObj)
-            group = ggroup(container = container)
+            group = ggroup(container = container, ...)
             subsetVar = gdroplist(c("NA",vars),selected=1,container = group)
             subsetHow = gdroplist(c(""), editable=TRUE, selected=1, container=group)
             leftArrow = gimage("larrow",dirname="stock",container = group)

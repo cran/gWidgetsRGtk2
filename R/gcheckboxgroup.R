@@ -18,7 +18,7 @@ setMethod(".gcheckboxgroup",
             
             checked = rep(checked, length(items))
 
-            group = ggroup(horizontal = horizontal, container=container)
+            group = ggroup(horizontal = horizontal, container=container, ...)
             
             lst = list()
             n = length(items)
@@ -50,7 +50,7 @@ setMethod(".svalue",
             vals = sapply(lst, svalue)         # logicals
             
             if(!is.null(index) && index == TRUE) {
-              return(vals)
+              return(which(vals))
             } else {
               return(tag(obj,"items")[vals])
             }

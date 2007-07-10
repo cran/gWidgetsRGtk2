@@ -35,11 +35,11 @@ setMethod(".ggroup",
               obj = new("gGroupRGtk", block=group, widget=group, toolkit=toolkit)
             }
             
-            ## attach to container if there
+            
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE, toolkit=toolkit)
-              add(container, obj)
+              add(container, obj, ...)
             }
 
             ## raise if we drag across

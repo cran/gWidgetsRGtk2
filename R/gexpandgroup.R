@@ -19,6 +19,8 @@ setMethod(".gexpandgroup",
               expander$SetUseMarkup(TRUE)
             if(text != "")
               expander$SetLabel(text)
+
+            theArgs = list(...)
             
             group = ggroup(...)
             expander$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
@@ -31,7 +33,11 @@ setMethod(".gexpandgroup",
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE)
-              add(container,obj)
+
+              if(!is.null(theArgs$expand) && theArgs$expand)
+                add(container,obj,expand=TRUE)
+              else
+                add(container,obj)
             }
             
             if(!is.null(handler)) {

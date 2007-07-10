@@ -133,7 +133,12 @@ setMethod(".gfilebrowse",
                    container=NULL, ...) {
 
 
-            group = ggroup(horizontal=TRUE, container=container)
+            theArgs = list(...)
+            if(theArgs$expand)
+              group = ggroup(horizontal=TRUE, container=container, expand=TRUE)
+            else
+              group = ggroup(horizontal=TRUE, container=container)
+            
             entry = gedit(text=text, container=group, ...)
 
             file.cb = function(h,...) {

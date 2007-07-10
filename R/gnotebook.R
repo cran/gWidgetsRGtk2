@@ -22,9 +22,9 @@ setMethod(".gnotebook",
 
             ## add close button, in same level as tab.pos
             if(tab.pos %in% c(1,3)) 
-              group = ggroup(container=container)
+              group = ggroup(container=container, ...)
             else
-              group = ggroup(horizontal=FALSE,container=container)
+              group = ggroup(horizontal=FALSE,container=container, ...)
             add(group,notebook,expand=TRUE)
             
             ## create gnotebook object

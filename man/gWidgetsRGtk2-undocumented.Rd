@@ -360,11 +360,13 @@
 \alias{.add,gGroupRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
 \alias{.add,gHelpRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,gHelpbrowserRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.add,gLayoutRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,gMenuRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.add,gMenuRGtk,guiWidgetsToolkitRGtk2,gMenuRGtk-method}
 \alias{.add,gMenuRGtk,guiWidgetsToolkitRGtk2,list-method}
 \alias{.add,gNotebookRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.add,gNotebookRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
+\alias{.add,gPanedgroupRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gTextRGtk,guiWidgetsToolkitRGtk2,character-method}
 \alias{.add,gTextRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.add,gTextRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}

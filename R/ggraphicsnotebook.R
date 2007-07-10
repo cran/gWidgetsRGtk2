@@ -1,4 +1,5 @@
 ## creates a notebook interface tohandle plots
+
 setClass("gGraphicsNotebookGtk",
          representation=representation(
            width="numeric",height="numeric"
@@ -15,7 +16,7 @@ setMethod(".ggraphicsnotebook",
             ## ... passed onto gnotebook
             force(toolkit)
             
-            group = ggroup(horizontal = FALSE, container=container)
+            group = ggroup(horizontal = FALSE, container=container, ...)
             
             ## make toolbar
             toolbargroup = ggroup(horizontal=TRUE, container=group)
@@ -246,7 +247,7 @@ saveCurrentPage = function(obj) {
           newobj = as.gGd(drawarea)
           svalue(newobj) <- list(file=theFileName, extension=theFileType)
         } else {
-          cat("***\n Don't know this extension:", tbeFileType,"\n\n")
+          cat("***\n Don't know this extension:", theFileType,"\n\n")
         }
         dispose(win)
       }
@@ -279,59 +280,5 @@ saveCurrentPage = function(obj) {
   add(buttonGroup, gbutton("cancel",handler=function(h,...) dispose(win)))
 }
 
-
-
-## ## returns window (so that dispose can be called)    
-## plotnotebook = function(width=dpi*6, height=dpi*6,dpi=75) {
-
-##   win=gwindow("P M G Plot notebook",visible=TRUE)
-##   group = ggroup(horizontal = FALSE, container=win)
-  
-##   ## make toolbar
-##   toolbargroup = ggroup(horizontal=TRUE, container=group)
-##   notebook = gnotebook(closebuttons = TRUE)
-##   add(group, notebook, expand=TRUE)
-
-##   ## shove in width, height into notebook
-##   notebook$width=width; notebook$height=height
-
-##   toolbar = list()
-##   toolbar$Quit$handler = function(h,...) dispose(win)
-##   toolbar$Quit$icon = "quit"
-##   toolbar$tmp1$separator = TRUE
-  
-##   toolbar$New$handler = function(h,...) {
-##     addNewPlot(notebook)
-##   }
-##   toolbar$New$icon = "new"
-
-##   toolbar$Print$handler = function(h,...) {
-##     printCurrentPage(notebook)
-##   }
-##   toolbar$Print$icon="print"
-
-##   toolbar$Save$handler = function(h,...) {
-##     saveCurrentPage()
-##   }
-##   toolbar$Save$icon="save"
-
-##   toolbar$Record$handler = function(h,...) {
-##     recordCurrentPage()
-##   }
-##   toolbar$Record$icon = "media-record"
-
-##   toolbar$Replay$handler = function(h,...) {
-##     replayAPlot()
-##   }
-##   toolbar$Replay$icon = "media-play"
-
-  
-##   gtoolbar(toolbar, container=toolbargroup)
-  
-##   ## start with a plot
-##   addNewPlot(notebook)
-
-##   return(list(container=win, notebook=notebook))
-## }
 
 

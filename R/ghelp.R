@@ -12,7 +12,7 @@ setMethod(".ghelp",
                    ...) {                                # passed to gnotebook
             force(toolkit)
             
-            group = ggroup(horizontal=FALSE, container = container)
+            group = ggroup(horizontal=FALSE, container = container, ...)
             notebook = gnotebook(...)
             add(group, notebook, expand=TRUE)
 
@@ -295,7 +295,8 @@ setMethod(".ghelpbrowser",
               "help.search: apropos"=function(...) searchResultsApropos(...),
               "help.search: pattern"=function(...) searchResultsHelpSearch(...)
               )
-            searchOptions = gdroplist(names(searchOptionsList), container = toolbarGroup)
+            searchOptions = gdroplist(names(searchOptionsList),
+              container = toolbarGroup)
             searchBox = gedit("", container = toolbarGroup)
             
             ## search through packages
@@ -307,6 +308,8 @@ setMethod(".ghelpbrowser",
             addhandlerchanged(packageNotebook,function(h,...) {
               dispose(h$obj, to.right=TRUE)
             })                  # delete to right, when changed
+            visible(expgp) <- FALSE
+            
             allPackages = .packages(all=TRUE)
             packageList = gtable(data.frame("Package names"=I(allPackages)))
             add(packageNotebook, packageList,label="All packages")

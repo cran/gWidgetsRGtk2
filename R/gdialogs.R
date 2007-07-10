@@ -27,6 +27,7 @@ setMethod(".gmessage",
               flags = 0,
               buttons = button,
               type=icon)
+            dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
 
@@ -36,19 +37,19 @@ setMethod(".gmessage",
             h = list(obj=dlg, ref=dlg, action=action)
             if(response == GtkResponseType["cancel"]) {
               dlg$Destroy()
-              return(FALSE)
+              invisible(FALSE)
             } else if (response == GtkResponseType["close"]) {
               dlg$Destroy()
-              return(FALSE)
+              invisible(FALSE)
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
               dlg$Destroy()
-              return(TRUE)
+              invisible(TRUE)
             } else {
               print(response)
             }
           })
-  
+
 ## if OK then run handler, else not
 setMethod(".gconfirm",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
@@ -73,6 +74,7 @@ setMethod(".gconfirm",
               flags = 0,
               buttons = buttons,
               type=icon)
+            dlg$SetTitle(title)            
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
 
@@ -84,14 +86,14 @@ setMethod(".gconfirm",
             h = list(obj=dlg, action=action)
             if(response == GtkResponseType["cancel"]) {
               dlg$Destroy()
-              return(FALSE)
+              invisible(FALSE)
             } else if (response == GtkResponseType["close"]) {
               dlg$Destroy()
-              return(FALSE)
+              invisible(FALSE)
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
               dlg$Destroy()
-              return(TRUE)
+              invisible(TRUE)
             } else {
               print(response)
             }
@@ -122,6 +124,7 @@ setMethod(".ginput",
               buttons = "GTK_BUTTONS_OK_CANCEL",
               type=icon
               )
+            dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
 
@@ -140,16 +143,15 @@ setMethod(".ginput",
             h = list(obj=dlg, ref=dlg, action=action, input=svalue(input))
             if(response == GtkResponseType["cancel"]) {
               dlg$Destroy()
-              return("")
+              invisible("")
             } else if (response == GtkResponseType["close"]) {
               dlg$Destroy()
-              return("")
+              invisible(NA)                # NA or ""?
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
               dlg$Destroy()
-              return(input)
-              ## was this but, why ??
-              ## return(svalue(input))
+              ## input is widget, return value of widget
+              invisible(svalue(input))
             } else {
               print(response)
             }
@@ -174,6 +176,7 @@ setMethod(".gbasicdialog",
               c("modal"),
               "gtk-ok", GtkResponseType["ok"],
               "gtk-cancel", GtkResponseType["cancel"])
+            dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
 

@@ -23,7 +23,7 @@ setMethod(".glayout",
             
             
             ## container for table
-            group = ggroup(container=container)
+            group = ggroup(container=container, ...)
 
             obj = new("gLayoutRGtk",
               block=group, widget=group, toolkit=toolkit)
@@ -37,7 +37,18 @@ setMethod(".glayout",
             
             invisible(obj)
           })
-          
+
+
+### The add method is a stub so that this works with same
+## approach as gWidgetstcltk
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2", obj="gLayoutRGtk"),
+          function(obj, toolkit, value, ...) {
+            ## stub
+          })
+
+
+
 ## how we populate the table
 setReplaceMethod("[",
                  signature(x="gLayoutRGtk"),

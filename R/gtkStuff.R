@@ -1,3 +1,23 @@
+## return gtk objects from others
+getBlock = function(widget) {
+  if(is(widget,"RGtkObject")) return(widget)
+  if(is(widget,"gWidgetRGtk")) return(getBlock(widget@block))
+  if(is(widget,"guiWidget")) return(getBlock(widget@widget))
+  cat("Can't get block")
+  return(NA)
+}
+
+getWidget = function(widget) {
+  while(!is(widget,"RGtkObject"))
+    widget = widget@widget
+  widget
+}
+setMethod(".getToolkitWidget",
+          signature(obj="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
+          function(obj, toolkit) getWidget(obj))
+
+
+
 ##################################################
 ##
 ## gtkTreeViewColumn stuff

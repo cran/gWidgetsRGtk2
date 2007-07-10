@@ -1,6 +1,17 @@
 
                                         # functions to handle DND
 
+## helper, like rawToChar. From R.oo/R/ASCII.R
+# Alternatively one can do like this. Idea by Peter Dalgaard,
+# Dept. of Biostatistics, University of Copenhagen, Denmark.
+ASCII <- c("\000", sapply(1:255, function(i) parse(text=paste("\"\\",
+                                                     structure(i,class="octmode"), "\"", sep=""))[[1]]) );
+
+intToChar = function(i, ...) {
+  ASCII[i %% 256 + 1];
+}
+
+
 ## A little buggy right now: drop target had drag-data-received called 2 times
 ## action argument in addhandler isn't handled properly
 ## a gross hack to allows objects to be dropped.
@@ -42,7 +53,7 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
     ## what gets set in selection gets passed on to drop target
     if(targetType == TARGET.TYPE.PIXMAP) {
       ## this is untested!
-      selection$Set(Selection$Target(), 8,
+      selection$Set(selection$Target(), 8,
                     paste(svalue(h$obj),collapse="\n"))
     } else if(targetType == TARGET.TYPE.OBJECT) {
       ## this is tricky! we want to store an object, but selection

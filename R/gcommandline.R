@@ -46,7 +46,7 @@ setMethod(".gcommandline",
           }
             
             ## the main widgets
-            group = ggroup(horizontal = FALSE, container = container)
+            group = ggroup(horizontal = FALSE, container = container, ...)
             toolbarGroup = ggroup(container=group, spacing = 0)
             textGroup = ggroup()                  # holds editText or showText
             add(group, textGroup, expand=TRUE)
@@ -280,6 +280,7 @@ addAssignto = function(command,assignto) {
 evalChunk = function(chunk, widget, prompt = getOption("prompt"),
   useConsole=FALSE, useGUI = TRUE) {
   svalue(widget) <- ""                 # clear out
+
   chunkexps <- try(parse(text=chunk), silent=TRUE)
   if(inherits(chunkexps,"try-error")) {
     if(useGUI)

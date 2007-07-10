@@ -75,21 +75,21 @@ setMethod(".ggraphics",
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow()
-              add(container, obj)
+              add(container, obj, ...)
             }
             return(obj)
           })
 
-## as.gGd = function(obj) {
-##   if("GtkDrawingArea" %in% class(obj)) {
-##     newobj = list(ref = obj, device = obj$GetData("device"))
-##     class(newobj) <- c("gGd", "gComponent")
-##     return(newobj)
-##   } else {
-##     cat("conversion failed\n")
-##     return(obj)
-##   }
-## }
+as.gGd = function(obj) {
+  if("GtkDrawingArea" %in% class(obj)) {
+    newobj = list(ref = obj, device = obj$GetData("device"))
+    class(newobj) <- c("gGd", "gComponent")
+    return(newobj)
+  } else {
+    cat("conversion failed\n")
+    return(obj)
+  }
+}
 
 
 ### methods

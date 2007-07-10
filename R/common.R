@@ -1,23 +1,5 @@
 ## Common functions
 
-## return gtk objects from others
-getBlock = function(widget) {
-  if(is(widget,"RGtkObject")) return(widget)
-  if(is(widget,"gWidgetRGtk")) return(getBlock(widget@block))
-  if(is(widget,"guiWidget")) return(getBlock(widget@widget))
-  cat("Can't get block")
-  return(NA)
-}
-
-getWidget = function(widget) {
-  while(!is(widget,"RGtkObject"))
-    widget = widget@widget
-  widget
-}
-setMethod(".getToolkitWidget",
-          signature(obj="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
-          function(obj, toolkit) getWidget(obj))
-
 
 #Paste = function(x,...) paste(x,...,sep="",collapse="")
 Paste = function(..., sep="", collapse="") {
@@ -46,10 +28,6 @@ quoteIfNeeded = function(str) {
     return(paste('"',str,'"',sep="",collapse=""))
 }
 
-## ReadParseEvaL -- saves typing
-rpel = function(string, envir=.GlobalEnv) {
-  eval(parse(text=string), envir=envir)
-}
 
 showErrorMessage = function() {       # leave here for scoping on command
   message = Paste("Error:",
@@ -211,6 +189,11 @@ findRootObject = function(x) {
   x = sub("\\[\\[.*","",x)
   x = sub("\\$.*","", x)
   return(x)
+}
+
+## ReadParseEvaL -- saves typing
+rpel = function(string, envir=.GlobalEnv) {
+  eval(parse(text=string), envir=envir)
 }
 
 

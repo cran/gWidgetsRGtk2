@@ -58,15 +58,16 @@ importMethodsFrom(gWidgets,
                   ".getToolkitWidget"
 )
 
-### WAS RGTK2 -- not we upgrade
+### WAS RGTK2 
 import(RGtk2)
 
+export("str2")
 ## export("Paste","stripWhiteSpace","rpel","str1","str2","untaintName",
 ##        "stockIconFromClass","stockIconFromObject",
 ##        "Timestamp","Timestamp<-"
 ##        )
 
-export("editSubsetDialog","editSelectDialog")
+#export("editSubsetDialog","editSelectDialog")
 
 exportMethods(
 "[", 
@@ -75,7 +76,7 @@ exportMethods(
 ".gmenu", ".gtoolbar", ".gtable", ".gdf", ".gdfnotebook", ".gtree",
 ".gfile", ".gfilebrowse", ".gcalendar", ".ggraphics",
 ".ggraphicsnotebook", ".gimage", ".gstatusbar", ".gseparator",
-".gcommandline", ".ghelp", ".ghelpbrowser", ".ggenericwidget",
+".gcommandline", ".ghelp", ".ghelpbrowser", 
 ".gvarbrowser", ".gwindow", ".ggroup", ".gframe", ".gexpandgroup",
 ".gnotebook", ".glayout", ".gpanedgroup", 
 "svalue", "svalue<-", "add", "addSpace", "addSpring", "delete",

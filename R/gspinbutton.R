@@ -12,7 +12,12 @@ setMethod(".gspinbutton",
                    container=NULL, ...) {
 
             force(toolkit)
-                        
+
+            ## fix digits if user forgot
+            if(digits == 0 &&  as.logical((by %% 1))) # FALSE if integer o/w T
+              digits = abs(floor(log(by,10)))
+             
+            
             adjustment = gtkAdjustmentNew(value=value, lower=from,
               upper=to,step.incr=by)
             spin = gtkSpinButtonNew(adjustment,climb.rate=0.6, digits=digits)

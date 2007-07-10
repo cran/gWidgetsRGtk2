@@ -242,7 +242,7 @@ setReplaceMethod(".font",
                    ## get start, end iters
                    buffer = obj@widget$GetBuffer()
                    bounds = buffer$GetSelectionBounds()
-                   if(bounds$retval == FALSE) return()
+                   if(bounds$retval == FALSE) return(obj)
                    
                    for(i in tags)
                      buffer$ApplyTagByName(i, bounds$start, bounds$end)

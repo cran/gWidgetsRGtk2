@@ -653,9 +653,11 @@ setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",
                     obj="gWidgetRGtk", value="try-error"),
           function(obj, toolkit, value, ...) {
-            gmessage(paste("Error:",value))
+            gmessage(paste("Error:",value), title="Error adding oject",
+                     icon="error")
           })
 ## pushdonw
+
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",
                     obj="guiWidget", value="guiWidgetORgWidgetRGtkORRGtkObject"),
