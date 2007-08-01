@@ -1125,6 +1125,7 @@ setMethod(".addhandlerdoubleclick",
             warning("No default handler for double click")
           })
 
+
 ## rightclick: button-press-event -- handle separately
 setMethod("addhandlerrightclick",signature(obj="gWidgetRGtk"),
           function(obj, handler=NULL, action=NULL, ...) {

@@ -8,12 +8,20 @@ setMethod(".gwindow",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    title="Window", visible=TRUE,
+                   width = NULL, height = NULL,
                    handler=NULL, action = NULL,
                    ...
                    ) {
             force(toolkit)
             
             window <- gtkWindowNew("toplevel", show = FALSE)
+            ## set default size
+            if(!is.null(width)) {
+              if(is.null(height)) height = .7*width
+              window$SetDefaultSize(width, height)
+            }
+
+            
             obj = new("gWindowRGtk",block=window, widget=window, toolkit=toolkit)
 
             window$SetTitle(title)

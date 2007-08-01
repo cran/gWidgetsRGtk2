@@ -1,3 +1,16 @@
+2007-07-30  John Verzani  <jverzani@gmail.com>
+
+	* R/gdroplist.R: coerce.with when editable added
+
+2007-07-29  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R: fixed signal handling to depend on gdf or gtable.
+	Fixed addHandlerClicked for gtable to work on change in selection
+
+2007-07-28  John Verzani  <jverzani@gmail.com>
+
+	* R/gdroplist.R: fixed signal handling -- wasn't right
+
 2007-07-01  John Verzani  <jverzani@gmail.com>
 
 	* R/gdialogs.R: fixed ginput to return proper value

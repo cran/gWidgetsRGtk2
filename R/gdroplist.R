@@ -59,8 +59,9 @@ setMethod(".gdroplist",
 
             
             obj = new("gDroplistRGtk",block=combo,widget=combo, toolkit=toolkit)
-            if(editable)
-              obj@widget = combo$GetChild()
+
+#            if(editable)
+#              obj@widget = combo$GetChild()
             
             tag(obj,"store") <- store
             tag(obj,"combo") <- combo
@@ -113,19 +114,27 @@ setMethod(".svalue",
             ## if editable, then entry is widget and combo may be found by tag("combo")
             if(tag(obj,"editable")) {
               if(is.null(index) || index==FALSE) {
-                entry = obj@widget      # entry is widget
+##                entry = obj@widget      # entry is widget
+                entry = obj@widget$GetChild()
                 if(!is.null(theArgs$getwidget)) {
                   cat("DEBUG: getwidget is deprecated\n")
-                  return(tag(entry,"value"))
                 }
-                ## else we return text
-                text = entry$GetText()
                 if(!is.null(theArgs$as.numeric)) {
-                  cat("DEBUG: as.numeric as an argument is deprected\n")
-                  return(as.numeric(text))
-                } else  {
-                  return(text)
+                  cat("DEBUG: as.numeric as an argument is deprected. Use coerce.with\n")
                 }
+                
+                ## else we return text
+                val = entry$GetText()
+
+                coerce.with<-tag(obj,"coerce.with")
+                if(is.null(coerce.with))
+                  return(val)
+                else if(is.function(coerce.with))
+                  return(coerce.with(val))
+                else if(is.character(coerce.with))
+                  return(do.call(coerce.with,list(val)))
+                else
+                  warning("Error: coerce.with is a function or character")
               } else {
                 ## return the index or NA
                 combobox = tag(obj,"combo") # of obj@widget$GetParent()
@@ -174,7 +183,8 @@ setReplaceMethod(".svalue",
                    ##  if editable do differently
                    if(tag(obj,"editable")) {
                      if(is.null(index) || index == FALSE)  {
-                       entry = obj@widget
+##                       entry = obj@widget
+                       entry = obj@widget$GetChild()
                        entry$SetText(value)              # gtk Call
                      } else {
                        ## set the index
@@ -267,9 +277,37 @@ setMethod(".addhandlerclicked",
             addhandler(obj,"changed",handler,action)
           })
 
+## want changed by activate -- or arrow for editable -- not keystroke
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDroplistRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"changed",handler,action)
+            if(tag(obj,"editable")) {
+              id = addhandler(obj,"changed",handler = function(h,...) {
+                if(obj@widget$GetActive() != -1) {
+                  handler(h,...)
+                }
+              },action)  # clicked -- not keystroke
+              ## put handler on entry too
+              connectSignal(obj@widget$GetChild(),
+                            signal="activate",
+                            f=handler,
+                            data=list(obj=obj, action=action,...),
+                            user.data.first = TRUE,
+                            after = FALSE)
+              invisible(id)
+            } else {
+              addhandler(obj,"changed",handler,action)
+            }
           })
 
+setMethod(".addhandlerkeystroke",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDroplistRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            ## put handler on entry 
+            connectSignal(obj@widget$GetChild(),
+                          signal="changed",
+                          f=handler,
+                          data=list(obj=obj, action=action,...),
+                          user.data.first = TRUE,
+                          after = FALSE)
+          })

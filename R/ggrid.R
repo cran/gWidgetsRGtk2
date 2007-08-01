@@ -47,7 +47,8 @@ setMethod(".gtable",
               action=action,
               container = container,
               ...)
-            
+
+            tag(obj,"type") <- "gtable" ## should be a class -- ughh
             return(obj)
           })
           
@@ -108,7 +109,8 @@ setMethod(".gdf",
                          container=container,
                          colors=colors,
                          ...)
-
+            tag(obj,"type") <- "ggrid" ## should be a class -- ughh
+            
             ## add 3rd mouse handler for the view
             lst = list()
             lst$"Apply function to column"$handler = function(h,...) {
@@ -625,7 +627,7 @@ setReplaceMethod(".leftBracket",
             view = tag(x,"view")
             frame = as.data.frame(store)
             
-            
+
             ## we have to be careful if we are *replacing*. If the size isn't
             ## the same, then we need to make a new store.
             if(missing(i)  && missing(j)) {
@@ -653,11 +655,18 @@ setReplaceMethod(".leftBracket",
                     ## more rows, same columns
                     ## need to lengthen data frame
                     ## strategy -- replace first rows, then add one at atime
-                    frame[1:m, 3*((1:n)+1)] <- value[1:m,]
+                    if(dv[2] == 1)
+                      frame[1:m, 3*((1:n)+1)] <- value[1:m]
+                    else
+                      frame[1:m, 3*((1:n)+1)] <- value[1:m,]
+                    
                     for(i in (m+1):dv[1]) {
                       replaceList = list(TRUE,"",i,frame[1,4],frame[1,5])
                       for(k in 1:n) {
-                        replaceList[[3*(k+1)]] <- value[i,k] # value
+                        if(dv[2] == 1)
+                          replaceList[[3*(k+1)]] <- value[i] # value
+                        else
+                          replaceList[[3*(k+1)]] <- value[i,k] # value
                         replaceList[[3*(k+1)+1]] <- frame[1,3*(k+1)+1] #fg
                         replaceList[[3*(k+1)+2]] <- frame[1,3*(k+1)+2] #bg
                       }
@@ -730,7 +739,8 @@ setReplaceMethod(".leftBracket",
               }
               ## fix up the rownames
               store = .getRGtkDataFrame(x)
-              store[,3] <- rownames(value)
+              if(dv[2] > 1)
+                store[,3] <- rownames(value)
             } else {
               if(missing(i)) {
                 ## no j is missing, just i
@@ -969,25 +979,49 @@ setMethod(".addhandlerdoubleclick",
             invisible(id)
           })
 
-## click on headers -- passed on to each treeview
+## gdf: click on headers -- passed on to each treeview
+## gtable: click on row
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            sapply(tag(obj,"view")$GetColumns(), function(object) {
-              addhandlerclicked(tag(object,"widget"), handler, action)
-            })
+            if(tag(obj,"type") == "gdf") { # hack, should have a class here
+              sapply(tag(obj,"view")$GetColumns(), function(object) {
+                addhandlerclicked(tag(object,"widget"), handler, action)
+              })
+            } else {
+              ## gtable -- put onto selection
+              theSelection = obj@widget$GetSelection()
+              ID = connectSignal(theSelection,
+                signal = "changed",
+                f = function(h,...) {
+                  h$handler(h,...)
+                },
+                data = list(obj=obj, action=action, handler=handler),
+                user.data.first = TRUE,
+                after = FALSE
+                )
+              invisible(ID)
+            }
           })
 
+## for gdf -- change value
+## for gtable -- double click
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            ## apply handler to change of each treeviewcolumn
-            if(!missing(handler)) {     # only if handler is not missing
-              view = tag(obj,"view")
-              for(i in view$GetColumns())
-                addhandlerchanged(i, handler, action)
+            if(tag(obj,"type") == "gdf") {
+              ## apply handler to change of each treeviewcolumn
+              if(!missing(handler)) {     # only if handler is not missing
+                view = tag(obj,"view")
+                for(i in view$GetColumns())
+                  addhandlerchanged(i, handler, action)
+              }
+            } else {
+              ## gtable -- double click
+              addhandler(obj, "row-activated",handler,action)
             }
           })
+
 
 ### helpers
 ###############################

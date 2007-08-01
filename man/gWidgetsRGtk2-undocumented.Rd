@@ -668,7 +668,8 @@
 %%
 \alias{.addhandlerkeystroke-methods}
 \alias{.addhandlerkeystroke,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.addhandlerkeystroke,gEditRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlerkeystroke,gEditRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerkeystroke,gDroplistRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerclicked --
 %%

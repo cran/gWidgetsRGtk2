@@ -96,10 +96,20 @@ setMethod("addhandlerchanged",signature(obj="GtkTreeViewColumn"),
           })
 
 
+setMethod("addHandlerChanged",signature(obj="GtkTreeViewColumn"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            addhandlerchanged(obj,handler=handler,action=action,...)
+          })
+
 setMethod("removehandler",signature(obj="GtkTreeViewColumn"),
           function(obj, ID=NULL,...) {
             removehandler(obj$GetCellRenderers()[[1]],ID,...)
           })
+setMethod("removeHandler",signature(obj="GtkTreeViewColumn"),
+          function(obj, ID=NULL,...) {
+            removehandler(obj,ID=ID,...)
+          })
+
 
 
 ## fix up [ for RGtkDataFrame
