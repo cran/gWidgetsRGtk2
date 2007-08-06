@@ -62,22 +62,34 @@ setMethod(".gcommandline",
               icl = h$action
               gfile("Select a file to read into command line",
                     type="open",
+                    action = icl,
                     handler = function(h,...) {
                       file = h$file
-                      tmp = icl@editText
+                      tmp = tag(icl,"editText")
                       svalue(tmp) <- readLines(file)
-                      editCode(h)
+                      if(tag(icl,"textGroupState") != "edit") {
+                        delete(tag(icl,"textGroup"), tag(icl,"showText"))
+                        add(tag(icl,"textGroup"), tag(icl,"editText"), expand=TRUE)
+                        ## adjust buttons
+                        enabled(runButton) <- TRUE
+                        enabled(historyButton) <- TRUE
+                        enabled(clearButton) <- TRUE
+                        enabled(editButton) <- FALSE
+                        ## set focus on editText??
+                      }
                     })
             }
             saveFile = function(h,...) {
               icl = h$action
-              win = gwindow("Save buffer contents",v, toolkit=toolkit)
+              win = gwindow("Save buffer contents", toolkit=toolkit)
               group = ggroup(horizontal=FALSE, container=win)
-              saveFileName = gfilebrowse("",type="save")
-              add(group, saveFileName)
-              saveType = gradio(c("commands","output"), index=FALSE)
-              gaddlabel(saveType,"Save which values?", pos=2, container=group)
+              saveFileName = gfilebrowse("",type="save", cont = group)
+
+              gp = ggroup(cont=group)
+              glabel("Save which values?", cont=gp)
+              saveType = gradio(c("commands","output"), index=FALSE, cont=gp)
               gseparator(container=group)
+
               buttonGroup = ggroup(container=group)
               addSpring(buttonGroup)
               gbutton("save",handler=function(h,...) {
@@ -87,9 +99,9 @@ setMethod(".gcommandline",
                   return()
                 }
                 if(svalue(saveType) == "commands")
-                  values = svalue(icl@editText)
+                  values = svalue(tag(icl,"editText"))
                 else
-                  values = svalue(icl@showText) 
+                  values = svalue(tag(icl,"showText")) 
                 writeLines(values, filename)
                 dispose(win)
               }, container=buttonGroup)
@@ -97,24 +109,29 @@ setMethod(".gcommandline",
             editCode = function(h,...) {
               icl = h$action
               ## switch widgets
-              delete(icl@textGroup, icl@showText)
-              add(icl@textGroup, icl@editText, expand=TRUE)
+              delete(tag(icl,"textGroup"), tag(icl,"showText"))
+              add(tag(icl,"textGroup"), tag(icl,"editText"), expand=TRUE)
               tag(icl,"textGroupState") <- "edit"
-##              icl@textGroupState <- "edit"
 
               enabled(runButton) <- TRUE
               enabled(historyButton) <- TRUE
               enabled(clearButton) <- TRUE
               enabled(editButton) <- FALSE
+
+              ## set focus on editText?
             }
             runCode = function(h,...) {
               icl = h$action
-              chunk = svalue(icl@editText)
+              chunk = svalue(tag(icl,"editText"))
               svalue(icl) <- chunk
             }
             
             selectHistory = function(h,...) {
               previous = svalue(h$action, index=25)
+              if(length(previous) == 0) {
+                cat("No previous commandline history\n")
+                return()
+              }
               win = gwindow("Select a previous value", visible=TRUE)
               group = ggroup(horizontal = FALSE, container = win)
               add(group, glabel("double click selection"))
@@ -122,7 +139,8 @@ setMethod(".gcommandline",
                 handler = function(h,...) {
                   newcommand = svalue(h$obj)
                   icl = h$action
-                  svalue(icl@editText, font.attr = "monospace") <- newcommand
+                  svalue(tag(icl,"editText"), font.attr = "monospace") <- newcommand
+                  ## set focus on editText?
                   dispose(win)
                 })
               add(group, theHistory, expand=TRUE)
@@ -169,7 +187,6 @@ setMethod(".gcommandline",
             ## initialize history
             tag(obj,"history")  <- c()
             ## initialize state: used to check if swap is needed
-            obj@textGroupState <- "edit" # edit or text
             tag(obj,"textGroupState") <- "edit"
             
             ## which text widget?
@@ -222,15 +239,14 @@ setReplaceMethod(".svalue",
                    evalChunk(command, obj@showText, obj@prompt, obj@useConsole, obj@useGUI)
 
                    ## switch widgets -- if not correct
-##                   textGroupState = obj@textGroupState
                    textGroupState = tag(obj,"textGroupState")
                    if(!is.null(textGroupState) && textGroupState == "edit") {
-                     delete(obj@textGroup, obj@editText)
-                     add(obj@textGroup, obj@showText, expand=TRUE)
+                     delete(tag(obj,"textGroup"), tag(obj,"editText"))
+                     add(tag(obj,"textGroup"), tag(obj,"showText"), expand=TRUE)
                    }
-#                   obj@textGroupState <- "text"
+
                    tag(obj,"textGroupState") <- "text"
-                   enabled(obj@showText) <- FALSE        # no editing of this display
+                   enabled(tag(obj,"showText")) <- FALSE        # no editing of this display
                    enabled(obj@runButton) <- FALSE
                    enabled(obj@historyButton) <- FALSE
                    enabled(obj@editButton) <- TRUE

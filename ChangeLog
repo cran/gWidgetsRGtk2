@@ -1,3 +1,27 @@
+2007-08-14  John Verzani  <jverzani@gmail.com>
+
+	* R/gfile.R: implemented quote argument (... one called from
+		  gfilebrowse). 
+
+	* R/aaaGenerics.R: fixed dispose -- GetParentWindow (not GetParent)
+
+	* R/ggrid.R put 3rd popup on header (better); offset was
+		  incorrect; fixed double-click. Didn't like handler on
+			  the view.col.
+
+2007-08-13  John Verzani  <jverzani@gmail.com>
+
+	* R/gcommandline.R: fixed @editText -- use tag. THIS COULD BE
+		  REWRITTEN. IT IS UGLY!!
+
+2007-08-12  John Verzani  <jverzani@gmail.com>
+
+	* R/ggroup.R: changed raise.on.dragmotion to use focus, not window
+		  raise. This was giving issues with windows
+
+	* R/ggraphics.R: addHandlerClicked returns usr coordinates, not
+		  NDC. Conversion is not difficult
+
 2007-08-04  John Verzani  <jverzani@gmail.com>
 
 	* R/dnd.R: added override obj to adddropsoruce. This is so glabel

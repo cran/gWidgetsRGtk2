@@ -79,26 +79,35 @@ setMethod(".ggraphicsnotebook",
             gtoolbar(toolbar, container=toolbargroup)
             
 
+            ## start with a plot, then add handler!
+            addNewPage(obj)
+            
+
             ## add handler to raise device when page is changed
             addhandler(obj, signal="switch-page", function(h,...) {
               ## we need the new page not the old page
-              
+              ## oldPage = svalue(obj)
 
               theArgs = list(...)
-##              oldPage = svalue(obj)
-              newPage = theArgs[[3]] + 1
+              newPage = theArgs[[3]] + 1 ## gtk thingy
+
               
-              
-              plotWidget = obj[newPage]
+              plotWidget = notebook[newPage] ## notebook from scope
               devNo = tag(plotWidget, "device")
-              if(!is.null(devNo)) dev.set(devNo)
+
+
+
+              
+              availDevs = dev.list()
+              availDevs = availDevs[names(availDevs) == "Cairo"]
+              
+              if(!is.null(devNo) && is.numeric(devNo) && devNo %in% availDevs)
+                dev.set(devNo)
+
               return(TRUE)
             })
             
 
-            ## start with a plot
-            addNewPage(obj)
-            
             
             return(obj)
             
@@ -106,28 +115,30 @@ setMethod(".ggraphicsnotebook",
           
 ### Two key handlers for when page is raised or lowered
 ## remove plot device when it is unrealized
-unrealizePage = function(h,...) {
-  ## remove from list of devices
-  ## in the new cairoDevice ths gives errors
-##    theDevice = h$action$device
-##    if(!is.null(theDevice) && theDevice > 1) {
-##    if(.Platform$OS != "windows")
-##      try(dev.off(theDevice), silent=TRUE)
-    ## doesn't work! we get problems with devices here big time
-##    else
-##      if(theDevice %in% dev.list()) dev.off(theDevice)
-##    }
-  return(TRUE)
-}
+## unrealizePage = function(h,...) {
+##  remove from list of devices
+##  in the new cairoDevice ths gives errors
+##     theDevice = h$action$device
+##     if(!is.null(theDevice) && theDevice > 1) {
+##     if(.Platform$OS != "windows")
+##       try(dev.off(theDevice), silent=TRUE)
+##     ## doesn't work! we get problems with devices here big time
+##     else
+##       if(theDevice %in% dev.list()) dev.off(theDevice)
+##     }
+##   return(TRUE)
+## }
 
   
 ## when a page is entered, we set the plot device
-enterPage = function(h,...) {
-  theDevice = h$action$device
-  if(!is.null(theDevice)) {
-    dev.set(theDevice)
-  }
-}
+## enterPage = function(h,...) {
+##    devNo = h$action$device
+
+##    if(!is.null(theDevice)) {
+##      dev.set(theDevice)
+##    }
+##   return(TRUE)
+## }
 
 ## value is ignored
 addNewPage = function(obj,  ...) {
@@ -135,8 +146,11 @@ addNewPage = function(obj,  ...) {
   theArgs = list(...)                      # ignored for now
 
   width = obj@width;height=obj@height
+
+
   plotwindow = ggraphics(width,height)
 
+  
   ## These two are now made obsolete
 ##  addhandlerexpose(plotwindow,
 ##             handler=enterPage, action=list(device=dev.cur()))
@@ -148,9 +162,14 @@ addNewPage = function(obj,  ...) {
   if(is.null(noPlots)) noPlots = 0
   
   label = paste("plot:",noPlots + 1,sep="",collapse="")
-  add(obj, plotwindow@widget, label=label)
-
   tag(obj,"noPlots") = noPlots+1
+  tag(plotwindow@widget,"device") <- dev.cur()
+
+  
+  ## add to notebook
+  add(obj, plotwindow, label=label)
+
+  
 }
 
 

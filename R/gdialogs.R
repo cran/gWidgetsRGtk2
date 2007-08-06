@@ -165,13 +165,11 @@ setMethod(".gbasicdialog",
           function(toolkit,
                    title = "Dialog",
                    widget,
-                   icon = c("info","warning","error","question"),
                    handler = NULL,
                    action = NULL,
                    ...
                    ) {
   
-            icon = Paste("GTK_MESSAGE_",toupper(match.arg(icon)))
             window = gtkWindowNew(show=FALSE)
             dlg = gtkDialog(title, window,
               c("modal"),
@@ -180,6 +178,9 @@ setMethod(".gbasicdialog",
             dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
+
+
+            tag(widget,"dlg") <- dlg
 
             ## group to pack widget in
             group = ggroup()

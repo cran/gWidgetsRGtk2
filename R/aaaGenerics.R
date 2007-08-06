@@ -400,7 +400,13 @@ setReplaceMethod(".focus",
             focus(obj@widget, toolkit, ...) <- value
             return(obj)
           })
-                 
+
+setReplaceMethod("focus",signature(obj="RGtkObject"),
+          function(obj, ..., value) {
+            .focus(obj, toolkit=guiToolkit("RGtk2"),...) <- value
+            return(obj)
+          })
+
 setReplaceMethod(".focus",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
           function(obj, toolkit, ..., value) {
@@ -418,9 +424,9 @@ setReplaceMethod(".focus",
             value = as.logical(value)
             if(value) {
               obj$GrabFocus()
-              obj$GetWindow()$Raise()
+              obj$GetParentWindow()$Raise()
             } else {
-              obj$GetWindow()$Lower()
+              obj$GetParentWindow()$Lower()
             }
             return(obj)
 
@@ -764,14 +770,12 @@ setMethod("dispose",signature(obj="gWidgetRGtk"),
 setMethod(".dispose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, ...) {
-            if(is.invalid(obj)) return() # nothing to do, its been done
-            widget = obj@widget
-            ## find parent, then destroy
-            while(!is.null(widget) && !("GtkWindow" %in% class(widget))) {
-              widget = widget$GetParent()
-            }
-            if(!is.null(widget))
-              widget$destroy()
+            widget = getWidget(obj)
+            widget = widget$GetParentWindow()
+            if("<invalid>" %in% class(widget))
+              return()
+            else
+              widget$Destroy()
 
             return(TRUE)
           })
@@ -845,8 +849,8 @@ setMethod(".addHandler",
             callbackID <- try(connectSignal(getWidget(obj), ### issue: getWidget(obj),
                                             signal=signal,
                                             f=modifyHandler,
-                                            data=list(obj=if(!is.null(theArgs$override))
-                                              theArgs$override
+                                            data=list(obj=if(!is.null(theArgs$actualobj))
+                                              theArgs$actualobj
                                             else
                                               obj, action=action,...),
                                             user.data.first = TRUE,
@@ -886,8 +890,8 @@ setMethod(".addHandler",
             callbackID <- try(connectSignal(obj,
                                             signal=signal,
                                             f=modifyHandler,
-                                            data=list(obj=if(!is.null(theArgs$override))
-                                              theArgs$override
+                                            data=list(obj=if(!is.null(theArgs$actualobj))
+                                              theArgs$actualobj
                                             else
                                               obj, action=action, ...),
                                             user.data.first = TRUE,
@@ -1153,7 +1157,7 @@ setMethod("addhandlerrightclick",signature(obj="RGtkObject"),
           })
 
 
-## use override=obj to pass in a different obj to h$obj
+## use actualobj=obj to pass in a different obj to h$obj
 setMethod(".addhandlerrightclick",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit,
@@ -1168,10 +1172,10 @@ setMethod(".addhandlerrightclick",
                             }
                             return(FALSE)         # continue propagation
                           },
-                          data = list(obj=if(is.null(theArgs$override))
+                          data = list(obj=if(is.null(theArgs$actualobj))
                             obj
                           else
-                            theArgs$override, action=action, handler=handler),
+                            theArgs$actualobj, action=action, handler=handler),
                           user.data.first = TRUE,
                           after = FALSE
                         )
@@ -1247,7 +1251,7 @@ addPopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="
 add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="button-press-event", ...) {
   f = function(h, widget, event,...) {
     if(event$GetButton() != 3) {
-      return(FALSE)                     # propogate signal
+      return(TRUE)                     # propogate signal
     } else {
       mb = gmenu(h$action$menulist, popup = TRUE, action=h$action$passedaction)
       mb = tag(mb,"mb")                 # actual widget

@@ -32,8 +32,10 @@ setMethod(".gpanedgroup",
             tag(obj,"rightgroup") <- rightgroup
 
            
-            if(!missing(widget1)) add(obj, widget1)
-            if(!missing(widget2)) add(obj, widget2)
+            if(!missing(widget1) && !is.null(widget1))
+              add(obj, widget1)
+            if(!missing(widget2) && !is.null(widget2))
+              add(obj, widget2)
             
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)

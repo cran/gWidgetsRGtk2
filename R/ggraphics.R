@@ -189,13 +189,27 @@ setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             ## handler has $obj for obj clicked on, $x, $y, $action
-            
+
+            ## convert from "plt" coordinates to more familiar "usr"
+            pltToUsr = function(x,y) {
+              plt = par("plt"); usr = par("usr")
+              c( (usr[2]-usr[1])/(plt[2]-plt[1])*(x - plt[1]) + usr[1],
+                (usr[4] - usr[3])/(plt[4] - plt[3])*(y - plt[3]) + usr[3])
+            }
+
+
             f = function(h,w,e,...) {
               allocation = w$GetAllocation()
               xclick = e$GetX()
               yclick = e$GetY()
-              h$x = xclick/allocation$width
-              h$y = (allocation$height - yclick)/allocation$height
+              x = xclick/allocation$width
+              y = (allocation$height - yclick)/allocation$height
+
+              ## put into usr coordinates
+              tmp = pltToUsr(x,y)
+              h$x = tmp[1]
+              h$y = tmp[2]
+
               
               handler(h,...)
             }

@@ -81,9 +81,9 @@ is.gGrid = function(obj) {
 }
 
 is.invalid = function(obj) {
-  while(!is.RGtkObject(obj))
-    obj = obj@block
-  ifelse("<invalid>" %in% class(obj), TRUE, FALSE)
+  widget = getWidget(obj)
+  parent = widget$GetParentWindow()
+  ifelse("<invalid>" %in% class(parent), TRUE, FALSE)
 }
 ## used to check output 
 is.empty = function(obj) {

@@ -525,7 +525,8 @@
 %%
 \alias{focus<--methods}
 \alias{focus<-,guiWidget-method}
-\alias{focus<-,gWidgetRGtk-method} 
+\alias{focus<-,gWidgetRGtk-method}
+\alias{focus<-,RGtkObject-method} 
 %%
 %% --  .focus<- --
 %%

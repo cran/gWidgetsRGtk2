@@ -126,6 +126,6 @@ setMethod(".addhandlerchanged",
           function(obj, toolkit, handler, action=NULL, ...) {
             lst = tag(obj,"itemlist")
             sapply(lst, function(i)
-                   addhandlerchanged(i,handler=handler, action=action, override=obj, ...))
+                   addhandlerchanged(i,handler=handler, action=action, actualobj=obj, ...))
           })
           

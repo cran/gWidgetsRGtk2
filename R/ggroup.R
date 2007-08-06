@@ -44,8 +44,11 @@ setMethod(".ggroup",
 
             ## raise if we drag across
             if(!is.null(theArgs$raise.on.dragmotion)) {
+              ## need drop target before 
               adddroptarget(obj, handler = function(h,...) {})
-              adddropmotion(obj, handler = function(h,...) getWidget(h$obj)$GetWindow()$Raise())
+##              adddropmotion(obj, handler = function(h,...) getWidget(h$obj)$GetWindow()$Raise())
+              ## some bug in windows, try focus
+              adddropmotion(obj, handler = function(h,...) focus(obj) <- TRUE) ##getWidget(h$obj)$GetParentWindow()$Focus())
             }
             return(obj)
           })

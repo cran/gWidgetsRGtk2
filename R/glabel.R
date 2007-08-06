@@ -112,7 +112,7 @@ setMethod(".rotatelabel",
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
-            ID = .addHandler(obj@block, toolkit, signal, handler, action, override=obj,...)
+            ID = .addHandler(obj@block, toolkit, signal, handler, action, actualobj=obj,...)
             return(ID)
           })
 
@@ -120,7 +120,7 @@ setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             .addHandler(obj@block, toolkit, signal="button-press-event",
-                        handler=handler, action=action, override=obj,...)
+                        handler=handler, action=action, actualobj=obj,...)
           })
 
 setMethod(".addhandlerchanged",
@@ -143,7 +143,7 @@ setMethod(".adddroptarget",
           function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
             ## problem -- we want to add drop target to obj@block evb,
             ## but have handler refer to obj@widgeg=label. 
-            addDropTarget(obj@block, toolkit, targetType, handler, action, override=obj)
+            addDropTarget(obj@block, toolkit, targetType, handler, action, actualobj=obj)
             
           })
 
@@ -152,7 +152,7 @@ setMethod(".adddropsource",
           function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
             ## problem -- we want to add drop target to obj@block evb,
             ## but have handler refer to obj@widgeg=label. 
-            addDropSource(obj@block, toolkit, targetType, handler, action, override=obj)
+            addDropSource(obj@block, toolkit, targetType, handler, action, actualobj=obj)
             
           })
 
@@ -160,13 +160,13 @@ setMethod(".adddropsource",
 ## Put onto block
 setMethod(".addpopupmenu",signature(toolkit="guiWidgetsToolkitRGtk2", obj="gLabelRGtk"),
           function(obj, toolkit, menulist, action=NULL, ...) {
-            addPopupMenuWithSignal(obj@block, toolkit , menulist, action, override=obj,...)
+            addPopupMenuWithSignal(obj@block, toolkit , menulist, action, actualobj=obj,...)
           })
 setMethod(".add3rdmousepopupmenu",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, menulist,action=NULL, ...) {
             add3rdMousePopupMenuWithSignal(obj@block, toolkit,
-                                           menulist, action, override=obj,...)
+                                           menulist, action, actualobj=obj,...)
           })
 ##################################################
 ## internal function -- used by gvariables in  gcommandline

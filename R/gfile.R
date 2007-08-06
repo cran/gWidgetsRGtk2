@@ -109,7 +109,10 @@ setMethod(".gfile",
             } else if(response == GtkResponseType["ok"]) {
               filechooser$Destroy()
               if(!is.null(handler)) handler(h)
-              return(file)
+              if(!is.null(args$quote) && as.logical(args$quote))
+                return(paste("'",file,"'",sep=""))
+              else
+                return(file)
             } else {
               filechooser$Destroy()
               return("")
@@ -134,7 +137,7 @@ setMethod(".gfilebrowse",
 
 
             theArgs = list(...)
-            if(theArgs$expand)
+            if(!is.null(theArgs$expand) && as.logical(theArgs$expand))
               group = ggroup(horizontal=TRUE, container=container, expand=TRUE)
             else
               group = ggroup(horizontal=TRUE, container=container)

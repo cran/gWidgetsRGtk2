@@ -109,129 +109,131 @@ setMethod(".gdf",
                          container=container,
                          colors=colors,
                          ...)
-            tag(obj,"type") <- "ggrid" ## should be a class -- ughh
+            tag(obj,"type") <- "gdf" ## should be a class -- ughh
             
-            ## add 3rd mouse handler for the view
-            lst = list()
-            lst$"Apply function to column"$handler = function(h,...) {
-              col.no = h$action
+##             ## add 3rd mouse handler for the view
+##             lst = list()
+##             lst$"Apply function to column"$handler = function(h,...) {
+##               col.no = h$action
               
-              win = gwindow("Apply function to column",visible=TRUE)
-              group = ggroup(horizontal = FALSE, container=win)
-              glabel("<b>Apply function to column</b>", markup=TRUE, container=group)
-              tmpGroup = ggroup(container=group)
-              glabel("<b>function(x) = {</b>", markup=TRUE,container=tmpGroup)
-              addSpring(tmpGroup)
-              FUN = gtext(container=group)
-              tmpGroup = ggroup(container=group)
-              glabel("}", container=tmpGroup)
-              addSpring(tmpGroup)
-              buttonGroup = ggroup(container=group)
-              addSpring(buttonGroup)
-              gbutton("ok",container=buttonGroup,handler = function(h,...) {
-                FUN = Paste("function(x) {",svalue(FUN),"}")
-                f = eval(parse(text=FUN))
-                theNewVals = f(obj[,col.no, drop=FALSE])
-                obj[,col.no] = theNewVals
-                dispose(win)
-              })
-              gbutton("cancel",container=buttonGroup, handler = function(h,...)
-                      dispose(win))
-            }
-            lst$"Sort by column (increasing)"$handler = function(h,...) {
-              col.no = h$action
-              newOrder = order(obj[,col.no], decreasing = FALSE)
-              obj[,] = obj[newOrder,]
-              ## signal? -- is killing R
-              ##      cr = view.col$GetCellRenderers()[[1]] 
-              ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
-            }
-            lst$"Sort by column (decreasing)"$handler = function(h,...) {
-              col.no = h$action
-              newOrder = order(obj[,col.no], decreasing = TRUE)
-              obj[,] = obj[newOrder,]
-              ## signal?
-              ##      cr = view.col$GetCellRenderers()[[1]] 
-              ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
-            }
-            ## can't easily do this, as obj[,] wants to keep the same types
-##             lst$"Coerce column type"$handler = function(h,...) {
-##               colNum = h$action
-##               theData = obj[,colNum,drop=TRUE]
-##               theClass = class(theData)
-##               allClasses = c("numeric","integer","character","factor","logical")
-##               win = gwindow("Coerce column data")
-##               g = ggroup(horizontal=FALSE, cont=win)
-##               add(g,glabel("Select the new column type"))
-##               gdroplist(allClasses,cont=g,selected = which(theClass == allClasses),
-##                         handler = function(h,...) {
-##                           newClass = svalue(h$obj)
-##                           theData = do.call(paste("as.",newClass,sep="",collapse=""),list(theData))
-##                           df = obj[,]; df[,colNum] <- theData
-##                           obj[,] <- df
-##                           dispose(win)
-##                         })
-##               add(g, gbutton("close",handler = function(...) dispose(win)))
+##               win = gwindow("Apply function to column",visible=TRUE)
+##               group = ggroup(horizontal = FALSE, container=win)
+##               glabel("<b>Apply function to column</b>", markup=TRUE, container=group)
+##               tmpGroup = ggroup(container=group)
+##               glabel("<b>function(x) = {</b>", markup=TRUE,container=tmpGroup)
+##               addSpring(tmpGroup)
+##               FUN = gtext(container=group)
+##               tmpGroup = ggroup(container=group)
+##               glabel("}", container=tmpGroup)
+##               addSpring(tmpGroup)
+##               buttonGroup = ggroup(container=group)
+##               addSpring(buttonGroup)
+##               gbutton("ok",container=buttonGroup,handler = function(h,...) {
+##                 FUN = Paste("function(x) {",svalue(FUN),"}")
+##                 f = eval(parse(text=FUN))
+##                 theNewVals = f(obj[,col.no, drop=FALSE])
+##                 obj[,col.no] = theNewVals
+##                 dispose(win)
+##               })
+##               gbutton("cancel",container=buttonGroup, handler = function(h,...)
+##                       dispose(win))
 ##             }
-            ## rename -- tedious. Was better when label was editable
-            lst$"Rename column"$handler = function(h,...) {
-              col.no = h$action
-              view.col = tag(obj,"view")$GetColumn(
-                col.no-1+tag(obj,"doRownames") + tag(obj,"doIcons"))
+##             lst$"Sort by column (increasing)"$handler = function(h,...) {
+##               col.no = h$action
+##               newOrder = order(obj[,col.no], decreasing = FALSE)
+##               obj[,] = obj[newOrder,]
+##               ## signal? -- is killing R
+##               ##      cr = view.col$GetCellRenderers()[[1]] 
+##               ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
+##             }
+##             lst$"Sort by column (decreasing)"$handler = function(h,...) {
+##               col.no = h$action
+##               newOrder = order(obj[,col.no], decreasing = TRUE)
+##               obj[,] = obj[newOrder,]
+##               ## signal?
+##               ##      cr = view.col$GetCellRenderers()[[1]] 
+##               ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
+##             }
+##             ## can't easily do this, as obj[,] wants to keep the same types
+## ##             lst$"Coerce column type"$handler = function(h,...) {
+## ##               colNum = h$action
+## ##               theData = obj[,colNum,drop=TRUE]
+## ##               theClass = class(theData)
+## ##               allClasses = c("numeric","integer","character","factor","logical")
+## ##               win = gwindow("Coerce column data")
+## ##               g = ggroup(horizontal=FALSE, cont=win)
+## ##               add(g,glabel("Select the new column type"))
+## ##               gdroplist(allClasses,cont=g,selected = which(theClass == allClasses),
+## ##                         handler = function(h,...) {
+## ##                           newClass = svalue(h$obj)
+## ##                           theData = do.call(paste("as.",newClass,sep="",collapse=""),list(theData))
+## ##                           df = obj[,]; df[,colNum] <- theData
+## ##                           obj[,] <- df
+## ##                           dispose(win)
+## ##                         })
+## ##               add(g, gbutton("close",handler = function(...) dispose(win)))
+## ##             }
+##             ## rename -- tedious. Was better when label was editable
+##             lst$"Rename column"$handler = function(h,...) {
+##               col.no = h$action
+##               view.col = tag(obj,"view")$GetColumn(
+##                 col.no-1+tag(obj,"doRownames") + tag(obj,"doIcons"))
               
-              win = gwindow("Change name", visible=TRUE)
-              group = ggroup(horizontal=FALSE, container=win)
-              ok.handler = function(h,...) {
-                names(obj)[col.no] <- svalue(h$action)
-                dispose(win)
-                if(tag(obj,"doSubsetBy")) {
-                  subsetBy = tag(obj,"subsetBy")
-                  update(subsetBy)
-                }
-                return(FALSE)
-              }
-              newName = gedit(id(view.col),container=group)
-              addhandlerchanged(newName, handler=ok.handler, action=newName)
-              buttonGroup = ggroup(container=group);addSpring(buttonGroup)
-              add(buttonGroup,gbutton("ok", handler = ok.handler, action=newName))
-              add(buttonGroup,gbutton("cancel",handler=function(h,...) dispose(win)))
-              return(TRUE)
-            }
+##               win = gwindow("Change name", visible=TRUE)
+##               group = ggroup(horizontal=FALSE, container=win)
+##               ok.handler = function(h,...) {
+##                 names(obj)[col.no] <- svalue(h$action)
+##                 dispose(win)
+##                 if(tag(obj,"doSubsetBy")) {
+##                   subsetBy = tag(obj,"subsetBy")
+##                   update(subsetBy)
+##                 }
+##                 return(FALSE)
+##               }
+##               newName = gedit(id(view.col),container=group)
+##               addhandlerchanged(newName, handler=ok.handler, action=newName)
+##               buttonGroup = ggroup(container=group);addSpring(buttonGroup)
+##               add(buttonGroup,gbutton("ok", handler = ok.handler, action=newName))
+##               add(buttonGroup,gbutton("cancel",handler=function(h,...) dispose(win)))
+##               return(TRUE)
+##             }
             
 
-            f = function(h, widget, event,...) {
-              if(event$GetButton() != 3) {
-                return(FALSE)                     # propogate signal
-              } else {
-                cursor = widget$GetCursor()                
-                view.col = cursor[["focus_column"]]
-                if(is.null(view.col)) {
-                  view.col = cursor[['focus.column']] # view.col is the column
-                }
-                column.number = tag(view.col,"column.number")
-                if(is.null(column.number)) {
-                  cat("Select a cell first by clicking once\n")
-                  return()
-                }
-                column.number = column.number - 1 + tag(obj,"doRownames") + tag(obj,"doIcons")
+##             f = function(h, widget, event,...) {
+##               if(event$GetButton() != 3) {
+##                 return(FALSE)                     # propogate signal
+##               } else {
+##                 cursor = widget$GetCursor()                
+##                 view.col = cursor[["focus_column"]]
+##                 if(is.null(view.col)) {
+##                   view.col = cursor[['focus.column']] # view.col is the column
+##                 }
+##                 column.number = tag(view.col,"column.number")
+##                 if(is.null(column.number)) {
+##                   cat("Select a cell first by clicking once\n")
+##                   return()
+##                 }
+##                 column.number = column.number - 1 + tag(obj,"doRownames") + tag(obj,"doIcons")
                 
                 
                 
-                mb = gmenu(h$action, popup = TRUE, action=column.number) #  action argument?
-                mb = tag(mb,"mb")                 # actual gtkwidget
-                print(class(mb))
-                gtkMenuPopupHack(mb,
-                             button = event$GetButton(),
-                             activate.time=event$GetTime(),
-                             func = NULL
-                             )
-                return(TRUE)
+##                 mb = gmenu(h$action, popup = TRUE, action=column.number) #  action argument?
+##                 mb = tag(mb,"mb")                 # actual gtkwidget
+##                 print(class(mb))
+##                 gtkMenuPopupHack(mb,
+##                              button = event$GetButton(),
+##                              activate.time=event$GetTime(),
+##                              func = NULL
+##                              )
+##                 return(TRUE)
                 
-              }
-            }
-            addhandler(tag(obj,"view"),signal = "button-press-event",
-                       handler=f, action=lst)
-            
+##               }
+##             }
+
+##             ## This isn't working!
+## ##            addhandler(tag(obj,"view"),signal = "button-press-event",
+## ##                       handler=f, action=lst)
+## ##            
             return(obj)
             
           })
@@ -384,7 +386,7 @@ setMethod(".ggrid",
             sw$Add(view)
             add(group,sw, expand=TRUE)
 
-            ## propoerties
+            ## properties
             if(multiple) {
               treeselection = view$GetSelection()
               treeselection$SetMode(GtkSelectionMode["multiple"])
@@ -974,7 +976,7 @@ setMethod(".addhandlerdoubleclick",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             ## need to put onto view -- not group
-#            id = addhandler(tag(obj,"view"), "row-activated",handler,action)
+##            id = addhandler(tag(obj,"view"), "row-activated",handler,action)
             id = addhandler(obj, "row-activated",handler,action)
             invisible(id)
           })
@@ -1213,8 +1215,16 @@ edit.handler = function(h,cell,path,newtext) {
 
 addTreeViewColumnWithEdit = function(obj, j,label) {
   view = tag(obj,"view")
+
+  cellrenderers = tag(obj,"cellrenderers")
+  if(is.null(cellrenderers)) {
+    cellrenderers = list()
+    tag(obj,"cellrenderers") <- cellrenderers
+  }
   
   cellrenderer = gtkCellRendererTextNew()
+  tag(obj,"cellrenderers") <- c(cellrenderers, cellrenderer) ## store to test
+  
   ## properties
   gObjectSet(cellrenderer,"editable"=TRUE)
   gObjectSet(cellrenderer,"rise"=-10)
@@ -1249,8 +1259,9 @@ addTreeViewColumnWithEdit = function(obj, j,label) {
   
 
   ## fix up a bit
-  addPopupMenuToViewCol(view.col)
   addDragAndDropToViewCol(view.col)
+  addPopupMenuToViewCol(view.col)
+
 
   ## return the column
   return(view.col)
@@ -1276,22 +1287,25 @@ addPopupMenuToViewCol = function(view.col) {
     buttonGroup = ggroup(container=group)
     addSpring(buttonGroup)
     gbutton("ok",container=buttonGroup,handler = function(h,...) {
+      obj = tag(view.col,"gridObj")
       FUN = Paste("function(x) {",svalue(FUN),"}")
       f = eval(parse(text=FUN))
-      col.no = tag(view.col,"column.number") - 1 # rownames offset
-      theNewVals = f(obj[,col.no, drop=FALSE])
+      col.no = tag(view.col,"column.number") ## not correct: - 1 # rownames offset
+
+      oldVals = obj[,col.no, drop=FALSE]
+      theNewVals = f(oldVals)
       obj[,col.no] = theNewVals
       dispose(win)
     })
     gbutton("cancel",container=buttonGroup, handler = function(h,...)
             dispose(win))
   }
-  lst$"Clear column"$handler = function(h,...) {
-    col.no = tag(view.col,"column.number") - 1 # rownames offset
-    obj[,col.no] = rep(NA, length(view.col))
-  }
+##   lst$"Clear column"$handler = function(h,...) {
+##     col.no = tag(view.col,"column.number") ## - 1 # rownames offset
+##     obj[,col.no] = rep(NA, length(view.col))
+##   }
   lst$"Sort by column (decreasing)"$handler = function(h,...) {
-    col.no = tag(view.col,"column.number") - 1 # rownames offset
+    col.no = tag(view.col,"column.number") ## - 1 # rownames offset
     newOrder = order(obj[,col.no], decreasing = TRUE)
     obj[,] = obj[newOrder,]
     rownames(obj) = rownames(obj)[newOrder]
@@ -1300,7 +1314,7 @@ addPopupMenuToViewCol = function(view.col) {
     ##      try(cr$SignalEmit("edited"), silent=TRUE) # notify
   }
   lst$"Sort by column (increasing)"$handler = function(h,...) {
-    col.no = tag(view.col,"column.number") - 1 # rownames offset
+    col.no = tag(view.col,"column.number") ## - 1 # rownames offset
     newOrder = order(obj[,col.no], decreasing = FALSE)
     obj[,] = obj[newOrder,]
     rownames(obj) = rownames(obj)[newOrder]
@@ -1319,8 +1333,10 @@ addPopupMenuToViewCol = function(view.col) {
       ##        try(cr$SignalEmit("edited"), silent=TRUE) # notify
       
       dispose(win)
-      if(tag(h$obj,"doSubsetBy"))                    #
-        update(tag(h$obj,"subsetBy"))                # update
+      if(!is.null(tag(obj,"doSubsetBy")) &&
+         tag(obj,"doSubsetBy")
+         )                    #
+        update(tag(obj,"subsetBy"))                # update
       
       return(FALSE)
     }
@@ -1332,9 +1348,15 @@ addPopupMenuToViewCol = function(view.col) {
     return(TRUE)
   }
   
+  ## define this so that it gets picked up in popup handlers
+  obj = tag(view.col,"gridObj")
+
   ## put popup onto this guy -- button doesn't get 3rd mouse signal
   widget = tag(view.col,"widget")
-  add3rdmousepopupmenu(widget, menulist=lst)
+  gtkbutton = view.col$GetWidget()$GetParent()$GetParent()$GetParent()
+  ## was widget
+##  add3rdmousepopupmenu(widget, menulist=lst)
+  add3rdmousepopupmenu(gtkbutton, menulist=lst)
 }
 
 
