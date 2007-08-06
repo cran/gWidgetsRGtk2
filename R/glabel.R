@@ -112,14 +112,15 @@ setMethod(".rotatelabel",
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
-            .addHandler(obj@block, toolkit, signal, handler, action, ...)
+            ID = .addHandler(obj@block, toolkit, signal, handler, action, override=obj,...)
+            return(ID)
           })
 
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             .addHandler(obj@block, toolkit, signal="button-press-event",
-                        handler=handler, action=action, ...)
+                        handler=handler, action=action, override=obj,...)
           })
 
 setMethod(".addhandlerchanged",
@@ -129,9 +130,10 @@ setMethod(".addhandlerchanged",
             if(!is.null(edit)) {
               ## we use unrealize here, the addhandlerchanged on edit wasn't
               ## working for some strage reason
-              addhandlerunrealize(edit, handler, action)
+              return(addhandlerunrealize(edit, handler, action))
             } else {
-              cat("addhandlerchanged only give when widget is editable\n")
+              ## use addhandlerclicked
+              return(.addhandlerclicked(obj, toolkit, handler, action, ...))
             }
           })
 
@@ -141,19 +143,30 @@ setMethod(".adddroptarget",
           function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
             ## problem -- we want to add drop target to obj@block evb,
             ## but have handler refer to obj@widgeg=label. 
-            addDropTarget(obj@block, toolkit, targetType, handler, action, overrideobj=obj)
+            addDropTarget(obj@block, toolkit, targetType, handler, action, override=obj)
             
           })
+
+setMethod(".adddropsource",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
+          function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
+            ## problem -- we want to add drop target to obj@block evb,
+            ## but have handler refer to obj@widgeg=label. 
+            addDropSource(obj@block, toolkit, targetType, handler, action, override=obj)
+            
+          })
+
+
 ## Put onto block
 setMethod(".addpopupmenu",signature(toolkit="guiWidgetsToolkitRGtk2", obj="gLabelRGtk"),
           function(obj, toolkit, menulist, action=NULL, ...) {
-            addPopupMenuWithSignal(obj@block, toolkit , menulist, action, ...)
+            addPopupMenuWithSignal(obj@block, toolkit , menulist, action, override=obj,...)
           })
 setMethod(".add3rdmousepopupmenu",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, menulist,action=NULL, ...) {
             add3rdMousePopupMenuWithSignal(obj@block, toolkit,
-                                           menulist, action, ...)
+                                           menulist, action, override=obj,...)
           })
 ##################################################
 ## internal function -- used by gvariables in  gcommandline

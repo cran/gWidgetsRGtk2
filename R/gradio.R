@@ -154,6 +154,14 @@ setReplaceMethod("[",
                    return(x)
                  })
 
+## length
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gRadioRGtk"),
+          function(x,toolkit) {
+            return(length(x[]))
+          })
+
+
 ##################################################
 ## handlers
 
@@ -161,13 +169,22 @@ setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             buttons = tag(obj, "buttons")
-            IDs = sapply(buttons, function(x) 
-              .addHandler(x,toolkit,    # use . function here -- x doesn't have @toolkit
-              signal="toggled",
-              handler=handler,
-              action=action)
-              )
+##             IDs = sapply(buttons, function(x) 
+##               .addHandler(x,toolkit,    # use . function here -- x doesn't have @toolkit
+##               signal="toggled",
+##               handler=handler,
+##               action=action)
+##               )
 
+            IDs = sapply(buttons, function(x) {
+              try(connectSignal(x,
+                                signal="toggled",
+                                f=handler,
+                                data=list(obj=obj, action=action,...),
+                                user.data.first = TRUE,
+                                after = FALSE), silent=FALSE)
+            })
+            
             handler.ID = tag(obj, "handler.id")
             if(is.null(handler.ID))
               handler.ID =list()

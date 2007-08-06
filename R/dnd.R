@@ -87,7 +87,10 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
             }
   ## this gets drag-data-get signal
   ## action isn't working! (For "object" action is passed in already)
-  id = .addHandler(obj,toolkit,"drag-data-get",sourceHandler)#action=action)
+  
+  theArgs = list(...)
+  
+  id = .addHandler(obj,toolkit,"drag-data-get",sourceHandler,override=theArgs$override)#action=action)
   invisible(id)
   
 }
@@ -122,8 +125,8 @@ setMethod(".adddropmotion",
 
 ## target -- how to add for RGtkObjects?
 addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=NULL,
-  overrideobj = NULL,...) {
-  ## overrideobj is used by glabel to put target onto evb, use obj for svalue() etc.
+  override = NULL,...) {
+  ## override is used by glabel to put target onto evb, use obj for svalue() etc.
   
   gtkDragDestUnset(getWidget(obj))
 
@@ -143,8 +146,8 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
     ) {
 
     ## override
-    if(!is.null(h$overrideobj))
-      h$obj = h$overrideobj
+    if(!is.null(h$override))
+      h$obj = h$override
     
     ## we would like to filter by target type, but it doesn't
     ## work right for us, so instead we hack this in. If the
@@ -230,7 +233,7 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
             ## }
             
             ## now add drop handler and return id
-            id = .addHandler(obj,toolkit,"drag-data-received", drophandler, action=action, overrideobj=overrideobj)
+            id = .addHandler(obj,toolkit,"drag-data-received", drophandler, action=action, override=override)
             invisible(id)
           }
 

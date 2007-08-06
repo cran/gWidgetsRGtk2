@@ -73,7 +73,7 @@ setMethod(".adddroptarget",
           function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
             ## problem -- we want to add drop target to obj@block evb,
             ## but have handler refer to obj@widgeg=label. 
-            addDropTarget(obj@block, toolkit, targetType, handler, action, overrideobj=obj)
+            addDropTarget(obj@block, toolkit, targetType, handler, action, override=obj)
             
           })
           

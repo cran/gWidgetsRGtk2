@@ -23,8 +23,7 @@ setMethod(".gcheckboxgroup",
             lst = list()
             n = length(items)
             for(i in 1:n) {
-              newItem = gcheckbox(items[i], checked=checked[i],
-                handler=handler, action=action)
+              newItem = gcheckbox(items[i], checked=checked[i])
               lst[[ as.character(items[i]) ]] = newItem
               add(group, newItem)
             }
@@ -35,6 +34,10 @@ setMethod(".gcheckboxgroup",
   
             tag(obj, "items") <- items
             tag(obj, "itemlist") <- lst
+
+            ## add handler
+            if(!is.null(handler))
+              ID = addhandlerchanged(obj, handler=handler, action=action, ...)
             
             return(obj)
           })
@@ -122,6 +125,7 @@ setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             lst = tag(obj,"itemlist")
-            sapply(lst, function(i) addhandlerchanged(i,handler=handler, action=action, ...))
+            sapply(lst, function(i)
+                   addhandlerchanged(i,handler=handler, action=action, override=obj, ...))
           })
           

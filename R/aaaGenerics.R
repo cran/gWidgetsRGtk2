@@ -839,11 +839,16 @@ setMethod(".addHandler",
               handler(...)
               return(TRUE)
             }
+
+            theArgs = list(...)
             
             callbackID <- try(connectSignal(getWidget(obj), ### issue: getWidget(obj),
                                             signal=signal,
                                             f=modifyHandler,
-                                            data=list(obj=obj, action=action,...),
+                                            data=list(obj=if(!is.null(theArgs$override))
+                                              theArgs$override
+                                            else
+                                              obj, action=action,...),
                                             user.data.first = TRUE,
                                             after = FALSE), silent=FALSE)
             if(inherits(callbackID,"try-error")) {
@@ -870,10 +875,21 @@ setMethod(".addHandler",
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
+
+            theArgs = list(...)
+
+            ## need to return TRUE
+            modifyHandler = function(...) {
+              handler(...)
+              return(TRUE)
+            }
             callbackID <- try(connectSignal(obj,
                                             signal=signal,
-                                            f=handler,
-                                            data=list(obj=obj, action=action, ...),
+                                            f=modifyHandler,
+                                            data=list(obj=if(!is.null(theArgs$override))
+                                              theArgs$override
+                                            else
+                                              obj, action=action, ...),
                                             user.data.first = TRUE,
                                             after = FALSE),
                               silent=TRUE)
@@ -1136,10 +1152,14 @@ setMethod("addhandlerrightclick",signature(obj="RGtkObject"),
             .addhandlerrightclick(obj,guiToolkit("RGtk2"),handler, action, ...)
           })
 
+
+## use override=obj to pass in a different obj to h$obj
 setMethod(".addhandlerrightclick",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
+            theArgs = list(...)
+            
             connectSignal(obj@widget,
                           signal = "button-press-event",
                           f = function(h, eventButton,...) {
@@ -1148,7 +1168,10 @@ setMethod(".addhandlerrightclick",
                             }
                             return(FALSE)         # continue propagation
                           },
-                          data = list(obj=obj, action=action, handler=handler),
+                          data = list(obj=if(is.null(theArgs$override))
+                            obj
+                          else
+                            theArgs$override, action=action, handler=handler),
                           user.data.first = TRUE,
                           after = FALSE
                         )

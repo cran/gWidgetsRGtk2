@@ -257,8 +257,11 @@ setReplaceMethod(".leftBracket",
 
 ## some helper functions for this
 .isLeaf = function(lst) {
-  if(is.list(lst) & !is.null(lst$handler)) return(TRUE)
-  return(FALSE)
+  if(is.list(lst) & (!is.null(lst$handler) | !is.null(lst$separator))) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
 }
 
 ## workhorse for this
@@ -274,6 +277,10 @@ addSubMenu = function(subMenu, menu.list, action=NULL, ...) {
       newSubMenu =  gtkMenu()
       addSubMenu(newSubMenu, data)
       item$SetSubmenu(newSubMenu)
+    } else if(!is.null(data$separator)) {
+      ## add a separator
+      item = gtkSeparatorMenuItem()
+      subMenu$Append(item)
     } else {
       ## what name
       if(!is.null(data$label))

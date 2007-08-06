@@ -1,3 +1,20 @@
+2007-08-04  John Verzani  <jverzani@gmail.com>
+
+	* R/dnd.R: added override obj to adddropsoruce. This is so glabel
+		  can be a drop source
+
+2007-08-03  John Verzani  <jverzani@gmail.com>
+
+	* R/gcheckboxgroup.R: fixed addhandlerchanged
+
+	* R/gmenu.R (gtkMenuPopupHack): fixed lacking separator in
+		  menu. Use separator=TRUE to add separator.
+
+2007-08-02  John Verzani  <jverzani@gmail.com>
+
+	* R/gradio.R: added length method
+	default handler wasn't right.
+
 2007-07-30  John Verzani  <jverzani@gmail.com>
 
 	* R/gdroplist.R: coerce.with when editable added

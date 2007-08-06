@@ -149,9 +149,10 @@ setMethod(".ginput",
               invisible(NA)                # NA or ""?
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
+              val = svalue(input)
               dlg$Destroy()
               ## input is widget, return value of widget
-              invisible(svalue(input))
+              invisible(val)
             } else {
               print(response)
             }
