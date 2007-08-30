@@ -137,12 +137,18 @@ setMethod(".add",
 openPageDfNotebookDialog = function(nb, ...) {
   ## dialog for selecting variable to open
   tmp = ls(envir=.GlobalEnv)
-  dataframelike = tmp[
-    sapply(tmp, function(x) is.dataframelike(svalue(x)))
-    ]
-  ## Kludget, but want the class character for these
-  dataframelike = data.frame(dataframelike);
-  dataframelike[,1] = as.character(dataframelike[,1])
+  if(length(tmp) == 0) {
+    dataframelike = data.frame(Avail.DataSets = "", stringsAsFactors=FALSE)
+  } else {
+    dataFrameInds = sapply(tmp, function(x) is.dataframelike(svalue(x)))
+    if(any(dataFrameInds)) {
+      dataframelike = tmp[dataFrameInds]
+      dataframelike = data.frame(Avail.DataSets = dataframelike, stringsAsFactors=FALSE)
+    } else {
+      dataframelike = data.frame(Avail.DataSets = "", stringsAsFactors=FALSE)
+    }
+  }
+     
 
   theTitle = "Double click a data set to select"
   win = gwindow(theTitle, visible=TRUE)
@@ -282,8 +288,13 @@ savePageDfNotebook = function(nb, ...) {
   ## dataframe
 
   ## nb stores gridobject, and tab is name
-  gridObj = nb[svalue(nb)]                   # widget store
-  dfName = names(nb)[svalue(nb)]             # for tab label
+  curPage = svalue(nb)
+  if(curPage == 0)                      # nothing to save
+    return(TRUE)
+
+  ## save it
+  gridObj = nb[curPage]                   # widget store
+  dfName = names(nb)[curPage]             # for tab label
   df = gridObj[,, drop=FALSE]
   names(df) <- names(gridObj)           # fix names
 

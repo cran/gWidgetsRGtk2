@@ -1,3 +1,19 @@
+2007-08-30  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R (make.row.names): Fixed issue with value being a
+		  vector in svalue<-; coerce to a data frame
+
+	* R/ggroup.R: avoid raise.on.dragmotion uner windows -- was
+		  causing dnd to flutter away
+
+	* R/gcommandline.R: fixed writelines bug with quoted filenames
+
+	* R/gnotebook.R:  fixed "[" with 0-length nbs
+
+2007-08-28  John Verzani  <jverzani@gmail.com>
+
+	* R/gwindow.R: fixed dispose method. Broken somehow?
+
 2007-08-14  John Verzani  <jverzani@gmail.com>
 
 	* R/gfile.R: implemented quote argument (... one called from

@@ -101,8 +101,16 @@ setMethod(".gcommandline",
                 if(svalue(saveType) == "commands")
                   values = svalue(tag(icl,"editText"))
                 else
-                  values = svalue(tag(icl,"showText")) 
-                writeLines(values, filename)
+                  values = svalue(tag(icl,"showText"))
+                ## strop quotes off filename
+                filename = gsub("^'","", filename)
+                filename = gsub("'$","", filename)
+                filename = gsub('^"',"", filename)
+                filename = gsub('"$',"", filename)
+                err = try(writeLines(values, filename),silent=TRUE)
+                if(inherits(err, "try-error")) {
+                  cat("Saving gave an error:",err,"\n")
+                }
                 dispose(win)
               }, container=buttonGroup)
             }

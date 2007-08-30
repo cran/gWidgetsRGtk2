@@ -771,13 +771,17 @@ setMethod(".dispose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, ...) {
             widget = getWidget(obj)
-            widget = widget$GetParentWindow()
-            if("<invalid>" %in% class(widget))
-              return()
-            else
+            if("GtkWindow" %in% class(widget)) {
               widget$Destroy()
-
-            return(TRUE)
+              return(TRUE)
+            } else {
+              widget = widget$GetParentWindow()
+              if("<invalid>" %in% class(widget))
+                return(FALSE)
+              else
+                widget$Destroy()
+              return(TRUE)
+            }
           })
 
 

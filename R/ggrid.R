@@ -657,18 +657,14 @@ setReplaceMethod(".leftBracket",
                     ## more rows, same columns
                     ## need to lengthen data frame
                     ## strategy -- replace first rows, then add one at atime
-                    if(dv[2] == 1)
-                      frame[1:m, 3*((1:n)+1)] <- value[1:m]
-                    else
-                      frame[1:m, 3*((1:n)+1)] <- value[1:m,]
-                    
+                    frame[1:m, 3*((1:n)+1)] <- value[1:m,]
+
+                    ## for k=1 case
+                    value = as.data.frame(value,stringsAsFactors=FALSE)
                     for(i in (m+1):dv[1]) {
                       replaceList = list(TRUE,"",i,frame[1,4],frame[1,5])
                       for(k in 1:n) {
-                        if(dv[2] == 1)
-                          replaceList[[3*(k+1)]] <- value[i] # value
-                        else
-                          replaceList[[3*(k+1)]] <- value[i,k] # value
+                        replaceList[[3*(k+1)]] <- value[i,k] # value
                         replaceList[[3*(k+1)+1]] <- frame[1,3*(k+1)+1] #fg
                         replaceList[[3*(k+1)+2]] <- frame[1,3*(k+1)+2] #bg
                       }

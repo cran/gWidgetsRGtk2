@@ -430,9 +430,10 @@
 %%
 \alias{.dispose-methods}
 \alias{.dispose,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.dispose,gWindowRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.dispose,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.dispose,gTextRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.dispose,gHelpRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.dispose,gHelpRGtk,guiWidgetsToolkitRGtk2-method}
 %%
 %% --  visible --
 %%

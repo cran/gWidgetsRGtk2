@@ -44,11 +44,18 @@ setMethod(".ggroup",
 
             ## raise if we drag across
             if(!is.null(theArgs$raise.on.dragmotion)) {
-              ## need drop target before 
-              adddroptarget(obj, handler = function(h,...) {})
-##              adddropmotion(obj, handler = function(h,...) getWidget(h$obj)$GetWindow()$Raise())
-              ## some bug in windows, try focus
-              adddropmotion(obj, handler = function(h,...) focus(obj) <- TRUE) ##getWidget(h$obj)$GetParentWindow()$Focus())
+              ## we tried Raise and Focus here, but still have bug
+              ## with windows causing the drop value to flutter away
+              ## after the window is raised. So we cop out and avoid
+              ## this on Window
+
+              if(.Platform$OS.type != "windows") {
+                ## need drop target before a drag motion!! 
+                adddroptarget(obj, handler = function(h,...) {})
+                ##              adddropmotion(obj, handler = function(h,...) getWidget(h$obj)$GetWindow()$Raise())
+                ## some bug in windows, try focus
+                adddropmotion(obj, handler = function(h,...) focus(obj) <- TRUE) ##getWidget(h$obj)$GetParentWindow()$Focus())
+              }
             }
             return(obj)
           })

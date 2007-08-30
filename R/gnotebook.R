@@ -352,6 +352,11 @@ setMethod(".leftBracket",
           function(x, toolkit, i, j, ..., drop=TRUE) {
             if(missing(i))
               i = 1:length(x)
+            if(i == 0 || i > length(x)) {
+              warning("No widget for that index")
+              return()
+            }              
+
             if(length(i) > 1) {
               lst = sapply(i,function(j)
                 getNotebookPageWidget(x,pageno = j-1)

@@ -81,6 +81,12 @@ setMethod(".size",
             return(unlist(theSize[2:3]))
           })
 
+setMethod(".dispose",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
+          function(obj, toolkit, ...) {
+            obj@widget$Destroy()
+          })
+
 ##################################################
 ## handlers
 setMethod(".addhandlerdestroy",
