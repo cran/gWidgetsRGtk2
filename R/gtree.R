@@ -166,6 +166,21 @@ setMethod(".gtree",
 ## Take the data frame and massage it to return
 ## icons if asked, and figure out offspring
 getOffSpringIcons = function(children, hasOffspring, icon.FUN) {
+
+  ## do we expand?
+  ## how to determine if offspring are needed?
+  ## default to hasOffspring, then second column, then default to FALSE
+  if(!is.null(hasOffspring)) {
+    doExpand = hasOffspring(children)
+  } else {
+    ## if second column is logical, we use that
+    if(is.logical(children[,2])) {
+      doExpand = children[,2]
+      children = children[,-2, drop=FALSE]
+    } else {
+      doExpand = rep(FALSE, nrow(children))
+    }
+  }
   
   ## make icons first column if there
   ## icon.FUN is called on data.frame, returns vector to cbind to children.
@@ -177,22 +192,7 @@ getOffSpringIcons = function(children, hasOffspring, icon.FUN) {
       children = data.frame( icons = character(0), children)
     }
   }
-  
-  ## how to determine if offspring are needed?
-  ## default to hasOffspring, then second column, then default to FALSE
-  
-  if(!is.null(hasOffspring)) {
-    doExpand = hasOffspring(children)
-  } else {    
-    ## ## if second col is not logical, we make it so
-    if(ncol(children) == 2 || !is.logical(children[,3])) {
-      doExpand = rep(FALSE, nrow(children))
-    } else {
-      doExpand = children[,3]
-      children = children[,-3,drop=FALSE]
-    }
-  }
-  
+    
   return(list(children=children, doExpand=doExpand))
 }
 

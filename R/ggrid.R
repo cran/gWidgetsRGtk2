@@ -633,6 +633,7 @@ setReplaceMethod(".leftBracket",
             ## we have to be careful if we are *replacing*. If the size isn't
             ## the same, then we need to make a new store.
             if(missing(i)  && missing(j)) {
+              if(dv[2] == 0) dv[2] <- 1
               if(dv[2] < n) {
                 warning("Can't replace with fewer columns")
                 return(x)
@@ -647,20 +648,25 @@ setReplaceMethod(".leftBracket",
                 } else {
                   ## fewer or more rows
                   ## make a new padded rGtkDataFrame, then replace model
-                  if(dv[1] < m) {
+                  if(dv[1] == 0) {
+                    ## zero out
+                    frame = frame[0,,drop=FALSE]
+                  } else if(dv[1] < m) {
                     ## fewer rows, same columns
                     frame = frame[1:dv[1],,drop=FALSE]
-                    frame[,3*((1:n)+1)] <- value
+                    if(dv[1] > 0)       # something to replace?
+                      frame[,3*((1:n)+1)] <- value
                     ## leave row and column names out of this
                     ## user can replace with dimnames
                   } else {
                     ## more rows, same columns
                     ## need to lengthen data frame
                     ## strategy -- replace first rows, then add one at atime
-                    frame[1:m, 3*((1:n)+1)] <- value[1:m,]
-
                     ## for k=1 case
                     value = as.data.frame(value,stringsAsFactors=FALSE)
+
+                    frame[1:m, 3*((1:n)+1)] <- value[1:m,]
+                    
                     for(i in (m+1):dv[1]) {
                       replaceList = list(TRUE,"",i,frame[1,4],frame[1,5])
                       for(k in 1:n) {

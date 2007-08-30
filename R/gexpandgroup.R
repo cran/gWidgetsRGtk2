@@ -8,7 +8,7 @@ setClass("gExpandgroupRGtk",
 setMethod(".gexpandgroup",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   text="", markup=FALSE,
+                   text="", markup=FALSE, horizontal=TRUE,
                    handler=NULL, action=NULL,
                    container = NULL, ...){
 
@@ -22,7 +22,7 @@ setMethod(".gexpandgroup",
 
             theArgs = list(...)
             
-            group = ggroup(...)
+            group = ggroup(horizontal=horizontal, ...)
             expander$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
 
             ## we put widget=group here to get gGroup methods, but

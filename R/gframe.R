@@ -9,6 +9,7 @@ setMethod(".gframe",
           function(toolkit,
                    text = "", markup=FALSE,
                    pos = 0, ## pos in [0,1] 0 for left, 1 for right
+                   horizontal=TRUE,
                    container=NULL,
                    ...) {
             
@@ -24,7 +25,7 @@ setMethod(".gframe",
             }
             frame$SetLabelAlign(pos,0)
             
-            group = ggroup(...) # for horizontal, spacing etc.
+            group = ggroup(horizontal=horizontal, ...) # for horizontal, spacing etc.
             frame$Add(getBlock(group))
 
             ## add label to group

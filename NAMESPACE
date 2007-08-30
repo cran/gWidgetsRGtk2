@@ -8,7 +8,8 @@ importFrom(gWidgets,
 "gframe", "gexpandgroup", "gnotebook", "glayout", "gpanedgroup",
 "gmessage", "ginput", "gconfirm", "gbasicdialog",
 "addStockIcons","getStockIcons",
-           "stockIconFromClass","stockIconFromObject"
+           "stockIconFromClass","stockIconFromObject",
+           ".fixFontMessUp"
 )
 
 importClassesFrom(gWidgets, 
@@ -62,7 +63,7 @@ importMethodsFrom(gWidgets,
 ### WAS RGTK2 
 import(RGtk2)
 
-export("str2")
+#export("str2")
 ## export("Paste","stripWhiteSpace","rpel","str1","str2","untaintName",
 ##        "stockIconFromClass","stockIconFromObject",
 ##        "Timestamp","Timestamp<-"
