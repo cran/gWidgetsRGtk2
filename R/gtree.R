@@ -32,18 +32,19 @@ setMethod(".gtree",
             
             ## get base offspring
             children = offspring(c(), offspring.data)
+            ## ask before we put in icon info if asked
+            if(is.null(col.types))
+              col.types = children[1,]
+            
             lst = getOffSpringIcons(children, hasOffspring, icon.FUN)
             children = lst$children
             doExpand = lst$doExpand
             
             
-            if(is.null(col.types))
-              col.types = children[1,]
-            
             
             
             ## get GTK types -- force first to be character
-            types = c("gchararray",sapply(col.types[-1],RtoGObjectConversion))
+            types = c("gchararray",sapply(col.types[ ,-1],RtoGObjectConversion))
             if(iconFudge == 1)
               types = c("gchararray", types)       # stores filename of image
             

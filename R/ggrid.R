@@ -367,15 +367,19 @@ setMethod(".ggrid",
                 visible(h$action) <- vals
               })
             }
-            
+
+
             if(doSort) {
-              model = gtkTreeModelSort(store)
+              ## model = gtkTreeModelSort(store)
+              model = store
             } else {
               model = store$FilterNew()
               model$SetVisibleColumn(0)
             }
             
-            view <- gtkTreeViewNewWithModel(model)
+            view <- gtkTreeViewNew(TRUE)
+            view$SetModel(model)
+            
             tag(obj,"view") <- view
             tag(view, "gridObj") <- obj # no toolkit inside view
             obj@widget <- view          # replace widget
@@ -464,7 +468,7 @@ setMethod(".svalue",
           function(obj, toolkit, index=NULL, drop=NULL,...) {
             theArgs = list(...)
             view = tag(obj,"view")
-            indices = .getSelectedIndices(view)
+            indices = .getSelectedIndices(obj,view)
 
             
             
@@ -479,19 +483,26 @@ setMethod(".svalue",
           })
           
 ## return indices for the original store, not filtered or sorted
-.getSelectedIndices = function(view, ...) {
+.getSelectedIndices = function(obj, view, ...) {
   selection = view$GetSelection()$GetSelectedRows()$retval
-  
+
   if(length(selection) == 0)
     return(NULL)
+
+  store = view$GetModel()
+
+  if(is.null(tag(obj,"type")) || tag(obj,"type") == "gdf") {
   
-  sortedOrFilteredStore = view$GetModel()
-  origStore = sortedOrFilteredStore$GetModel()
-  
-  indices = sapply(selection,function(i) {
-    ind = sortedOrFilteredStore$ConvertPathToChildPath(i)$ToString()
-    as.numeric(ind) + 1                 # shift to 1:m base
-  })
+    indices = sapply(selection,function(i) {
+      ind = store$ConvertPathToChildPath(i)$ToString()
+      as.numeric(ind) + 1                 # shift to 1:m base
+    })
+  } else {
+    indices = sapply(selection,function(i) {
+      ind = as.numeric(i$ToString())
+      as.numeric(ind) + 1                 # shift to 1:m base
+    })
+  }
             
   return(indices)
   
@@ -627,6 +638,7 @@ setReplaceMethod(".leftBracket",
             theColors = tag(x,"theColors")
             store = .getRGtkDataFrame(x)
             view = tag(x,"view")
+            
             frame = as.data.frame(store)
             
 
@@ -680,7 +692,8 @@ setReplaceMethod(".leftBracket",
                   ## now swap out model in tree view
                   newstore = rGtkDataFrame(frame)
                   if(tag(x,"doSort")) {
-                    model = gtkTreeModelSort(newstore)
+                    ##model = gtkTreeModelSort(newstore)
+                    model = newstore
                   } else {
                     model = newstore$FilterNew()
                     model$SetVisibleColumn(0)
@@ -840,7 +853,8 @@ setReplaceMethod(".dimnames",
                    store = tag(x,"store")
                    if(is.null(store))
                      store = tag(x, "store")
-                   store[,3] <- make.row.names(rnames)
+                   if(length(rnames) > 0)
+                     store[,3] <- make.row.names(rnames)
                    
                    return(x)
                  })
@@ -1034,7 +1048,10 @@ setMethod(".addhandlerchanged",
   ## return the rGtk data frame stored in obj
 .getRGtkDataFrame = function(obj, ...) {
   view = tag(obj,"view")
-  view$GetModel()$GetModel()            # sort or filter
+  if(tag(obj,"doSort"))
+    view$GetModel()
+  else
+    view$GetModel()$GetModel()            # filter
 }
 
 
@@ -1148,8 +1165,10 @@ addTreeViewColumnNoEdit = function(obj, j,label) {
   }
   
   view.col$AddAttribute(cellrenderer, "text", 3*(j+1) - 1)
-  view.col$AddAttribute(cellrenderer,"foreground",3 *(j+1) + 1 - 1)
-  view.col$AddAttribute(cellrenderer,"background",3 *(j+1) + 2 - 1)
+  if(!is.null(tag(obj,"type")) && tag(obj,"type") == "gdf") {
+    view.col$AddAttribute(cellrenderer,"foreground",3 *(j+1) + 1 - 1)
+    view.col$AddAttribute(cellrenderer,"background",3 *(j+1) + 2 - 1)
+  }
   view$InsertColumn(view.col,
                     j - 1 + tag(obj,"doIcons") + tag(obj,"doRownames"))
   

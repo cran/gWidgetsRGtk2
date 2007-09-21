@@ -116,19 +116,6 @@ is.gdataframecolumn = function(obj) {
 }
 
 ## Function to convert back and forth between R classes and GObject classes
-RtoGObjectConversion = function(obj) {
-  if("gComponent" %in% class(obj)) return("GObject")
-  if(is.list(obj)) return("GObject")
-  
-  Klasse = class(obj)[1]                # silly name?
-  switch(Klasse,
-         "integer"="gint",
-         "numeric"="gdouble",
-         "gtk"="GObject",
-         "logical" = "gboolean",
-         "gchararray"
-         )
-}
 
 
 ### these are used by gvarbrowser

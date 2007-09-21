@@ -17,6 +17,19 @@ setMethod(".getToolkitWidget",
           function(obj, toolkit) getWidget(obj))
 
 
+RtoGObjectConversion = function(obj) {
+  if("gComponent" %in% class(obj)) return("GObject")
+  if(is.list(obj)) return("GObject")
+  
+  Klasse = class(obj)[1]                # silly name?
+  switch(Klasse,
+         "integer"="gint",
+         "numeric"="gdouble",
+         "gtk"="GObject",
+         "logical" = "gboolean",
+         "gchararray"
+         )
+}
 
 ##################################################
 ##
