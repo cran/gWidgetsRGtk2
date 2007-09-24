@@ -616,6 +616,20 @@
 %%
 \alias{.id<--methods}
 \alias{.id<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method} 
+
+%% --  isExtant --
+%%
+\alias{isExtant-methods}
+\alias{isExtant,guiWidget-method}
+\alias{isExtant,gWidgetRGtk-method} 
+%%
+%% --  .isExtant --
+%%
+\alias{.isExtant-methods}
+\alias{.isExtant,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.isExtant,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+
+
 %%
 %% --  removehandler --
 %%
@@ -755,7 +769,8 @@
 %% --  .addhandlerunrealize --
 %%
 \alias{.addhandlerunrealize-methods}
-\alias{.addhandlerunrealize,gWidgetRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlerunrealize,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerunrealize,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandleridle --
 %%

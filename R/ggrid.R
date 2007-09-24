@@ -340,10 +340,10 @@ setMethod(".ggrid",
                 ## we filter based on value in this column. Define filter.labels 
                 filter.labels = c("",sort(unique(as.character(store[,3*(filter.column+1)]))))
                 filter.FUN = function(obj, filter.by) {
-                  if(filter.by == "") {
+                  if(length(filter.by) == 0 || filter.by == "") {
                     vals = rep(TRUE, dim(obj)[1])
                   } else {
-                    vals = as.character(store[,3*(filter.column +1)]) == as.character(filter.by)
+                    vals = as.character(obj[,filter.column,drop=TRUE]) == as.character(filter.by)
                   }
                   return(vals)
                 }
@@ -360,7 +360,7 @@ setMethod(".ggrid",
                 
               }
               tag(obj,"filter.FUN") <- filter.FUN
-              
+              tag(obj,"filter.popup") <- filter.popup
               
               addhandlerchanged(filter.popup, action=obj,handler = function(h,...) {
                 vals = tag(h$action,"filter.FUN")(h$action, svalue(h$obj))
@@ -470,16 +470,21 @@ setMethod(".svalue",
             view = tag(obj,"view")
             indices = .getSelectedIndices(obj,view)
 
+            ## careful, we may be filtering!
+            vals = visible(obj)
             
+            if(!is.null(index) && index == TRUE) {
+              ## we may be filtering. Need to undo
+              return(which(vals)[indices])
+            }
+
+            ## Now a value. Works if filtering
+            df = obj[vals,,drop=FALSE]
             
-            if(!is.null(index) && index == TRUE)
-              return(indices)
-            
-            ## Now a value
             if(!is.null(drop) && drop == FALSE)
-              obj[indices,,drop=FALSE]
+              df[indices,,drop=FALSE]
             else
-              obj[indices, tag(obj,"chosencol"), drop=TRUE] # no drop=FALSE here
+              df[indices, tag(obj,"chosencol"), drop=TRUE] # no drop=FALSE here
           })
           
 ## return indices for the original store, not filtered or sorted
@@ -791,6 +796,16 @@ setReplaceMethod(".leftBracket",
               frame = store[,3*((1:n)+1)]
               store[,2] = getstockiconname(tag(x,"icon.FUN")(frame))
             }
+
+            ## update filter
+            if(tag(x,"doFilter") && !is.null(tag(x,"filter.column"))) {
+              popup = tag(x,"filter.popup")
+              vals = frame[,3*(tag(x,"filter.column")+1), drop=TRUE]
+              popup[] <- c("",as.character(sort(unique(vals))))
+              svalue(popup, index=TRUE) <- 1
+            }
+            
+            
             return(x)
           })
                  
@@ -1009,7 +1024,7 @@ setMethod(".addhandlerclicked",
             } else {
               ## gtable -- put onto selection
               theSelection = obj@widget$GetSelection()
-              ID = connectSignal(theSelection,
+              ID = try(connectSignal(theSelection,
                 signal = "changed",
                 f = function(h,...) {
                   h$handler(h,...)
@@ -1017,8 +1032,9 @@ setMethod(".addhandlerclicked",
                 data = list(obj=obj, action=action, handler=handler),
                 user.data.first = TRUE,
                 after = FALSE
-                )
-              invisible(ID)
+                ),
+                silent=TRUE)
+                invisible(ID)
             }
           })
 
@@ -1268,12 +1284,13 @@ addTreeViewColumnWithEdit = function(obj, j,label) {
   view.col$AddAttribute(cellrenderer,"background",3 *(j+1) + 2 - 1)
   
   ## edit signal
-  callbackId = connectSignal(cellrenderer,
+  callbackId = try(connectSignal(cellrenderer,
                 signal = "edited",
                 f=edit.handler,
                 data = list(obj=cellrenderer,action=obj,column.number = j),
                 user.data.first = TRUE,
-                after=FALSE)
+                after=FALSE),
+    silent=TRUE)
   ##
   view$InsertColumn(view.col,
                     j - 1 + tag(obj,"doIcons") + tag(obj,"doRownames"))

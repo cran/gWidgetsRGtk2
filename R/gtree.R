@@ -48,10 +48,11 @@ setMethod(".gtree",
             if(iconFudge == 1)
               types = c("gchararray", types)       # stores filename of image
             
-            ## define treestore
+            ## define treestore, sorted, view
             treestore = gtkTreeStoreNew(types)
-            ## define view
-            view = gtkTreeViewNewWithModel(treestore)
+            treestoreModel = gtkTreeModelSortNewWithModel(treestore)
+            view = gtkTreeViewNewWithModel(treestoreModel)
+
             ##  if(nrow(children) > 15)
             ##    view$SetFixedHeightMode(TRUE)       # speeds up this. FAILED?
             view$SetSearchColumn(iconFudge)         # for CTRL-f
@@ -67,7 +68,7 @@ setMethod(".gtree",
               ## title
               if(!is.na(colHeaders[i]) && !is.null(colHeaders[i]))
                 view.col$SetTitle(colHeaders[i])
-              view.col$SetSortColumnId(i-1)
+              view.col$SetSortColumnId(i-1) # allow sorting
               view.col$PackStart(cellrenderer, TRUE)
               view.col$AddAttribute(cellrenderer, "text", i-1)
               view$InsertColumn(view.col,i-1)
@@ -103,6 +104,7 @@ setMethod(".gtree",
             obj = new("gTreeRGtk", block=group, widget=view, toolkit=toolkit)
 
             tag(obj,"store") <- treestore
+            tag(obj,"SortedStore") <- treestoreModel
             tag(obj,"view") <- view
             tag(obj,"offspring") =offspring
             tag(obj,"hasOffspring") = hasOffspring
@@ -119,11 +121,16 @@ setMethod(".gtree",
             ## now add a handler to row-exapnd
             addhandler(obj,"row-expanded",action = offspring.data,
                        handler = function(h,view, iter, path,...) {
+                         ## get unsorted iter from path
+                         uspath = treestoreModel$ConvertPathToChildPath(path)
+                         iter = treestore$GetIter(uspath)$ite
+                         
                          children = offspring(.getValuesFromIter(h$obj,iter),h$action)
                          
                          lst = getOffSpringIcons(children, hasOffspring, icon.FUN)
                          children = lst$children
                          doExpand = lst$doExpand
+
                          
                          addChildren(treestore, children, doExpand,
                                      tag(h$obj,"iconFudge"), iter)
@@ -136,8 +143,11 @@ setMethod(".gtree",
             
             addhandler(obj,"row-collapsed",
                        handler = function(h, view, iter, path, ...) {
-                         ## debug
-                         string = treestore$GetPath(iter)$ToString()
+
+                         ## get unsorted iter from path
+                         uspath = treestoreModel$ConvertPathToChildPath(path)
+                         iter = treestore$GetIter(uspath)$ite
+
                          ## get children, remove
                          n = treestore$IterNChildren(iter)
                          if(n > 1) { ## n=1 gets removed when expanded
@@ -217,10 +227,11 @@ addChildren = function(treestore, children, doExpand, iconFudge, parent.iter=NUL
   }
 }
 
-## use a different signature, should I give this a different name?
+## has different arguments, but we mask this with ...
+## this has offspringdata as first argument
 setMethod("update",
           signature(object="gTreeRGtk"),
-          function(object) {
+          function(object,...) {
             theArgs = list(...)
             offspring.data = theArgs$offspring.data
             if(is.null(offspring.data))
@@ -319,8 +330,11 @@ setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gTreeRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
             obj = x
-            iter = obj@widget$GetSelection()$GetSelected()
-            string = tag(obj,"store")$GetPath(iter$iter)$ToString()
+            iter = obj@widget$GetSelection()$GetSelected()$iter
+            ## need to convert to unsorted
+            iter = tag(obj,"SortedStore")$ConvertIterToChildIter(iter)$child.iter
+            
+            string = tag(obj,"store")$GetPath(iter)$ToString()
             indices = unlist(strsplit(string,":"))
             thePath = c()
             for(j in 1:length(indices)) {

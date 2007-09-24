@@ -132,7 +132,8 @@ setClass("gFilebrowseRGtk",
 setMethod(".gfilebrowse",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
-                   text="Select or drag name here...", type="open",  quote=TRUE,
+                   text="Select or drag name here...", type="open",
+                   quote=TRUE,
                    container=NULL, ...) {
 
 
@@ -141,7 +142,8 @@ setMethod(".gfilebrowse",
               group = ggroup(horizontal=TRUE, container=container, expand=TRUE)
             else
               group = ggroup(horizontal=TRUE, container=container)
-            
+
+            theArgs = list(...)
             entry = gedit(text=text, container=group, ...)
 
             file.cb = function(h,...) {
@@ -151,7 +153,8 @@ setMethod(".gfilebrowse",
               ## in this h is gFile object, not gBrowse object
               val = gfile(text=text,
                 type = type,
-                quote = TRUE
+                quote = quote,          
+                filter = theArgs$filter
                 )
               svalue(entry) <- val
             }

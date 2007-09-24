@@ -71,6 +71,10 @@ setMethod(".ggraphics",
 ##                 return(TRUE)
 ##               })
 
+            ## does sleeping for a bit help out with the 
+            ## Error in plot.new() : figure margins too large
+            Sys.sleep(.25)
+            
             ## attach?
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)

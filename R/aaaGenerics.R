@@ -342,6 +342,21 @@ setReplaceMethod(".visible",
                    return(obj)
                  })
 
+## isExtant -- can we see the window
+setMethod("isExtant",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            .isExtant(obj,obj@toolkit, ...)
+          })
+
+setMethod(".isExtant",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) {
+            widget = getWidget(obj)
+            if(is.null(widget)) return(FALSE)
+            !inherits(widget,"<invalid>") # test to see if destroyed
+          })
+
+
 ## enabled -- not implemeneted, don't   know how to find sensitive. Would need to keep in
 ##            in the widget using tag or somesuch
 setMethod("enabled",signature(obj="gWidgetRGtk"),
@@ -842,7 +857,7 @@ setMethod(".addHandler",
           function(obj, toolkit,
                    signal, handler, action=NULL, ...) {
             
-            ## need to return TRUE
+            ## need to return logical
             modifyHandler = function(...) {
               handler(...)
               return(TRUE)
@@ -1092,6 +1107,9 @@ setMethod(".addhandlerdestroy",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
+            ## See
+            ## http://www.moeraki.com/pygtktutorial/pygtk2tutorial/sec-SteppingThroughHelloWorld.html
+            ## for difference between "destroy" and "delete-event"
             .addHandler(obj, toolkit, signal="destroy",
                         handler=handler, action=action, ...)
           })
@@ -1168,21 +1186,22 @@ setMethod(".addhandlerrightclick",
                    handler, action=NULL, ...) {
             theArgs = list(...)
             
-            connectSignal(obj@widget,
-                          signal = "button-press-event",
-                          f = function(h, eventButton,...) {
-                            if(eventButton$GetButton() == 3) {
-                              h$handler(h,...)
-                            }
-                            return(FALSE)         # continue propagation
-                          },
-                          data = list(obj=if(is.null(theArgs$actualobj))
-                            obj
-                          else
-                            theArgs$actualobj, action=action, handler=handler),
-                          user.data.first = TRUE,
-                          after = FALSE
-                        )
+            try(connectSignal(obj@widget,
+                              signal = "button-press-event",
+                              f = function(h, eventButton,...) {
+                                if(eventButton$GetButton() == 3) {
+                                  h$handler(h,...)
+                                }
+                                return(FALSE)         # continue propagation
+                              },
+                              data = list(obj=if(is.null(theArgs$actualobj))
+                                obj
+                              else
+                                theArgs$actualobj, action=action, handler=handler),
+                              user.data.first = TRUE,
+                              after = FALSE
+                              ),
+                silent=TRUE)
           })
 
 ## idle

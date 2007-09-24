@@ -27,6 +27,8 @@ setMethod(".gwindow",
             window$SetTitle(title)
             
             if (!is.null(handler)) {
+              ## handler can't refer to h$obj, as it is already <invalid>
+              ## by the time it gets here.
               id <- addhandlerdestroy(obj, handler=handler, action=action)
             }
 
@@ -89,6 +91,30 @@ setMethod(".dispose",
 
 ##################################################
 ## handlers
+## THis intercepts the windowmanager delete-event, destroy does not
+setMethod(".addhandlerunrealize",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            theArgs = list(...)
+            try(connectSignal(obj@widget,
+                          signal="delete-event",
+                          f = function(...) {
+                            val = handler(...)
+                            if(is.logical(val))
+                              return(val)
+                            else
+                              return(TRUE)
+                          },
+                          data=list(obj=if(!is.null(theArgs$actualobj))
+                            theArgs$actualobj
+                          else
+                            obj, action=action,...),
+                          user.data.first = TRUE,
+                          
+                          after=FALSE),
+                silent=TRUE)
+          })
+
 setMethod(".addhandlerdestroy",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {

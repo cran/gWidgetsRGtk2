@@ -1,15 +1,20 @@
 ## return gtk objects from others
 getBlock = function(widget) {
+  if(inherits(widget,"<invalid>")) return(NULL)
   if(is(widget,"RGtkObject")) return(widget)
   if(is(widget,"gWidgetRGtk")) return(getBlock(widget@block))
   if(is(widget,"guiWidget")) return(getBlock(widget@widget))
   cat("Can't get block")
-  return(NA)
+  return(NULL)
 }
 
+## return NA or widget
 getWidget = function(widget) {
-  while(!is(widget,"RGtkObject"))
+  if(inherits(widget,"<invalid>")) return(NULL)
+  while(!is(widget,"RGtkObject")) {
+    if(inherits(widget,"<invalid>")) return(NULL)
     widget = widget@widget
+  }
   widget
 }
 setMethod(".getToolkitWidget",

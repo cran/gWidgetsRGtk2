@@ -1,3 +1,36 @@
+2007-10-24  John Verzani  <jverzani@gmail.com>
+
+	* R/ggrid.R: fixed filter.fun and [.] <- stuff. Fixed bug with
+		  svalue when filtering
+	
+
+	* R/ghelp.R: trying to fix help under windows issue, fix
+		  filtercolumn not working (why?)
+	
+
+2007-10-23  John Verzani  <jverzani@gmail.com>
+
+	* R/gwindow.R: added addHandlerUnrealize to intercept closing by
+		  window manager.
+
+
+2007-10-21  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: Put back in sort feature. Fixed this up. (Hopefully)
+
+2007-10-20  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: took  out sort feature. Ughh. Need to figure out
+		  sorting in gtree and put this back.
+
+2007-10-11  John Verzani  <jverzani@gmail.com>
+
+	* R/gfile.R: fixed gfilebrowse to get filter passed along via ...
+
+2007-10-09  John Verzani  <jverzani@gmail.com>
+
+	* R/gtree.R: added ... to update method.
+
 2007-09-24  John Verzani  <jverzani@gmail.com>
 
 	* R/ggrid.R: fixed sorting (thanks Michael), colors only if gdf, 

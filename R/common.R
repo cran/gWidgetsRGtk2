@@ -81,8 +81,7 @@ is.gGrid = function(obj) {
 }
 
 is.invalid = function(obj) {
-  widget = getWid
-  get(obj)
+  widget = getWidget(obj)
   parent = widget$GetParentWindow()
   ifelse("<invalid>" %in% class(parent), TRUE, FALSE)
 }

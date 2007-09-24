@@ -102,9 +102,11 @@ setMethod(".dispose",
 
 ## Return gtext widget with help page
 makeHelpPage = function(topic, pkg) {
-  helpFile = help(topic, package=force(pkg), verbose=TRUE)[1]
+  helpFile = help(topic, package=force(pkg), verbose=TRUE)
 #  helpFile = system.file("help",topic,package=pkg)
-  if(helpFile != "") {
+  if(helpFile[1] != "") {
+    ## deal with windows issue here
+    helpFile = zip.file.extract(as.character(helpFile),"Rhelp.zip")
     text = readLines(helpFile)
     text = sapply(text, function(i) gsub("\\_\\\b","",i))
     helpPage = gtext(text[1],font.attr=c("bold"))
@@ -394,8 +396,7 @@ setMethod(".ghelpbrowser",
                 out = c("no matches","","")
               }
               colnames(out) = c("topic","Package","title")
-              out = as.data.frame(out)    
-              for(j in 1:3) out[,j] <- as.character(out[,j]) # avoid factors
+              out = as.data.frame(out, stringsAsFactors = FALSE)    
               
               return(out)
             }

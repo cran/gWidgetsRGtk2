@@ -78,7 +78,10 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
       if(is.null(handler)) {
         value = svalue(h$obj)
       } else {
-        value = handler(h)
+        value  = try(handler(h), silent=TRUE)
+        if(inherits(value,"try-error")) {
+          cat("Error: handler returns:",value,"\n")
+        }
       }
       ## what gets set here is passed to drop target
       selection$SetText(str=value)
@@ -173,9 +176,14 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
         ## what to do with handler?
         if(!is.null(handler)) {
           h$dropdata = sourceAction; h$x = x; h$y = y
-          handler(h, widget=widget, context=context, x=x, y=y, selection=selection,
-                  targetType=targetType,
-                  eventTime=eventTime)
+          out = try(
+            handler(h, widget=widget, context=context, x=x, y=y, selection=selection,
+                    targetType=targetType,
+                    eventTime=eventTime),
+            silent=TRUE)
+          if(inherits(out,"try-error")) {
+            cat("Error: handler has issue:",out,"\n")
+          }
         } else{
           cat("No default handler when action object is passed in\n")
         }
@@ -185,9 +193,15 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
                   ## set drop data into object passed to handlers
                   if(!is.null(handler)) {             # handler = function(h,...)
                     h$dropdata = dropdata; h$x = x; h$y = y
-                    handler(h,widget=widget, context=context, x=x, y=y, selection=selection,
-                            targetType=targetType,
-                            eventTime=eventTime)
+                    out = try(
+                      handler(h ,widget=widget, context=context, x=x, y=y,
+                              selection=selection,
+                              targetType=targetType,
+                              eventTime=eventTime),
+                      silent=TRUE)
+                    if(inherits(out,"try-error")) {
+                      cat("Error: handler has issue:",out,"\n")
+                    }
                   } else {
                     svalue(h$obj) <- dropdata
                   }

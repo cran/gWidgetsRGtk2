@@ -288,12 +288,13 @@ setMethod(".addhandlerchanged",
                 }
               },action)  # clicked -- not keystroke
               ## put handler on entry too
-              connectSignal(obj@widget$GetChild(),
+              try(connectSignal(obj@widget$GetChild(),
                             signal="activate",
                             f=handler,
                             data=list(obj=obj, action=action,...),
                             user.data.first = TRUE,
-                            after = FALSE)
+                            after = FALSE),
+                  silent=TRUE)
               invisible(id)
             } else {
               addhandler(obj,"changed",handler,action)
@@ -304,10 +305,11 @@ setMethod(".addhandlerkeystroke",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDroplistRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             ## put handler on entry 
-            connectSignal(obj@widget$GetChild(),
+            try(connectSignal(obj@widget$GetChild(),
                           signal="changed",
                           f=handler,
                           data=list(obj=obj, action=action,...),
                           user.data.first = TRUE,
-                          after = FALSE)
+                          after = FALSE),
+                silent=TRUE)
           })
