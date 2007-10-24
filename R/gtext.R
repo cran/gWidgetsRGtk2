@@ -271,19 +271,19 @@ addWidgetAtPoint = function(obj, value) {
   evb$ShowAll()
 
   ## connect move handler?
-  try(connectSignal(evb,
+  gtktry(connectSignal(evb,
                 signal = "button-press-event",
                 f = movableWidgetButtonPressHandler,
                 data = list(obj=obj@widget),
                 user.data.first = TRUE),
       silent=TRUE)
-  try(connectSignal(evb,
+  gtktry(connectSignal(evb,
                 signal = "button-release-event",
                 f = movableWidgetButtonReleaseHandler,
                 data = list(obj=obj@widget),
                 user.data.first = TRUE),
       silent=TRUE)
-  try(connectSignal(evb,
+  gtktry(connectSignal(evb,
                 signal = "motion-notify-event",
                 f = movableWidgetButtonMotionNotifyHandler,
                 data = list(obj=obj@widget),

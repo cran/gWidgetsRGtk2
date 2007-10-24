@@ -1,3 +1,16 @@
+## try without stack smashing
+gtktry = function(expr, silent=TRUE) {
+  tryCatch(expr, error = function(e) {
+    cat("Error:\n")
+    print(e)
+#    print(msg)
+#    return(msg)
+    msg = conditionMessage(e)
+    invisible(structure(msg, class = "try-error"))
+  })
+}
+         
+
 ## return gtk objects from others
 getBlock = function(widget) {
   if(inherits(widget,"<invalid>")) return(NULL)
@@ -17,6 +30,19 @@ getWidget = function(widget) {
   }
   widget
 }
+
+## return GtkWindow if possible
+getGtkWindow = function(widget) {
+  if(inherits(widget,"guiContainer") || inherits(widget,"guiComponent"))
+    widget = getToolkitWidget(widget)
+
+  while(!is(widget,"GtkWindow")) {
+    widget = widget$GetParent()
+    if(inherits(widget,"<invalid>")) return(NULL)
+  }
+  return(widget)
+}
+
 setMethod(".getToolkitWidget",
           signature(obj="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
           function(obj, toolkit) getWidget(obj))
@@ -47,7 +73,7 @@ setMethod("svalue",signature(obj="GtkTreeViewColumn"),
             drop =  ifelse(is.null(drop), TRUE, as.logical(drop))
 
             ## is this a treeviewCOlumn that ggrid made?
-            col.no = try(tag(obj,"column.number"), silent=TRUE)
+            col.no = gtktry(tag(obj,"column.number"), silent=TRUE)
             if(inherits(col.no,"try-error"))
               return(NA)
 

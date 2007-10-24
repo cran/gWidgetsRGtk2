@@ -107,7 +107,7 @@ setMethod(".gcommandline",
                 filename = gsub("'$","", filename)
                 filename = gsub('^"',"", filename)
                 filename = gsub('"$',"", filename)
-                err = try(writeLines(values, filename),silent=TRUE)
+                err = gtktry(writeLines(values, filename),silent=TRUE)
                 if(inherits(err, "try-error")) {
                   cat("Saving gave an error:",err,"\n")
                 }
@@ -305,7 +305,7 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
   useConsole=FALSE, useGUI = TRUE) {
   svalue(widget) <- ""                 # clear out
 
-  chunkexps <- try(parse(text=chunk), silent=TRUE)
+  chunkexps <- gtktry(parse(text=chunk), silent=TRUE)
   if(inherits(chunkexps,"try-error")) {
     if(useGUI)
       add(widget, chunkexps, font.attr = c("monospace"))

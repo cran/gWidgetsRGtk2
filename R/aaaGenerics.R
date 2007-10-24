@@ -865,7 +865,7 @@ setMethod(".addHandler",
 
             theArgs = list(...)
             
-            callbackID <- try(connectSignal(getWidget(obj), ### issue: getWidget(obj),
+            callbackID <- gtktry(connectSignal(getWidget(obj), ### issue: getWidget(obj),
                                             signal=signal,
                                             f=modifyHandler,
                                             data=list(obj=if(!is.null(theArgs$actualobj))
@@ -906,7 +906,7 @@ setMethod(".addHandler",
               handler(...)
               return(TRUE)
             }
-            callbackID <- try(connectSignal(obj,
+            callbackID <- gtktry(connectSignal(obj,
                                             signal=signal,
                                             f=modifyHandler,
                                             data=list(obj=if(!is.null(theArgs$actualobj))
@@ -915,7 +915,7 @@ setMethod(".addHandler",
                                               obj, action=action, ...),
                                             user.data.first = TRUE,
                                             after = FALSE),
-                              silent=TRUE)
+                                 silent=TRUE)
             ## can't' stuff in handler IDS
             if(inherits(callbackID,"try-error")) {
               cat("Couldn't connect signal:",signal,"for")
@@ -931,7 +931,7 @@ setMethod(".addHandler",
 gtkObjectDisconnectCallbackHack = function (obj, id) {
   checkPtrType(obj, "GObject")
   checkPtrType(id, "CallbackID")
-  ID = try(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
+  ID = gtktry(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
         PACKAGE = "RGtk2"), silent=TRUE)
   if(inherits(ID,"try-error"))
     return(FALSE)
@@ -968,11 +968,11 @@ setMethod(".removehandler",
               for(i in 1:length(callbackIDs)) {
                 if(is.list(callbackIDs[[i]])) # recurse if a list
                   for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
-                isCallbackID = try(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
+                isCallbackID = gtktry(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
                 if(!inherits(isCallbackID,"try-error")) {
-                  retval[i] = try(gSignalHandlerDisconnect(widget, callbackIDs[[1]]), silent=TRUE)
+                  retval[i] = gtktry(gSignalHandlerDisconnect(widget, callbackIDs[[1]]), silent=TRUE)
 
-#                  retval[i] = try(gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]]),
+#                  retval[i] = gtktry(gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]]),
 #                          silent=TRUE)
                 } else {
                   cat("DEBUG: ID not of callbackID\n")
@@ -1007,7 +1007,7 @@ setMethod(".removehandler",
               for(i in 1:length(callbackIDs)) {
                 if(is.list(callbackIDs[[i]])) # recurse if a list
                   for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
-                isCallbackID = try(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
+                isCallbackID = gtktry(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
                 if(!inherits(isCallbackID,"try-error")) {
                   retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
                 } else {
@@ -1186,7 +1186,7 @@ setMethod(".addhandlerrightclick",
                    handler, action=NULL, ...) {
             theArgs = list(...)
             
-            try(connectSignal(obj@widget,
+            gtktry(connectSignal(obj@widget,
                               signal = "button-press-event",
                               f = function(h, eventButton,...) {
                                 if(eventButton$GetButton() == 3) {

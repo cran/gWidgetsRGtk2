@@ -1024,7 +1024,7 @@ setMethod(".addhandlerclicked",
             } else {
               ## gtable -- put onto selection
               theSelection = obj@widget$GetSelection()
-              ID = try(connectSignal(theSelection,
+              ID = gtktry(connectSignal(theSelection,
                 signal = "changed",
                 f = function(h,...) {
                   h$handler(h,...)
@@ -1284,7 +1284,7 @@ addTreeViewColumnWithEdit = function(obj, j,label) {
   view.col$AddAttribute(cellrenderer,"background",3 *(j+1) + 2 - 1)
   
   ## edit signal
-  callbackId = try(connectSignal(cellrenderer,
+  callbackId = gtktry(connectSignal(cellrenderer,
                 signal = "edited",
                 f=edit.handler,
                 data = list(obj=cellrenderer,action=obj,column.number = j),
@@ -1619,7 +1619,7 @@ setMethod("gsubsetby",
                   theValues = as.character(theValues)
                 ## subsetHow of the form '== value'
                 cmd = paste("theValues",svalue(subsetHow),collapse="")
-                whichRows = try(eval(parse(text=cmd)),silent=TRUE)
+                whichRows = gtktry(eval(parse(text=cmd)),silent=TRUE)
                 if(!inherits( whichRows, "try-error")) {
                   whichRows[is.na(whichRows)] <- FALSE
                   visible(gridObj) <- whichRows

@@ -15,13 +15,25 @@ setMethod(".gdroplist",
                    ) {
 
             force(toolkit)
+
+            ## Changed this. Make objects a data.frame if
+            ## two columns, second is a stock-icon name.
             
             ## items must be a vector here
-            items = as.vector(items)              # undoes factor
-            items = unique(items)                 # unique
+            if(!inherits(items,"data.frame")) {
+              items = as.vector(items)              # undoes factor
+              items = unique(items)                 # unique
+              items = data.frame(items, stringsAsFactors=FALSE)
+            }
+
+            doIcons = ifelse(ncol(items) == 2, TRUE, FALSE)
+            if(doIcons)
+              types = c(data="gchararray",icons="gchararray")
+            else
+              types = c(dataonly="gchararray")
             
             theArgs = list(...)
-
+            
             ## keep this, but don't advertise
             if(!is.null(theArgs$do.quote)) {
               coerce.with = function(x) paste("'",x,"'",sep="",collapse="")
@@ -32,8 +44,16 @@ setMethod(".gdroplist",
             ## droplist was not happy with numeric vectors! seems strange
             
             if(editable) {
-              store = gtkTreeStoreNew("gchararray")
+              store = gtkListStoreNew(types)
               combo <- gtkComboBoxEntryNewWithModel(store, 0)
+              ## now add icon if there
+              if(doIcons) {
+                ## icon renderer
+                cellrenderer = gtkCellRendererPixbufNew()
+                combo$PackStart(cellrenderer, expand=FALSE)
+                combo$AddAttribute(cellrenderer, "stock-id", 1)
+              }
+              
               entry = combo$GetChild()
               entry$SetEditable(TRUE)
               ## add in drop target to entry
@@ -49,12 +69,18 @@ setMethod(".gdroplist",
 #              .adddroptarget(entry, toolkit, targetType="object")
               
             } else {
-              ##    store = gtkTreeStoreNew(RtoGObjectConversion(items))
-              store = gtkTreeStoreNew("gchararray")
-              combo <- gtkComboBoxNewWithModel(store,0)
-              cell = gtkCellRendererTextNew()
-              combo$PackStart(cell, TRUE)
-              combo$AddAttribute(cell,"text",0)
+              store = gtkTreeStoreNew(types)
+              combo <- gtkComboBoxNewWithModel(store)
+              if(doIcons) {
+                ## icon renderer
+                cellrenderer = gtkCellRendererPixbufNew()
+                combo$PackStart(cellrenderer, expand=FALSE)
+                combo$AddAttribute(cellrenderer, "stock-id", 1)
+              }
+              ## pack in text -- not done if no entry
+              cellrenderer = gtkCellRendererTextNew()
+              combo$PackStart(cellrenderer, expand=TRUE)
+              combo$AddAttribute(cellrenderer,"text", 0)
             }
 
             
@@ -67,6 +93,7 @@ setMethod(".gdroplist",
             tag(obj,"combo") <- combo
             tag(obj,"editable") <- editable
             tag(obj,"items") <- items
+            tag(obj,"doIcons") <- doIcons
             tag(obj, "coerce.with") = coerce.with
             
             ## load up the store
@@ -193,7 +220,7 @@ setReplaceMethod(".svalue",
                      }
                    } else {
                      combobox = obj@widget
-                     items = obj[]
+                     items = obj[]         # drops icons
                      if(!is.null(index)) { # either value or index is non-null
                        combobox$SetActive(value-1)
                      } else {
@@ -221,9 +248,9 @@ setMethod(".leftBracket",
 
             items = tag(x,"items")
             if(missing(i))
-              return(items)
+              return(items[,1,drop=TRUE])
             else
-              return(items[i])
+              return(items[i,1,drop=TRUE])
           })
 
 
@@ -240,15 +267,21 @@ setReplaceMethod("[",
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gDroplistRGtk"),
           function(x, toolkit, i, j, ..., value) {
-
+            ## items is a data frame
+            ## ncol=2 if doIcons, else 1
             olditems = tag(x,"items")
+
+            ## coerce value to a data frame, if not one
+            if(!inherits(value,"data.frame"))
+              value = as.data.frame(value, stringsAsFactors=FALSE)
+            
             if(missing(i)) {
               items = value
-              n = length(items)
+              n = nrow(items)
               i = 1:n
             } else {
               items = olditems
-              items[i] = value
+              items[i,] = value
             }
             ## update items
             tag(x,"items") <- items
@@ -256,12 +289,18 @@ setReplaceMethod(".leftBracket",
             ## now update widget
             store = tag(x,"store")
             store$Clear()
-            n = length(items)
-            
+            n = nrow(items)
+
+            doIcons = tag(x,"doIcons")
+            allIcons = getStockIcons()
             if(n  > 0)  {
               for(j in 1:n) {
-                iter = store$Append(parent=NULL)
-                store$SetValue(iter$iter, column = 0, items[j])
+#                iter = store$Append(parent=NULL)
+                iter = store$Append()
+                store$SetValue(iter$iter, column = 0, items[j,1])
+                if(doIcons)
+                  store$SetValue(iter$iter, column = 1,
+                                 allIcons[[as.character(items[j,2])]]) # convert to name
               }
             }
             
@@ -288,7 +327,7 @@ setMethod(".addhandlerchanged",
                 }
               },action)  # clicked -- not keystroke
               ## put handler on entry too
-              try(connectSignal(obj@widget$GetChild(),
+              gtktry(connectSignal(obj@widget$GetChild(),
                             signal="activate",
                             f=handler,
                             data=list(obj=obj, action=action,...),
@@ -305,7 +344,7 @@ setMethod(".addhandlerkeystroke",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDroplistRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             ## put handler on entry 
-            try(connectSignal(obj@widget$GetChild(),
+            gtktry(connectSignal(obj@widget$GetChild(),
                           signal="changed",
                           f=handler,
                           data=list(obj=obj, action=action,...),

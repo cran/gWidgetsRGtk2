@@ -143,7 +143,7 @@ setMethod(".dispose",
                     ## destroy widget
                     theWidget = obj@widget$getNthPage(cur.page - 1 + 1)
                     obj@widget$RemovePage(cur.page - 1 +i) # cur.page 1-based
-                    try(theWidget$destroy())
+                    gtktry(theWidget$destroy())
                     
                     svalue(obj) <- cur.page
                   }
@@ -155,14 +155,14 @@ setMethod(".dispose",
                 if(!((cur.page - 1 + 1) %in% dontCloseThese)) {
                   theWidget = obj@widget$getNthPage(cur.page - 1)                  
                   obj@widget$RemovePage(cur.page - 1) # value is 1 based, not 0
-                  try(theWidget$destroy())
+                  gtktry(theWidget$destroy())
                   svalue(obj) <- cur.page
                 }
               } else {
       ## no restriction of closing page
                 theWidget = obj@widget$getNthPage(cur.page - 1)                                  
                 obj@widget$RemovePage(cur.page - 1) # value is 1 based, not 0
-                try(theWidget$destroy())
+                gtktry(theWidget$destroy())
                 svalue(obj) <-cur.page
               }
             }

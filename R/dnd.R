@@ -78,7 +78,7 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
       if(is.null(handler)) {
         value = svalue(h$obj)
       } else {
-        value  = try(handler(h), silent=TRUE)
+        value  = gtktry(handler(h), silent=TRUE)
         if(inherits(value,"try-error")) {
           cat("Error: handler returns:",value,"\n")
         }
@@ -176,7 +176,7 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
         ## what to do with handler?
         if(!is.null(handler)) {
           h$dropdata = sourceAction; h$x = x; h$y = y
-          out = try(
+          out = gtktry(
             handler(h, widget=widget, context=context, x=x, y=y, selection=selection,
                     targetType=targetType,
                     eventTime=eventTime),
@@ -193,7 +193,7 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
                   ## set drop data into object passed to handlers
                   if(!is.null(handler)) {             # handler = function(h,...)
                     h$dropdata = dropdata; h$x = x; h$y = y
-                    out = try(
+                    out = gtktry(
                       handler(h ,widget=widget, context=context, x=x, y=y,
                               selection=selection,
                               targetType=targetType,

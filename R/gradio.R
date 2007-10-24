@@ -177,7 +177,7 @@ setMethod(".addhandlerchanged",
 ##               )
 
             IDs = sapply(buttons, function(x) {
-              try(connectSignal(x,
+              gtktry(connectSignal(x,
                                 signal="toggled",
                                 f=handler,
                                 data=list(obj=obj, action=action,...),

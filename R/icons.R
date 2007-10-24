@@ -4,74 +4,74 @@
 ## ie. ok returns "gtk-ok"
 
 loadGWidgetIcons = function() {
-
-  ## these were lifted from scigraphica
-  iconNames = c("2dlayer",
-    "3dcontour",
-    "arrows",
-    "arrows1",
-    "larrow",
-    "rarrow",
-    "darrow",
-    "uarrow",
-    "barplot",
-    "boxplot",
-    "boxplot1",
-    "bubbles",
-    "calendar",                         # from KDE
-    "cloud",
-    "contour",
-    "curve",
-    "dataframe",
-    "density",
-    "evaluate",
-    "factor",
-    "numeric",
-    "logical",
-    "function",
-    "function1",
-    "graph",
-    "graph2",
-    "hist",
-    "lines",
-    "matrix",
-    "newplot",
-    "pch2",
-    "plot",
-    "plot1",
-    "points",
-    "polar",
-    "scatterplot3d",
-    "select",
-    "spike",
-    "subset",
-    "symbol_circle",
-    "symbol_cross",
-    "symbol_diamond",
-    "symbol_dntriangle",
-    "symbol_dot",
-    "symbol_impulse",
-    "symbol_ltriangle",
-    "symbol_none",
-    "symbol_plus",
-    "symbol_rtriangle",
-    "symbol_square",
-    "symbol_star",
-    "symbol_uptriangle",
-    "target",
-    "ts")
-  
-  
+  ## These should definitely be grabbed from directory!
+##   ## these were lifted from scigraphica
+##   iconNames = c("2dlayer",
+##     "3dcontour",
+##     "arrows",
+##     "arrows1",
+##     "larrow",
+##     "rarrow",
+##     "darrow",
+##     "uarrow",
+##     "barplot",
+##     "boxplot",
+##     "boxplot1",
+##     "bubbles",
+##     "calendar",                         # from KDE
+##     "cloud",
+##     "contour",
+##     "curve",
+##     "dataframe",
+##     "density",
+##     "evaluate",
+##     "factor",
+##     "numeric",
+##     "integer",
+##     "logical",
+##     "function",
+##     "function1",
+##     "graph",
+##     "graph2",
+##     "hist",
+##     "lines",
+##     "matrix",
+##     "newplot",
+##     "pch2",
+##     "plot",
+##     "plot1",
+##     "points",
+##     "polar",
+##     "scatterplot3d",
+##     "select",
+##     "spike",
+##     "subset",
+##     "symbol_circle",
+##     "symbol_cross",
+##     "symbol_diamond",
+##     "symbol_dntriangle",
+##     "symbol_dot",
+##     "symbol_impulse",
+##     "symbol_ltriangle",
+##     "symbol_none",
+##     "symbol_plus",
+##     "symbol_rtriangle",
+##     "symbol_square",
+##     "symbol_star",
+##     "symbol_uptriangle",
+##     "target",
+##     "ts")
   
   ## add the icons
   ## we use xpm icons gimp can convert
+  iconFullNames = list.files(system.file("images", package="gWidgetsRGtk2"))
+  iconFullNames = iconFullNames[grep("\\.xpm$",iconFullNames)] ## just xpm
+  iconNames = gsub("\\.xpm$","",iconFullNames)
   ## Loop over all to add here
   iconFullNames = paste(iconNames,".xpm", sep="")
   iconFiles = sapply(iconFullNames, function(name) {
     system.file("images",name, package="gWidgetsRGtk2")
   })
-
-
   
   addToGtkStockIcons(iconNames, iconFiles)
 }

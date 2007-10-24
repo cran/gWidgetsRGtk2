@@ -9,6 +9,7 @@ setMethod(".gwindow",
           function(toolkit,
                    title="Window", visible=TRUE,
                    width = NULL, height = NULL,
+                   location = NULL,
                    handler=NULL, action = NULL,
                    ...
                    ) {
@@ -20,8 +21,24 @@ setMethod(".gwindow",
               if(is.null(height)) height = .7*width
               window$SetDefaultSize(width, height)
             }
-
-            
+            ## set location
+            if(!is.null(location)) {
+              if(inherits(location,"guiContainer") ||
+                 inherits(location,"guiComponent")) {
+                ## a gWidget.
+                widget = getToolkitWidget(location)
+                if(!inherits(widget,"GtkWindow"))
+                  widget = getGtkWindow(widget)
+                window$SetTransientFor(widget)
+                window$SetPosition(GtkWindowPosition["center-on-parent"])
+              } else {
+                ## check that location is a numeric pair
+                if(length(location) == 2) {
+                  location = as.integer(location)
+                  window$Move(location[1],location[2])
+                }
+              }
+            }
             obj = new("gWindowRGtk",block=window, widget=window, toolkit=toolkit)
 
             window$SetTitle(title)
@@ -96,7 +113,7 @@ setMethod(".addhandlerunrealize",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             theArgs = list(...)
-            try(connectSignal(obj@widget,
+            gtktry(connectSignal(obj@widget,
                           signal="delete-event",
                           f = function(...) {
                             val = handler(...)

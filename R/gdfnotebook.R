@@ -270,7 +270,7 @@ addPopupToPage = function(obj, nb) {    # obj is gdf instance
   ## hence this being here, not in geditdataframe.
   cols = obj@view$GetColumns()
   callbackIDs = sapply(1:length(cols), function(i) {
-    try(connectSignal(cols[[i]]$GetWidget()$GetParent()$GetParent()$GetParent(),
+    gtktry(connectSignal(cols[[i]]$GetWidget()$GetParent()$GetParent()$GetParent(),
                   signal="clicked",
                   f = f,
                   data = list(obj=cols[[i]], action=obj, col=i-1), # 0 base columns

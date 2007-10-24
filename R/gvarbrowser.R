@@ -79,7 +79,7 @@ offspring = function(path=c(), data=NULL) {
 }
 
 hasSubTree = function(x) {
-  tmp  = try(is.list(x) &&
+  tmp  = gtktry(is.list(x) &&
     !is.guiWidget(x) && !is.gWidget(x) && !is.RGtkObject(x) &&
     !is.null(names(x)), silent=TRUE)
   if(!inherits(tmp,"try-error") && tmp)
