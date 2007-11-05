@@ -1,3 +1,10 @@
+2007-12-05  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gwindow.R: added in ggroup, groups for
+	menu|tool|statusbar. From now on, for consistency, these should be
+	added to the top-level window, although in RGtk2 this won't be
+	deprecated, as it is used in pmg code.
+
 2007-11-03  John Verzani  <jverzani@gmail.com>
 
 	* R/gwindow.R: added location argument to set initial position

@@ -307,6 +307,17 @@ setReplaceMethod(".leftBracket",
             return(x)
           })
 
+setMethod("length",
+          signature(x="gDroplistRGtk"),
+          function(x) {
+            .length(x, x@toolkit)
+          })
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gDroplistRGtk"),
+          function(x,toolkit) {
+            return(length(x[]))
+          })
+
 ###################################################
   
 ### handlers

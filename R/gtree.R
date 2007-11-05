@@ -123,7 +123,7 @@ setMethod(".gtree",
                        handler = function(h,view, iter, path,...) {
                          ## get unsorted iter from path
                          uspath = treestoreModel$ConvertPathToChildPath(path)
-                         iter = treestore$GetIter(uspath)$ite
+                         iter = treestore$GetIter(uspath)$iter
                          
                          children = offspring(.getValuesFromIter(h$obj,iter),h$action)
                          

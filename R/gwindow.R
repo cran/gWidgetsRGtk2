@@ -40,7 +40,17 @@ setMethod(".gwindow",
               }
             }
             obj = new("gWindowRGtk",block=window, widget=window, toolkit=toolkit)
-
+            ## add in several containers took out horizontal argument
+            ## -- put back simply by adding horiztonal=horizontal into
+            ## maingroup below
+            g = ggroup(horizontal=FALSE, expand=TRUE, spacing=0)
+            window$add(getWidget(g))
+            
+            tag(obj,"menubargroup") <- ggroup(cont=g, spacing=0)
+            tag(obj,"toolbargroup") <- ggroup(cont=g, spacing=0)
+            tag(obj,"maingroup") <- ggroup(cont=g, horizontal=FALSE, expand=TRUE)
+            tag(obj,"statusbargroup") <- ggroup(cont=g, spacing=0)
+            
             window$SetTitle(title)
             
             if (!is.null(handler)) {
@@ -57,11 +67,12 @@ setMethod(".gwindow",
 ##################################################
 ## Methods
 
-setMethod(".add",
-          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="RGtkObject"),
-          function(obj, toolkit, value, ...) {
-            getWidget(obj)$Add(value)
-          })
+## Old method, when gwindow did not have a ggroup packed in.
+## setMethod(".add",
+##           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gWidgetRGtk"),
+##           function(obj, toolkit, value, ...) {
+##             getWidget(obj)$Add(value)
+##           })
 
 
 ## methods
@@ -100,6 +111,61 @@ setMethod(".size",
             return(unlist(theSize[2:3]))
           })
 
+
+## Add and delete. Special methods for [menu|tool|status]bars
+##  add
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gWidgetRGtk"),
+          function(obj, toolkit, value, ...) {
+            ## should fix expand=TRUE here
+            add(tag(obj,"maingroup"), value, ...)
+          })
+## menubar
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gMenuRGtk"),
+          function(obj, toolkit, value, ...) {
+            add(tag(obj,"menubargroup"), value, ...)
+          })
+## toolbar
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gToolbarRGtk"),
+          function(obj, toolkit, value, ...) {
+            add(tag(obj,"toolbargroup"), value, ...)
+          })
+## statusbar
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gStatusbarRGtk"),
+          function(obj, toolkit, value, ...) {
+            add(tag(obj,"statusbargroup"), value, ...)
+          })
+
+## delete
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", widget="gWidgetRGtk"),
+          function(obj, toolkit, widget, ...) {
+            delete(tag(obj,"maingroup"), widget, ...)
+          })
+## menubar
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", widget="gMenuRGtk"),
+          function(obj, toolkit, widget, ...) {
+            delete(tag(obj,"menubargroup"), widget, ...)
+          })
+## toolbar
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", widget="gToolbarRGtk"),
+          function(obj, toolkit, widget, ...) {
+            delete(tag(obj,"toolbargroup"), widget, ...)
+          })
+## statusbar
+setMethod(".delete",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", widget="gStatusbarRGtk"),
+          function(obj, toolkit, widget, ...) {
+            delete(tag(obj,"statusbargroup"), widget, ...)
+          })
+
+
+## dispatches
 setMethod(".dispose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
           function(obj, toolkit, ...) {

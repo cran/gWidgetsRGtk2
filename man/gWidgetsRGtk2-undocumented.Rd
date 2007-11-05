@@ -372,8 +372,13 @@
 \alias{.add,gTextRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gToolbarRGtk,guiWidgetsToolkitRGtk2,list-method}
 \alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
+\alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
+\alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,gMenuRGtk-method}
+\alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,gToolbarRGtk-method}
+\alias{.add,gWindowRGtk,guiWidgetsToolkitRGtk2,gStatusbarRGtk-method}
 \alias{.add,gWidgetRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
 \alias{.add,gWidgetRGtk,guiWidgetsToolkitRGtk2,try-error-method} 
+
 %%
 %% --  addSpace --
 %%
@@ -412,12 +417,18 @@
 \alias{.delete,RGtkObject,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.delete,RGtkObject,guiWidgetsToolkitRGtk2,RGtkObject-method}
 \alias{.delete,gWidgetRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
+
+\alias{.delete,gWindowRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
+\alias{.delete,gWindowRGtk,guiWidgetsToolkitRGtk2,gMenuRGtk-method}
+\alias{.delete,gWindowRGtk,guiWidgetsToolkitRGtk2,gToolbarRGtk-method}
+\alias{.delete,gWindowRGtk,guiWidgetsToolkitRGtk2,gStatusbarRGtk-method}
+
 \alias{.delete,gMenuRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.delete,gMenuRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.delete,gMenuRGtk,guiWidgetsToolkitRGtk2,gMenuRGtk-method}
 \alias{.delete,gMenuRGtk,guiWidgetsToolkitRGtk2,list-method}
 \alias{.delete,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.delete,gToolbarRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.delete,gToolbarRGtk,guiWidgetsToolkitRGtk2-method}
 %%
 %% --  dispose --
 %%
@@ -894,6 +905,7 @@
 \alias{.length-methods}
 \alias{.length,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gGridRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.length,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gHelpRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
@@ -966,6 +978,7 @@
 \alias{dimnames,gWidgetRGtk-method}
 \alias{dimnames<-,gWidgetRGtk-method}
 \alias{length,gWidgetRGtk-method}
+\alias{length,gDroplistRGtk-method}
 \alias{length,gSubsetbyRGtk-method}
 
 %%% Classes from  RGTk2 upgraded to S4 classes
