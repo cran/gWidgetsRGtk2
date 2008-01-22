@@ -62,12 +62,17 @@ setMethod(".gtext",
               buffer$createTag(i, scale = fontSizes[i])
             
             ## colors -- 
-            fontColors = c("black","blue","red","yellow","brown","green","pink")
-            for(i in fontColors) {
+##             fontColors = c("black","blue","red","yellow","brown","green","pink")
+##             for(i in fontColors) {
+##               buffer$createTag(i,foreground = i)
+##               buffer$createTag(Paste(i,".background"),background = i)
+##             }
+            fontColors <-  colors()
+            sapply(colors(), function(i) {
               buffer$createTag(i,foreground = i)
               buffer$createTag(Paste(i,".background"),background = i)
-            }
-            
+            })
+              
             
             
             tags = list(
@@ -81,6 +86,8 @@ setMethod(".gtext",
 
             obj = new("gTextRGtk", block=group, widget=textview, tags=tags, toolkit=toolkit)
 
+            tag(obj,"buffer") <- buffer
+            
             ##   ## Handle attributes
             ##   if(!is.null(font.attr))
             ##     font(obj) <- font.attr
@@ -237,15 +244,29 @@ setReplaceMethod(".font",
                    ## get tags that are known
                    tags = value
                    tags = tags[tags %in% unlist(obj@tags)]
-                   if(length(tags) == 0) return()
+                   if(length(tags) == 0) {
+                     cat(gettext("Invalid font specification\n"))
+                     return(obj)
+                   }
                    
                    ## get start, end iters
-                   buffer = obj@widget$GetBuffer()
+                   buffer <- tag(obj,"buffer")
+#                   buffer = obj@widget$GetBuffer()
                    bounds = buffer$GetSelectionBounds()
-                   if(bounds$retval == FALSE) return(obj)
+                   if(bounds$retval == FALSE) {
+                     cat(gettext("No text selected for changing a font\n"))
+                     return(obj)
+                   }
                    
-                   for(i in tags)
+                   for(i in tags) {
+                     ## color is special
+                     if(names(i)[1] == "color") {
+                       sapply(colors(), function(j)
+                              buffer$RemoveTagByName(j, bounds$start, bounds$end))
+                     }
+                       
                      buffer$ApplyTagByName(i, bounds$start, bounds$end)
+                   }
                    
                    return(obj)
                  })

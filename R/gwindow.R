@@ -16,11 +16,12 @@ setMethod(".gwindow",
             force(toolkit)
             
             window <- gtkWindowNew("toplevel", show = FALSE)
-            ## set default size
-            if(!is.null(width)) {
-              if(is.null(height)) height = .7*width
-              window$SetDefaultSize(width, height)
-            }
+
+            ## set default size give 400 x 280 default
+            if(is.null(width)) width <- 400
+            if(is.null(height)) height = .7*width
+            window$SetDefaultSize(width, height)
+
             ## set location
             if(!is.null(location)) {
               if(inherits(location,"guiContainer") ||

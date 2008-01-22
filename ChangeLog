@@ -1,3 +1,11 @@
+2008-01-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gtext.R: typo in return value from font<-; fixed font so that
+	when changing color attributes all previous *possible* color tags
+	are removed. I don't know how to remove just the ones that were
+	actually applied.
+	
+
 2007-12-05  jverzani  <verzani@csilaptop.Belkin>
 
 	* R/gwindow.R: added in ggroup, groups for
