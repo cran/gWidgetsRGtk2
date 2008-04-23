@@ -319,7 +319,7 @@ savePageDfNotebook = function(nb, ...) {
   } else {
     ## save entire data set, only trick is $ possibility
     if(length(grep("\\$",dfName)) > 0) {
-      cat("Can't save with $ in name. Rename data set.\n")
+      cat(gettext("Can't save with $ in name. Rename data set.\n"))
     } else {
       assign(dfName, df, envir=.GlobalEnv)
     }

@@ -266,7 +266,7 @@ saveCurrentPage = function(obj) {
           newobj = as.gGd(drawarea)
           svalue(newobj) <- list(file=theFileName, extension=theFileType)
         } else {
-          cat("***\n Don't know this extension:", theFileType,"\n\n")
+          cat(sprintf("***\n Don't know this extension: %s\n",theFileType))
         }
         dispose(win)
       }

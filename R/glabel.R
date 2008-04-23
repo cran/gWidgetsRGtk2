@@ -17,11 +17,9 @@ setMethod(".glabel",
             
             label <- gtkLabelNew()
 
-            ## pack into an event box so that we can get signals
-            evb = gtkEventBoxNew()
-            evb$Add(label)
 
-            obj = new("gLabelRGtk",block=evb, widget=label,toolkit=toolkit)
+            obj <- as.gWidgetsRGtk2(label)
+#            obj = new("gLabelRGtk",block=evb, widget=label,toolkit=toolkit)
 
             if(markup) 
               tag(obj,"markup")<-TRUE
@@ -35,16 +33,19 @@ setMethod(".glabel",
               edit = gedit()
               tag(obj, "edit") <- edit
               handler = NULL                      # override handler
-              addhandlerchanged(edit, handler = function(h,...) {
-                ## copy edit value into label, put back
-                svalue(obj) <- svalue(edit)
-                evb$Remove(edit@widget@widget) # get GTK object from gedit()
-                evb$Add(label)
-              })
+              addhandlerchanged(edit, action=obj,handler =
+                                function(h,...) {
+                                  evb <- getBlock(h$action)
+                                  ## copy edit value into label, put back
+                                  svalue(obj) <- svalue(edit)
+                                  evb$Remove(edit@widget@widget) # get GTK object from gedit()
+                                  evb$Add(label)
+                                })
               ##This is for connecting to the third mosue
               
               id = addhandlerclicked(obj,
                 handler=function(h,...) {
+                  evb <- getBlock(h$obj)
                   svalue(edit) <- svalue(obj)
                   evb$Remove(label)                 # swap out
                   evb$Add(getBlock(edit))
@@ -66,6 +67,32 @@ setMethod(".glabel",
             
             invisible(obj)
           })
+
+## coerce gtk object
+as.gWidgetsRGtk2.GtkLabel <- function(widget,...) {
+  label = widget
+  ## pack into an event box so that we can get signals
+  ## doesn't work if there is already a parent!
+  evb <- gtkEventBoxNew()
+  if(is.null(label$GetParent()))
+    evb$Add(label)
+#  else
+#    cat("Can't add gwidget handlers to this label\n")
+
+  obj <- new("gLabelRGtk",
+    block=evb, widget=label, toolkit=guiToolkit("RGtk2"))
+
+  ## tag values -- may already be set (asgWidget(getToolkitWidget(widget)))
+  vals <- c("markup"=FALSE)
+  for(i in names(vals)) {
+    if(!is.null(tag(label,i)))
+      tag(obj,i) <- tag(label,i)
+    else
+      tag(obj,i) <- vals[i]
+  }
+  return(obj)
+}
+
 
 ## methods
 setMethod(".svalue",

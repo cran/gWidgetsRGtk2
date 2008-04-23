@@ -9,20 +9,23 @@ setMethod(".gwindow",
           function(toolkit,
                    title="Window", visible=TRUE,
                    width = NULL, height = NULL,
-                   location = NULL,
+                   parent = NULL,
                    handler=NULL, action = NULL,
                    ...
                    ) {
+
             force(toolkit)
             
             window <- gtkWindowNew("toplevel", show = FALSE)
+            window$SetTitle(title)
 
             ## set default size give 400 x 280 default
             if(is.null(width)) width <- 400
             if(is.null(height)) height = .7*width
             window$SetDefaultSize(width, height)
 
-            ## set location
+            ## set location -- renamed to parent
+            location <- parent
             if(!is.null(location)) {
               if(inherits(location,"guiContainer") ||
                  inherits(location,"guiComponent")) {
@@ -32,6 +35,7 @@ setMethod(".gwindow",
                   widget = getGtkWindow(widget)
                 window$SetTransientFor(widget)
                 window$SetPosition(GtkWindowPosition["center-on-parent"])
+                window$SetDestroyWithParent(TRUE)
               } else {
                 ## check that location is a numeric pair
                 if(length(location) == 2) {
@@ -40,19 +44,10 @@ setMethod(".gwindow",
                 }
               }
             }
-            obj = new("gWindowRGtk",block=window, widget=window, toolkit=toolkit)
-            ## add in several containers took out horizontal argument
-            ## -- put back simply by adding horiztonal=horizontal into
-            ## maingroup below
-            g = ggroup(horizontal=FALSE, expand=TRUE, spacing=0)
-            window$add(getWidget(g))
-            
-            tag(obj,"menubargroup") <- ggroup(cont=g, spacing=0)
-            tag(obj,"toolbargroup") <- ggroup(cont=g, spacing=0)
-            tag(obj,"maingroup") <- ggroup(cont=g, horizontal=FALSE, expand=TRUE)
-            tag(obj,"statusbargroup") <- ggroup(cont=g, spacing=0)
-            
-            window$SetTitle(title)
+
+            ## make object
+            obj <- as.gWidgetsRGtk2(window)
+
             
             if (!is.null(handler)) {
               ## handler can't refer to h$obj, as it is already <invalid>
@@ -65,6 +60,55 @@ setMethod(".gwindow",
 
             return(obj)
           })
+
+as.gWidgetsRGtk2.GtkWindow <- function(widget,...) {
+  window <- widget
+  obj <- new("gWindowRGtk",block=window, widget=window,
+    toolkit=guiToolkit("RGtk2"))
+
+  if(!is.null(tag(obj,"menubargroup"))) {
+    ## already a gwindow. Move on
+    return(obj)
+  }
+
+  ## may or may not have child. 
+  child <- window$GetChild()
+  
+  ## if there, save child, then put into contentPane
+  if(!is.null(child)) 
+    window$Remove(child)   # put into cpg
+  
+  (mbg <- ggroup(spacing=0)); svalue(mbg) <- 0
+  (tbg <- ggroup(spacing=0)); svalue(tbg) <- 0
+  (cpg <- ggroup(spacing=0)); svalue(cpg) <- 0
+  (sbg <- ggroup(spacing=0)); svalue(sbg) <- 0
+  
+  tag(obj,"menubargroup") <- mbg
+  tag(obj,"toolbargroup") <- tbg
+  tag(obj,"contentPane") <- cpg
+  tag(obj,"statusbargroup") <- sbg
+  
+  tbl <- gtkTable(rows=4, columns=1, homogeneous=FALSE)
+  tag(obj,"table") <- tbl
+  tbl$SetColSpacings(0)
+  tbl$SetRowSpacings(0)
+  
+  tbl$Attach(getBlock(mbg), 0,1,0,1, yoptions = c("fill"))
+  tbl$Attach(getBlock(tbg), 0,1,1,2, yoptions = c("fill"))
+  tbl$AttachDefaults(getBlock(cpg), 0,1,2,3)
+#             xoptions = c("expand","fill"), yoptions=c("expand","fill")
+#             )
+  tbl$Attach(getBlock(sbg), 0,1,3,4, yoptions = c("fill"))
+  
+  window$Add(tbl)
+
+  ## give back child if there
+  if(!is.null(child)) add(cpg, child, expand=TRUE)
+  
+  return(obj)
+  
+}
+
 ##################################################
 ## Methods
 
@@ -119,32 +163,46 @@ setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gWidgetRGtk"),
           function(obj, toolkit, value, ...) {
             ## should fix expand=TRUE here
-            add(tag(obj,"maingroup"), value, ...)
+#            .add(obj, toolkit, getBlock(value),...)
+            add(tag(obj,"contentPane"), value, expand=TRUE) # no ...
           })
+
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="RGtkObject"),
+          function(obj, toolkit, value, ...) {
+            ## should fix expand=TRUE here
+            theArgs=list(...)
+            theArgs$expand=TRUE
+            gp <- tag(obj,"contentPane")
+            print(theArgs)
+            do.call("add",list(obj=gp,value=value,theArgs))
+#            add(tag(obj,"contentPane"), value, ...)
+          })
+
 ## menubar
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gMenuRGtk"),
           function(obj, toolkit, value, ...) {
-            add(tag(obj,"menubargroup"), value, ...)
+            add(tag(obj,"menubargroup"), value, expand=TRUE)
           })
 ## toolbar
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gToolbarRGtk"),
           function(obj, toolkit, value, ...) {
-            add(tag(obj,"toolbargroup"), value, ...)
+            add(tag(obj,"toolbargroup"), value, expand=TRUE)
           })
 ## statusbar
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gStatusbarRGtk"),
           function(obj, toolkit, value, ...) {
-            add(tag(obj,"statusbargroup"), value, ...)
+            add(tag(obj,"statusbargroup"), value, expand=TRUE)
           })
 
 ## delete
 setMethod(".delete",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", widget="gWidgetRGtk"),
           function(obj, toolkit, widget, ...) {
-            delete(tag(obj,"maingroup"), widget, ...)
+            delete(tag(obj,"contentPane"), widget, ...)
           })
 ## menubar
 setMethod(".delete",
@@ -187,7 +245,7 @@ setMethod(".addhandlerunrealize",
                             if(is.logical(val))
                               return(val)
                             else
-                              return(TRUE)
+                              return(FALSE) # do delete
                           },
                           data=list(obj=if(!is.null(theArgs$actualobj))
                             theArgs$actualobj

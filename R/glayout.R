@@ -5,9 +5,7 @@ setClass("gLayoutRGtk",
 
 ## an gWidget for tables
  
-## take two -- this time build up tale, then use visible to show
-## this way, we don't need to set size initially
-## constructor
+
 setMethod(".glayout",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
@@ -15,30 +13,35 @@ setMethod(".glayout",
                    spacing = 10,        # amount (pixels) between row, cols, NULL=0
                    container = NULL, ...
                    ) {
-
+            
             force(toolkit)
-            
-            ## how to add in per column adjusments?
-            adjust = "center"                             # left or right or center
-            
-            
-            ## container for table
-            group = ggroup(container=container, ...)
 
-            obj = new("gLayoutRGtk",
-              block=group, widget=group, toolkit=toolkit)
+            tbl <- gtkTableNew(homogeneous = homogeneous)
+            ## homogeneous spacing
+            tbl$SetRowSpacings(spacing)
+            tbl$SetColSpacings(spacing)
             
-            tag(obj,"nrows") <- 0
-            tag(obj,"ncols") <- 0
-            tag(obj,"val.lst") <- list()
-            tag(obj,"homogeneous") <- homogeneous
-            tag(obj,"spacing") <- spacing
-            tag(obj,"adjust") <- adjust
+            obj <- as.gWidgetsRGtk2(tbl)
+
+            if (!is.null(container)) {
+              if(is.logical(container) && container == TRUE)
+                container = gwindow()
+              add(container, obj,...)
+            }
             
             invisible(obj)
           })
+            
+
+as.gWidgetsRGtk2.GtkTable <- function(widget, ...) {
+  obj = new("gLayoutRGtk", block=widget, widget=widget,
+    toolkit=guiToolkit("RGtk2"))
+
+  return(obj)
+}
 
 
+            
 ### The add method is a stub so that this works with same
 ## approach as gWidgetstcltk
 setMethod(".add",
@@ -60,95 +63,77 @@ setReplaceMethod("[",
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gLayoutRGtk"),
           function(x, toolkit, i, j, ..., value) {
+
+            obj <- x
+            tbl <- getWidget(obj)
+            
+            if(missing(i) || missing(j)) {
+              cat(gettext("glayout: [ needs to have both i and j specified."))
+              return(x)
+            }
+
+            
             ## check that all is good
             if(is.character(value)) {
               ## wrap characters into labels
-              value = glabel(value,...)
+              value <- glabel(value,...)
+            }
+            args <- list(...)
+            expand <- args$expand; if(is.null(expand)) expand <- FALSE
+            
+            anchor <- if(is.null(args$anchor)) c(.5,.5) else args$anchor
+            anchor <- (anchor + 1)/2; anchor[2] <- 1 - anchor[2]
+            ## fix up widget alignment if asked
+            if(!is.null(anchor)) {
+              child <- getBlock(value)
+              childWidget <- getWidget(value)
+              ## but not so fast, not all components have xalign, yalign
+              ## property
+              if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
+                child['xalign'] <- anchor[1]
+              else if('xalign' %in% names(childWidget)
+                      && class(childWidget) != "GtkEntry") 
+                childWidget['xalign'] <- anchor[1]
+
+              if('yalign' %in% names(child)) 
+                child['yalign'] <- anchor[2]
+              else if('yalign' %in% names(childWidget)) 
+                childWidget['yalign'] <- anchor[2]
             }
 
-            
-            if(is.guiWidget(value)  || is.gWidget(value)) {
-              nrows = tag(x,"nrows")
-              ncols = tag(x,"ncols")
-              val.lst = tag(x,"val.lst")
-              nrows = max(nrows,max(i))
-              ncols = max(ncols,max(j))
-              val.lst[[length(val.lst)+1]] =
-                list(i=i,j=j,value=value)
+            ## fix up number of columns
+            d <- dim(obj)
+            nr <- max(j); nc <- max(i)
+            if( nr > d[1] || nc > d[2])
+              tbl$Resize(max(max(j), nr), max(max(i), nc))
               
-              tag(x,"nrows") <- nrows
-              tag(x,"ncols") <- ncols
-              tag(x,"val.lst") <- val.lst
-            }  else {
-              print(class(value))
-              warning("Value is not an gWidget\n")
-            }
+            if(expand)
+              opts <- c("fill","expand","shrink")
+            else
+              opts <- "fill"
             
-            return(x)
+            child <- getBlock(value)
+            tbl$Attach(child,
+                       min(j)-1, max(j), min(i)-1, max(i),
+                       xoptions=opts,yoptions=opts)
 
-            ##   if(obj$adjust == "right") {
-            ##     group = ggroup()
-            ##     addSpring(group)
-            ##     add(group,value)
-            ##   } else if(obj$adjust = "left") {
-            ##     group = ggroup()
-            ##     add(group,value)
-            ##     addSpring(group)   
-            ##   } else {
-            ##     group = value
-            ##   }
-            
+            return(x)
           })
 
-### as written, deleting the table widget, destroys the subwidgets. These need to be removed before deleting the tblGroup
+## inherits delete method for containers
 
-## show the table, elements are in val.lst
-## visible<-
+## replaced
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLayoutRGtk"),
                  function(obj, toolkit, ..., value) {
-                   if(is.logical(value) == TRUE) {
-                     nrows = tag(obj,"nrows")
-                     ncols = tag(obj,"ncols")
-                     homogeneous = tag(obj,"homogeneous")
-                     spacing = tag(obj,"spacing")
-                     val.lst = tag(obj,"val.lst")
-                     
-                     table = gtkTableNew(nrows, ncols, homogeneous=homogeneous)
-                     
-                     ## table properties
-                     if(!is.null(spacing)) {
-                       table$SetRowSpacings(spacing)
-                       table$SetColSpacings(spacing)
-                     }
-                     ## now pack in values
-                     ## for 1,1 go from 01 to 01 with table ttach
-                     for(vals in val.lst) {
-                       i = vals$i; j = vals$j; value = vals$value
-                       
-                       i = c(min(i)-1,max(i))
-                       j = c(min(j)-1,max(j))
-                       
-                       
-                       addThis = getBlock(value)
-                       table$Attach(addThis,min(j),max(j),min(i),max(i),
-                                    xoptions="GTK_FILL",yoptions="GTK_FILL")
-                       ##                   xoptions="GTK_SHRINK",yoptions="GTK_SHRINK")
-                     }
-                     
-                     ## tried to do the old delete/add trick, but had problems. When I delete the table, the widgets can't be reused. I then tried to remove them using sapply, but no luch there either.
-                     
-                     if(!is.null(tag(obj,"table"))) {
-                       warning("layouts are only made visible once.")
-                       return(obj)
-                     }
-
-                     ### obj@widget is a ggroup instance
-                     add(obj@widget,table, expand=TRUE)
-                     tag(obj,"table") <- table
-                     invisible(obj)
-                   } else {
-                     ## value=FALSE, no show
-                     invisible(obj)
-                   }
+                   gwCat(gettext("visible<- is now redundant for glayout in RGtk2"))
+                   return(obj)
                  })
+
+## get number of rows and columns
+setMethod(".dim", 
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gLayoutRGtk"),
+          function(x,toolkit) {
+            tbl <- getWidget(x)
+            return(c(nrow=tbl$GetNrows(), ncol=tbl$GetNcols()))
+          })

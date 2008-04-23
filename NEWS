@@ -1,0 +1,29 @@
+gWidgetsRGtk2
+
+Changes for version 0.0-30
+--------------------------
+
+* Changed definition of basic widgets to use ANY instead of a class
+  union that container either guiWidget, gWidgetRGtk2 or
+  RGtkObject. The new is feature of 2.7.0 was messing this up. Should
+  fix this.
+
+* new function as.gWidgetsRGtk2 for coercing an RGtkObject object into
+  a gWidgetsRGtk2 object 
+
+* added anchor argument to ggroup
+
+* fixed glayout so that visible assignment is not needed. The widget
+  now resizes dynamically when asked. Added expand argument, and
+  anchor argument.
+
+* fixed handler for gradio.
+
+* added handlers blockHandler, unblockHandler. These may be useful
+  when updating a widget's values causes a handler to be called
+
+* gwindow. Add menubars, toolbars, and statusbars directly to the top
+  level gwindow object
+
+* gtext: added addHandlerKeystroke. The value h$keystroke contains the
+  key

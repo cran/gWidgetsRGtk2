@@ -24,9 +24,10 @@ setMethod(".gbutton",
               button$SetRelief(as.integer(2))
             }
 
-            
-            obj = new("gButtonRGtk",
-              block=button, widget=button, toolkit=toolkit)
+
+            obj = as.gWidgetsRGtk2(button)
+#            obj = new("gButtonRGtk",
+#              block=button, widget=button, toolkit=toolkit)
 
             ## add to container
             if (!is.null(container)) {
@@ -42,7 +43,16 @@ setMethod(".gbutton",
             
             invisible(obj)
           })
-          
+
+## coerce gtk object
+as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
+  button = widget
+  obj = new("gButtonRGtk",
+    block=button, widget=button, toolkit=guiToolkit("RGtk2"))
+  return(obj)
+}
+
+
 ### methods
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
@@ -76,7 +86,7 @@ setReplaceMethod(".svalue",
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"pressed",handler, action)
+            addhandler(obj,"clicked",handler, action)
           })
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),

@@ -195,22 +195,40 @@ setClassUnion("guiWidgetORgWidgetRGtkORRGtkObject",
               c("guiWidget","gWidgetRGtk","RGtkObject"))
 
 ## subclss
+## setClass("gComponentRGtk",
+##          representation(
+##                         block="guiWidgetORgWidgetRGtkORRGtkObject",
+##                         widget="guiWidgetORgWidgetRGtkORRGtkObject",
+##                         toolkit="guiWidgetsToolkit"
+##                         ),
+##          contains="gWidgetRGtk",
+##          )
+## setClass("gContainerRGtk",
+##          representation(
+##                         block="guiWidgetORgWidgetRGtkORRGtkObject",
+##                         widget="guiWidgetORgWidgetRGtkORRGtkObject",
+##                         toolkit="guiWidgetsToolkit"
+##                    ),
+##          contains="gWidgetRGtk",
+##          )
+
 setClass("gComponentRGtk",
          representation(
-                        block="guiWidgetORgWidgetRGtkORRGtkObject",
-                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        block="ANY",
+                        widget="ANY",
                         toolkit="guiWidgetsToolkit"
                         ),
          contains="gWidgetRGtk",
          )
 setClass("gContainerRGtk",
          representation(
-                        block="guiWidgetORgWidgetRGtkORRGtkObject",
-                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        block="ANY",
+                        widget="ANY",
                         toolkit="guiWidgetsToolkit"
                    ),
          contains="gWidgetRGtk",
          )
+
 
 
 
@@ -282,10 +300,25 @@ setReplaceMethod("[",signature(x="gWidgetRGtk"),
 ## size ## return size -- not implemented
 setMethod("size",signature(obj="gWidgetRGtk"),
           function(obj, ...) {
-            warning("size not defined, Set window size with size<-()")
             return()
             .size(obj, obj@toolkit,...)
           })
+
+setMethod(".size",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) {
+            ## send to gWidgetRGtk2
+            .size(obj@widget, toolkit, ...)
+          })
+setMethod(".size",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, ...) {
+            ## get from SizeAllocation()
+            val <- obj$GetAllocation()
+            return(c(width=val$width, height=val$height))
+          })
+
+## not needed?
 setMethod(".size",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
           function(obj, toolkit, ...) {
@@ -446,6 +479,49 @@ setReplaceMethod(".focus",
             return(obj)
 
           })
+
+## default Widget
+## defaultWidget
+setMethod("defaultWidget",signature(obj="gWidgetRGtk"),
+          function(obj, ...) {
+            .defaultWidget(obj, obj@toolkit,...)
+          })
+
+setMethod(".defaultWidget",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...)
+          getWidget(obj)['has-default']
+          )
+
+## defaultWidget<-
+setReplaceMethod("defaultWidget",signature(obj="gWidgetRGtk"),
+                 function(obj, ..., value) {
+                   .defaultWidget(obj, obj@toolkit,...) <- value
+                   return(obj)
+                 })
+
+setReplaceMethod(".defaultWidget",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ..., value) {
+            defaultWidget(obj@widget, toolkit, ...) <- value
+            return(obj)
+          })
+
+setReplaceMethod("defaultWidget",signature(obj="RGtkObject"),
+          function(obj, ..., value) {
+            .defaultWidget(obj, toolkit=guiToolkit("RGtk2"),...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".defaultWidget",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, ..., value) {
+            value = as.logical(value)
+            obj['can-default'] <- value
+            obj['receives-default'] <- value
+            return(obj)
+          })
+
 
 ## font
 .font.styles = list(
@@ -668,7 +744,7 @@ setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",
                     obj="guiWidget", value="ANY"),
           function(obj, toolkit, value, ...) {
-            cat("Can't add without a value\n")
+            cat(gettext("Can't add without a value\n"))
           })
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",
@@ -822,9 +898,12 @@ setMethod(".update",
 ##################################################
 ## handlers
 ##
-## basic handler for adding with a signal. Not exported.
+## basic handler for adding with a signal. Now exported.
 setGeneric("addhandler", function(obj, signal, handler, action=NULL, ...)
            standardGeneric("addhandler"))
+setGeneric("addHandler", function(obj, signal, handler, action=NULL, ...)
+           standardGeneric("addHandler"))
+
 setMethod("addhandler",signature(obj="guiWidget"),
           function(obj, signal, handler, action=NULL, ...) {
             .addHandler(obj@widget, obj@toolkit, signal, handler, action, ...)
@@ -836,6 +915,16 @@ setMethod("addhandler",signature(obj="gWidgetRGtk"),
 setMethod("addhandler",signature(obj="RGtkObject"),
           function(obj, signal, handler, action=NULL, ...) {
             .addHandler(obj, guiToolkit("RGtk2"), signal, handler, action, ...)
+          })
+setMethod("addHandler",signature(obj="gWidgetRGtk"),
+          function(obj, signal, handler, action=NULL, ...) {
+            .addHandler(obj@widget, obj@toolkit, signal, handler, action, ...)
+          })
+
+setMethod(".addhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, signal, handler, action=NULL, ...) {
+            .addHandler(obj, obj@toolkit, signal, handler, action, ...)
           })
 
 ## method for dispatch
@@ -857,10 +946,14 @@ setMethod(".addHandler",
           function(obj, toolkit,
                    signal, handler, action=NULL, ...) {
             
-            ## need to return logical
+            ## need to return logical when an event, not always,
+            ## but gives trouble if not
             modifyHandler = function(...) {
-              handler(...)
-              return(TRUE)
+              val <- handler(...)
+              if(!is.logical(val))
+                return(TRUE)
+              else
+                return(val)
             }
 
             theArgs = list(...)
@@ -875,8 +968,8 @@ setMethod(".addHandler",
                                             user.data.first = TRUE,
                                             after = FALSE), silent=FALSE)
             if(inherits(callbackID,"try-error")) {
-              cat("Couldn't add signal: ",signal," for object of class:")
-              cat(class(obj))
+              gwCat(sprintf("Couldn't add signal %s for object of class %s",
+                      signal, class(obj)[1]),"\n")
               return(NA)
             } else {
               ## now put handler into object
@@ -918,8 +1011,8 @@ setMethod(".addHandler",
                                  silent=TRUE)
             ## can't' stuff in handler IDS
             if(inherits(callbackID,"try-error")) {
-              cat("Couldn't connect signal:",signal,"for")
-              print(obj)
+              gwCat(sprintf("Couldn't connect signal: %s for object of class %s\n",
+                    signal, class(obj)[1]))
               return(NA)
             } else {
               invisible(callbackID)
@@ -957,6 +1050,13 @@ setMethod(".removehandler",
               callbackIDs = .tag(obj,toolkit,"handler.id")
             else
               callbackIDs = ID
+
+            ## timeout handler?
+            if(class(callbackIDs) == "GTimeoutId") {
+              out <- sapply(callbackIDs, gSourceRemove)
+              return(out)
+            }
+
             
             if(!is.null(callbackIDs)) {
               if(!is.list(callbackIDs)) {
@@ -975,8 +1075,7 @@ setMethod(".removehandler",
 #                  retval[i] = gtktry(gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]]),
 #                          silent=TRUE)
                 } else {
-                  cat("DEBUG: ID not of callbackID\n")
-                  print(callbackIDs[[i]])
+                  gwCat("DEBUG: ID not of callbackID\n")
                   retval[i] = FALSE
                 }
               }
@@ -1011,8 +1110,7 @@ setMethod(".removehandler",
                 if(!inherits(isCallbackID,"try-error")) {
                   retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
                 } else {
-                  cat("DEBUG: ID not of callbackID\n")
-                  print(callbackIDs[[i]])
+                  gwCat("DEBUG: ID not of callbackID\n")
                   retval[i] = FALSE
                 }
               }
@@ -1026,6 +1124,58 @@ setMethod(".removehandler",
             }
           })
 
+
+## blockhandler
+setMethod("blockhandler", signature("gWidgetRGtk"),
+          function(obj, ID=NULL, ...) {
+            .blockhandler(obj, obj@toolkit, ID, ...)
+          })
+setMethod("blockhandler", signature("RGtkObject"),
+          function(obj, ID=NULL, ...) {
+            .blockhandler(obj, guiToolkit("RGtk2"), ID, ...)
+          })
+
+setMethod(".blockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            .blockhandler(getWidget(obj),toolkit,ID,...)
+          })
+
+setMethod(".blockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, ID=NULL, ...) {
+            if(!is.null(ID))
+              sapply(ID, function(i)
+                     gSignalHandlerBlock(obj,i))
+            return()
+          })
+
+## unblock handler
+setMethod("unblockhandler", signature("gWidgetRGtk"),
+          function(obj, ID=NULL, ...) {
+            .unblockhandler(obj, obj@toolkit, ID, ...)
+          })
+setMethod("unblockhandler", signature("RGtkObject"),
+          function(obj, ID=NULL, ...) {
+            .unblockhandler(obj, guiToolkit("RGtk2"), ID, ...)
+          })
+
+setMethod(".unblockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            .blockhandler(getWidget(obj),toolkit,ID,...)
+          })
+
+setMethod(".unblockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit, ID=NULL, ...) {
+            if(!is.null(ID))
+              sapply(ID, function(i)
+                     gSignalHandlerUnblock(obj,i))
+            return()
+          })
+
+
 ## addhandlerchanged
 setMethod("addhandlerchanged",signature(obj="gWidgetRGtk"),
           function(obj, handler=NULL, action=NULL, ...) {
@@ -1038,6 +1188,15 @@ setMethod("addhandlerchanged",signature(obj="RGtkObject"),
 setMethod("addhandlerchanged",signature(obj="ANY"),
           function(obj, handler=NULL, action=NULL, ...) {
             warning("No method addhandlerchanged for object of class",class(obj),"\n")
+          })
+## caps
+setMethod("addHandlerChanged",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerchanged(obj, obj@toolkit, handler, action, ...)
+          })
+setMethod("addHandlerChanged",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerchanged(obj, guiToolkit("RGtk2"), handler, action, ...)
           })
 
 setMethod(".addhandlerchanged",
@@ -1141,6 +1300,15 @@ setMethod("addhandlerclicked",signature(obj="RGtkObject"),
           function(obj, handler=NULL, action=NULL, ...) {
             .addhandlerclicked(obj, guiToolkit("RGtk2"),handler, action, ...)
           })
+## caps
+setMethod("addHandlerClicked",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerclicked(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addHandlerClicked",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerclicked(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
 
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
@@ -1149,6 +1317,7 @@ setMethod(".addhandlerclicked",
             .addHandler(obj, toolkit, signal="clicked",
                         handler=handler, action=action, ...)
           })
+
 
 ## doubleclick: no default
 setMethod("addhandlerdoubleclick",signature(obj="gWidgetRGtk"),
@@ -1204,6 +1373,28 @@ setMethod(".addhandlerrightclick",
                 silent=TRUE)
           })
 
+
+## mousemotion -- like mouseover
+setMethod("addhandlermousemotion",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlermousemotion(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlermousemotion",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlermousemotion(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlermousemotion",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj,guiToolkit("RGtk2"),
+                        signal="enter-notify-event",
+                        handler, action, ...)
+          })
+
+
+
 ## idle
 setMethod("addhandleridle",signature(obj="gWidgetRGtk"),
           function(obj, handler=NULL, action=NULL, interval=1000, ...) {
@@ -1227,7 +1418,8 @@ setMethod(".addhandleridle",
               invisible(TRUE)
             }
             
-            ID = gtkAddTimeout(
+##            ID = gtkAddTimeout(
+            ID = gTimeoutAdd(
               interval,
               idlehandler,
               data=list(obj=obj, action=action, handler=handler)
@@ -1235,7 +1427,8 @@ setMethod(".addhandleridle",
             
             ## tidy up when done
             .addhandlerdestroy(obj,toolkit, handler=function(h,...) {
-              gtkRemoveTimeout(h$action)
+#              gtkRemoveTimeout(h$action)
+              gSourceRemove(h$action)
             },action=ID)
             
             invisible(ID)
@@ -1274,7 +1467,8 @@ addPopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="
 add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="button-press-event", ...) {
   f = function(h, widget, event,...) {
     if(event$GetButton() != 3) {
-      return(TRUE)                     # propogate signal
+#      return(TRUE)                     # propogate signal
+      return(FALSE)                     # propogate signal
     } else {
       mb = gmenu(h$action$menulist, popup = TRUE, action=h$action$passedaction)
       mb = tag(mb,"mb")                 # actual widget
@@ -1367,8 +1561,8 @@ setMethod("length", "gWidgetRGtk", function(x) .length(x,x@toolkit))
 setMethod(".length",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gWidgetRGtk"),
           function(x,toolkit) {
-            cat("Define length for x of class:")
-            print(class(x))
+            return(NA)
+            gwCat(sprintf("Define length for x of class: %s\n", class(x)[1]))
 })
           
 setMethod("dimnames", "gWidgetRGtk", function(x) .dimnames(x,x@toolkit))
@@ -1393,3 +1587,14 @@ setReplaceMethod("names",
                    .names(x,x@toolkit) <- value
                    return(x)
                  })
+
+
+
+#### This may be useful to integrate gWidgets with glade
+####
+## S3 class for coercing to gWidget
+as.gWidgetsRGtk2 <- function(widget,...) UseMethod("as.gWidgetsRGtk2")
+as.gWidgetsRGtk2.default <- function(widget,...) {
+  print(sprintf("No coercion to gWidget available for object of class %s",class(widget)))
+  return(widget)
+}

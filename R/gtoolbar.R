@@ -19,6 +19,8 @@ setMethod(".gtoolbar",
             
             style = match.arg(style)
             toolbar = mapListToToolBar(toolbarlist, style)
+
+
             group = ggroup(spacing=0)
             svalue(group) <- 0                    # border
             add(group, toolbar, expand=TRUE)
@@ -97,7 +99,7 @@ mapListToToolBar = function(lst, style, ...) {
           if(is.null(tmp$icon)) tmp$icon="null"
           if(is.null(tmp$label)) tmp$label=i
           if(is.null(tmp$handler)) {
-            tmp$handler = function(h,...) cat(i,"in toolbar list needs a handler")
+            tmp$handler = function(h,...) gwCat(i,"in toolbar list needs a handler")
           }
         ## tooltip
         if( is.null(tmp$tooltip))

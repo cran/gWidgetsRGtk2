@@ -17,20 +17,8 @@ setMethod(".gpanedgroup",
             } else {
               panedWindow = gtkVPanedNew()
             }
-            
-            ## left or right *or* top or bottom
-            leftgroup = ggroup()
-            rightgroup = ggroup()
-            
-            panedWindow$Pack1(leftgroup@widget@block)#, resize=FALSE, shrink=FALSE)
-            panedWindow$Pack2(rightgroup@widget@block)#, resize=FALSE, shrink=FALSE)
 
-            obj = new("gPanedgroupRGtk", block=panedWindow, widget=panedWindow,
-              toolkit=toolkit)
-
-            tag(obj,"leftgroup") <- leftgroup
-            tag(obj,"rightgroup") <- rightgroup
-
+            obj <- as.gWidgetsRGtk2(panedWindow)
            
             if(!missing(widget1) && !is.null(widget1))
               add(obj, widget1)
@@ -46,7 +34,35 @@ setMethod(".gpanedgroup",
             return(obj)
           })
 
-  
+as.gWidgetsRGtk2.GtkHPaned <- as.gWidgetsRGtk2.GtkVPaned <-
+  function(widget,...) {
+    
+    obj = new("gPanedgroupRGtk", block=widget, widget=widget,
+      toolkit=guiToolkit("RGtk2"))
+    
+  if(is.null(tag(obj,"leftgroup"))) {
+    ## left or right *or* top or bottom
+    leftgroup = ggroup()
+    rightgroup = ggroup()
+
+    ## already a child?
+    if(!is.null(child <- widget$GetChild1()))
+      add(leftgroup,child,expand=TRUE)
+    if(!is.null(child <- widget$GetChild2()))
+      add(rightgroup,child,expand=TRUE)
+    
+    widget$Pack1(leftgroup@widget@block)#, resize=FALSE, shrink=FALSE)
+    widget$Pack2(rightgroup@widget@block)#, resize=FALSE, shrink=FALSE)
+    
+    tag(obj,"leftgroup") <- leftgroup
+    tag(obj,"rightgroup") <- rightgroup
+  }
+   
+  return(obj)
+     
+}
+
+
 ## add -- use this rather than at construction time
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gPanedgroupRGtk", value="gWidgetRGtk"),
@@ -62,8 +78,36 @@ setMethod(".add",
               add(tag(obj,"rightgroup"), value, expand=TRUE)
               ctr = 2
             } else {
-              cat("Can only add two widgets to a gpanedgroup\n")
+              gwCat(gettext("Can only add two widgets to a gpanedgroup\n"))
             }
             tag(obj,"ctr") <- ctr
             
           })
+
+
+### methods
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gPanedgroupRGtk"),
+          function(obj, toolkit, index=NULL, drop=NULL, ...) {
+            panedWindow <- obj@widget
+            min <- panedWindow['min-position']
+            max <- panedWindow['max-position']
+            position <- panedWindow['position']
+
+            return((position - min)/(max - min))
+            
+          })
+
+## svalue sets position
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gPanedgroupRGtk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   if(0 <= value && value <= 1) {
+                     panedWindow <- obj@widget
+                     min <- panedWindow['min-position']
+                     max <- panedWindow['max-position']
+                     placement <- min + value * (max - min)
+                     g['position'] <- placement
+                   }
+                   return(obj)
+                 })

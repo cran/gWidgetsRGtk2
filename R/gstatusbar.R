@@ -15,7 +15,7 @@ setMethod(".gstatusbar",
             statusbar$setHasResizeGrip(TRUE)
             statusbar$push(statusbar$getContextId("message"), text)
 
-            obj = new("gStatusbarRGtk",block=statusbar, widget=statusbar, toolkit=toolkit)
+            obj <- as.gWidgetsRGtk2(statusbar)
             
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -25,6 +25,13 @@ setMethod(".gstatusbar",
   
             invisible(obj)
           })
+
+as.gWidgetsRGtk2.GtkStatusbar <- function(widget,...) {
+  obj <- new("gStatusbarRGtk",block=widget, widget=widget,
+             toolkit=guiToolkit("RGtk2"))
+  return(obj)
+}
+
 
 ### methods
 

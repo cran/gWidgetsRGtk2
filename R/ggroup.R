@@ -60,18 +60,50 @@ setMethod(".ggroup",
             return(obj)
           })
 
+as.gWidgetsRGtk2.GtkVBox <- as.gWidgetsRGtk2.GtkHBox <-
+  function(widget,...) {
+    obj <- new("gGroupRGtk", block=widget, widget=widget,
+               toolkit=guiToolkit("RGtk2"))
+  }
 
 ##################################################
 ## methods
 
 ## for gGroup
+## methods of expand, anchor
 setMethod(".add",
-          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk", value="RGtkObject"),
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk", value="gWidgetRGtk"),
           function(obj, toolkit, value, ...) {
 
-            theArgs = list(...)
-            expand = if(is.null(theArgs$expand)) FALSE else theArgs$expand
+            parent <- getWidget(obj)
+            child <- getBlock(value)
+            childWidget <- getWidget(value)
+            theArgs <- list(...)
 
+            ## anchor is tricky. If block is able do it.
+            ## If not, try in the widget
+            
+            anchor <- if(is.null(theArgs$anchor)) c(.5,.5) else theArgs$anchor
+            anchor <- (anchor+1)/2      # [0,1]
+            anchor[2] <- 1 - anchor[2]     # flip yalign
+            ## property
+            ## can't do this for gtkEntry
+            if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
+              child['xalign'] <- anchor[1]
+            else if('xalign' %in% names(childWidget)
+                    && class(childWidget)[1] != "GtkEntry")
+              childWidget['xalign'] <- anchor[1]
+
+            if('yalign' %in% names(child)) 
+              child['yalign'] <- anchor[2]
+            else if('yalign' %in% names(childWidget))
+              childWidget['yalign'] <- anchor[2]
+            
+            expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
+            parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE
+            
+
+            
 ## This is an example of the pack_start() method.
 
 ##   box.pack_start(child, expand, fill, padding)
@@ -83,7 +115,31 @@ setMethod(".add",
 ## The fill argument to the pack methods control whether the extra space is allocated to the objects themselves (True), or as extra padding in the box around these objects (False). It only has an effect if the expand argument is also True.
 
             
-            getWidget(obj)$packStart(value, expand, TRUE, 0) # expand to fill if TRUE
+          })
+
+
+setMethod(".add",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk", value="RGtkObject"),
+          function(obj, toolkit, value, ...) {
+
+            parent <- getWidget(obj)
+            child <- value
+            theArgs <- list(...)
+
+            anchor <- if(is.null(theArgs$anchor)) c(.5,.5) else theArgs$anchor
+            anchor <- (anchor+1)/2      # [0,1]
+            anchor[2] <- 1 - anchor[2]
+            ## can't get widget, we have block here only
+            if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
+              child['xalign'] <- anchor[1]
+
+            if('yalign' %in% names(child)) 
+              child['yalign'] <- anchor[2]
+            
+            expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
+            parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE
+            
+            
           })
 
 

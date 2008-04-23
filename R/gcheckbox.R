@@ -16,8 +16,8 @@ setMethod(".gcheckbox",
             check <- gtkCheckButtonNewWithLabel(text)
             check$SetActive(checked)
 
-            obj = new("gCheckboxRGtk",block=check, widget=check,
-              toolkit=toolkit)
+            obj <- as.gWidgetsRGtk2(check)
+
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE, toolkit=toolkit)
@@ -32,6 +32,12 @@ setMethod(".gcheckbox",
             invisible(obj)
           })
 
+as.gWidgetsRGtk2.GtkCheckButton <- function(widget,...) {
+  obj = new("gCheckboxRGtk",block=widget, widget=widget,
+    toolkit=guiToolkit("RGtk2"))
+
+  return(obj)
+}
 ### methods
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxRGtk"),

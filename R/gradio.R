@@ -1,3 +1,8 @@
+## When you redo this -- to get as.gWIdgetsRGtk2 -- there is
+## a need to check that the toggle signal gets called when actually
+## pressed, and not deselected.
+
+
 setClass("gRadioRGtk",
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
@@ -18,34 +23,26 @@ setMethod(".gradio",
             if (length(items)<2)
               stop("Radio button group makes sense only with at least two items.")
             
-            button <- gtkRadioButtonNewWithLabel(NULL, items[1])
-            buttonList = list(button)
-            for (i in 2:length(items))  {
-              button <- gtkRadioButtonNewWithLabelFromWidget(button, items[i])
-              buttonList[[i]] = button
-            }
-            buttons <- button$getGroup()
-            
-            ## ordering is funny
-            selected = length(items) + 1 - selected
-            buttons[[selected]]$setActive(TRUE)
-            
-            if (horizontal)
-              box <- gtkHBoxNew()
-            else box <- gtkVBoxNew()
-            
-            for (button in buttons)
-              box$packEnd(button, TRUE, TRUE, 0)
+            if(horizontal)
+              g <- gtkHBox()
+            else
+              g <- gtkVBox()
+
+            radiogp <- gtkRadioButton(group=NULL, label=items[1]) # initial
+            sapply(2:length(items),function(i)
+                   radiogp$NewWithLabelFromWidget(items[i]))
+
+            ## when using GetGroup, this gives reverse order
+            ## efficiency of gtk list
             
 
+            ## layout
+            sapply(rev(radiogp$GetGroup()),         # reverse list
+                   function(i) g$PackStart(i))
+
+            obj <- as.gWidgetsRGtk2(radiogp, block=g)
             
             
-            obj = new("gRadioRGtk",block=box, widget=box, toolkit=toolkit)
-
-            tag(obj, "buttons") <- buttons
-            tag(obj, "buttonList") <- buttonList
-            tag(obj, "items") <- items
-
             ## do we add to the container?
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -61,6 +58,18 @@ setMethod(".gradio",
             invisible(obj)
           })
 
+as.gWidgetsRGtk2.GtkRadioButton <- function(widget,...) {
+  theArgs <- list(...)
+  if(!is.null(theArgs$block))
+    block <- theArgs$block
+  else
+    block <- widget
+
+  obj <- new("gRadioRGtk",block=block, widget=widget,
+    toolkit=guiToolkit("RGtk2"))
+  return(obj)
+}
+
 ## methods
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
@@ -68,39 +77,40 @@ setMethod(".svalue",
 
             index = ifelse(is.null(index),FALSE,as.logical(index))
 
-            items = tag(obj,"items")
-            buttonList = tag(obj,"buttonList")
+            radiogp <- getWidget(obj)
+            btns <- rev(radiogp$GetGroup())
+            ind <- sapply(btns, function(i) i$GetActive())
 
-            for(i in 1:length(buttonList)) {
-              if(buttonList[[i]]$GetActive()) {
-                return(ifelse(index, i, items[i]))
-              }
-  }
-  return(NA)
-
+            if(index)
+              return(which(ind))
+            else
+              return(obj[ind])
           })
 
 ## svalue<-
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   
-                   
-                   items = tag(obj,"items")
-                   buttonList = tag(obj,"buttonList")
+
+                   radiogp <- getWidget(obj)
+                   btns <- rev(radiogp$GetGroup())
+                   items <- obj[]
                    
                    if(!is.null(index) && index==TRUE) {
-                     buttonList[[as.numeric(value)]]$SetActive(TRUE)
+                     if(value %in% 1:length(obj))
+                       btns[[as.numeric(value)]]$SetActive(TRUE)
+                     else
+                       cat(sprintf("index outside of range"))
                    } else {
                      if(value %in% items) {
                        whichIndex = min(which(value == items))
-                       buttonList[[whichIndex]]$SetActive(TRUE)
+                       btns[[whichIndex]]$SetActive(TRUE)
                      } else {
-                       warning(Paste("This value",value,"is not among the items"))
+                       cat(sprintf("Value %s is not among the items",value))
                      }
                    }
-
-
+                   
+                   
                    return(obj)
           })
 
@@ -108,7 +118,10 @@ setReplaceMethod(".svalue",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gRadioRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            items = tag(x, "items")
+            radiogp <- getWidget(x)
+            btns <- rev(radiogp$GetGroup())
+            items <- sapply(btns, function(i) i$GetLabel())
+            
             if(missing(i))
               items
             else
@@ -124,24 +137,40 @@ setMethod("[",
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gRadioRGtk"),
           function(x, toolkit, i, j, ..., value) {
-            items = tag(x, "items")
-            n = length(items)
+
+            radiogp <- getWidget(x)
+            gp <- getBlock(x)
+            btns <- rev(radiogp$GetGroup())
+            items <- x[]
+            n = length(x)
             
             ## set items
-            if(missing(i))
-              items <- value
-            else
-              items[i] <- value
-            
-            rep(items, length.out=n)
-            tag(x,"items")<-items
-            
-            items = rev(items)                    # buttons wierness
-            ## update widget
-            buttons = tag(x, "buttons")
-            sapply(1:length(buttons), function(i)
-                   buttons[[i]][[1]]$SetText(items[i])
-                   )
+            if(missing(i)) {
+              ## can't reduce size, just lengthen
+              if(length(value) < length(x)) {
+                cat(sprintf("Can't reduce length of radio button group"))
+                return(x)
+              }
+
+              if(n < length(value)) {
+                ## add some new buttons; also pack in
+                for(i in 1:(length(value)-n)) {
+                  b <- radiogp$NewWithLabelFromWidget("")
+                  if(inherits(gp,"GtkBox"))
+                    gp$PackStart(b)
+                  else
+                    cat(sprintf("can't pack in object of class %s",class(gp)))
+                }
+              }
+              ## replace all the values
+              btns <- rev(radiogp$GetGroup()) # maybe grew in length
+              sapply(1:length(btns), function(i)
+                     btns[[i]]$SetLabel(value[i]))
+            } else {
+              ## update just the i values
+              for(j in 1:length(i)) 
+                btns[[j]]$SetLabel(value[j])
+            }
             
             ## all done
             return(x)
@@ -158,31 +187,39 @@ setReplaceMethod("[",
 setMethod(".length",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gRadioRGtk"),
           function(x,toolkit) {
-            return(length(x[]))
+            radiogp <- getWidget(x)
+            btns <- rev(radiogp$GetGroup())
+            length(btns)
           })
 
 
 ##################################################
 ## handlers
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerchanged(obj,toolkit,handler,action,...)
+          })
 
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            buttons = tag(obj, "buttons")
-##             IDs = sapply(buttons, function(x) 
-##               .addHandler(x,toolkit,    # use . function here -- x doesn't have @toolkit
-##               signal="toggled",
-##               handler=handler,
-##               action=action)
-##               )
 
-            IDs = sapply(buttons, function(x) {
+            radiogp <- getWidget(obj)
+            btns <- rev(radiogp$GetGroup())
+            
+            IDs = sapply(btns, function(x) {
               gtktry(connectSignal(x,
-                                signal="toggled",
-                                f=handler,
-                                data=list(obj=obj, action=action,...),
-                                user.data.first = TRUE,
-                                after = FALSE), silent=FALSE)
+                                   signal="toggled",
+                                   f=function(h,w,...) {
+                                     ## only call handler for change to active
+                                     ## not just toggle
+                                     if(w$GetActive())
+                                       handler(h,w,...)
+                                   },
+                                   data=list(obj=obj, action=action,...),
+                                   user.data.first = TRUE,
+                                   after = FALSE), silent=FALSE)
             })
             
             handler.ID = tag(obj, "handler.id")
@@ -191,8 +228,8 @@ setMethod(".addhandlerchanged",
             for(i in 1:length(IDs))
               handler.ID[[length(handler.ID)+1]] = IDs[[i]]
             tag(obj, "handler.id", replace=FALSE) <- handler.ID
-
+            
             invisible(IDs)
           })
-
+ 
 

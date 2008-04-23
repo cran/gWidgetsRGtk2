@@ -20,15 +20,19 @@ setMethod(".gexpandgroup",
             if(text != "")
               expander$SetLabel(text)
 
-            theArgs = list(...)
-            
-            group = ggroup(horizontal=horizontal, ...)
-            expander$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
+            obj <- as.gWidgetsRGtk2(expander, horizontal=horizontal)
 
-            ## we put widget=group here to get gGroup methods, but
-            ## must be careful below to use "block" when referring to expander
-            obj = new("gExpandgroupRGtk",block=expander,widget=getWidget(group),
-              toolkit=toolkit)
+##             group = ggroup(horizontal=horizontal, ...)
+##             expander$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
+
+##             ## we put widget=group here to get gGroup methods, but
+##             ## must be careful below to use "block" when referring to expander
+##             obj = new("gExpandgroupRGtk",block=expander,widget=getWidget(group),
+##               toolkit=toolkit)
+
+##            tag(obj,"group") <- group   # for 
+
+            theArgs = list(...)
 
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -45,6 +49,28 @@ setMethod(".gexpandgroup",
             }
             invisible(obj)
           })
+
+as.gWidgetsRGtk2.GtkExpander <- function(widget,...) {
+  ## coverting from gWidget?
+  if(!is.null(tag(widget,"group"))) {
+    group <- tag(widget,"group")
+  } else {
+    theArgs <- list(...)
+    if(!is.null(theArgs$horizontal))
+      horizontal = theArgs$horizontal
+    else
+      horizontal = TRUE
+    group = ggroup(horizontal=horizontal)
+    widget$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
+  }
+  ## we put widget=group here to get gGroup methods, but
+  ## must be careful below to use "block" when referring to expander
+  obj = new("gExpandgroupRGtk",block=widget,widget=getWidget(group),
+    toolkit=guiToolkit("RGtk2"))
+
+  tag(obj,"group") <- group
+  return(obj)
+}
 
 ## methods
 
@@ -69,6 +95,21 @@ setReplaceMethod(".visible",
                    obj@block$SetExpanded(as.logical(value))
                    return(obj)
                  })
+
+## names refers to label
+setMethod(".names",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gExpandgroupRGtk"),
+          function(x, toolkit) {
+            x@block$GetLabel()        # not @widget@
+          })
+
+setReplaceMethod(".names",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",x="gExpandgroupRGtk"),
+                 function(x, toolkit, value) {
+                   x@block$SetLabel(value)
+                   return(x)
+                 })
+
 
 
 ## handlers

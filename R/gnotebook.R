@@ -38,6 +38,17 @@ setMethod(".gnotebook",
             invisible(obj)
           })
 
+as.gWidgetsRGtk2.GtkNotebook <- function(widget,...) {
+  ## no group here
+  obj <- new("gNotebookRGtk", block=widget, widget=widget,
+    toolkit=guiToolkit("RGtk2"))
+
+  tag(obj,"closebuttons") <- FALSE
+  tag(obj,"dontCloseThese") <- FALSE
+
+  return(obj)
+}
+
 ### methods
 
 ## different, set notebook, not group

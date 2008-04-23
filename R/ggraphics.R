@@ -27,7 +27,9 @@ setMethod(".ggraphics",
             if(!is.null(width) & !is.null(height))
               da$setSizeRequest(width, height)
 
-            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
+
+            obj <- as.gWidgetsRGtk2(da)
+#            obj = new("gGraphicsRGtk",block=da, widget=da, toolkit=toolkit)
 
 
 ##            asCairoDevice(da, pointsize = ps)
@@ -84,13 +86,20 @@ setMethod(".ggraphics",
             return(obj)
           })
 
+as.gWidgetsRGtk2.GtkDrawingArea <- function(widget,...) {
+  obj <- new("gGraphicsRGtk",block=widget, widget=widget,
+             toolkit=guiToolkit("RGtk2"))
+  return(obj)
+}
+
+
 as.gGd = function(obj) {
   if("GtkDrawingArea" %in% class(obj)) {
     newobj = list(ref = obj, device = obj$GetData("device"))
     class(newobj) <- c("gGd", "gComponent")
     return(newobj)
   } else {
-    cat("conversion failed\n")
+    cat(gettext("conversion failed\n"))
     return(obj)
   }
 }

@@ -261,7 +261,7 @@ setMethod(".ghelpbrowser",
             ##class(obj) = c("gHelpBrowser","gWidget")
 
   
-            gp = ggroup(horizontal = FALSE, container = win)
+            gp = ggroup(horizontal = FALSE, container = win, expand=TRUE)
             toolbarGroup = ggroup(container = gp)
 ##  toolbar = list()
 ##  toolbar$quit$handler=function(h,...) dispose(win)

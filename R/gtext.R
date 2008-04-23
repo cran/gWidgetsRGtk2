@@ -1,5 +1,5 @@
 setClass("gTextRGtk",
-         representation(tags="list"),
+#         representation(tags="list"),
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
@@ -15,13 +15,8 @@ setMethod(".gtext",
 
             force(toolkit)
             
-            group = ggroup()
-            sw = gtkScrolledWindowNew()
-            add(group, sw, expand=TRUE)
-            sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
-            if(!is.null(width))
-              sw$SetSizeRequest(width,height)
-            
+
+            ## make textview
             textview = gtkTextViewNew()
             textview$SetLeftMargin(10)
             textview$SetRightMargin(10)
@@ -30,63 +25,23 @@ setMethod(".gtext",
             else
               textview$SetWrapMode(GtkWrapMode['none'])
             
+            ## pack in a scrollwindow
+            sw = gtkScrolledWindowNew()
+#            group = ggroup()
+#            add(group, sw, expand=TRUE)
+            sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
+            if(!is.null(width))
+              sw$SetSizeRequest(width,height)
+
+
             sw$Add(textview)
             textview$Show()
             
-            ## add tags to buffer
-            buffer = textview$GetBuffer()
-            ## weights
-            fontWeights = names(PangoWeight)
-            fontWeights = fontWeights[fontWeights != "normal"] # also in Styles
-            for(i in fontWeights)
-              buffer$createTag(i, weight = PangoWeight[i])
-            
-            ## styles
-            fontStyles = names(PangoStyle)
-            for(i in fontStyles)
-              buffer$createTag(i, style = PangoStyle[i])
-            ## family
-            buffer$createTag("monospace",family = "monospace")
-            ## sizes ## old defs for .PangoScale are no longer valid as of 10.4
-            fontSizes = c(
-              "xx-large"= PANGO_SCALE_XX_LARGE,
-              "x-large" = PANGO_SCALE_X_LARGE,
-              "large"   = PANGO_SCALE_LARGE,
-              "medium"  = PANGO_SCALE_MEDIUM,
-              "small"   = PANGO_SCALE_SMALL,
-              "x-small" = PANGO_SCALE_X_SMALL,
-              "xx-small" = PANGO_SCALE_XX_SMALL
-              )
-            
-            for(i in names(fontSizes)) 
-              buffer$createTag(i, scale = fontSizes[i])
-            
-            ## colors -- 
-##             fontColors = c("black","blue","red","yellow","brown","green","pink")
-##             for(i in fontColors) {
-##               buffer$createTag(i,foreground = i)
-##               buffer$createTag(Paste(i,".background"),background = i)
-##             }
-            fontColors <-  colors()
-            sapply(colors(), function(i) {
-              buffer$createTag(i,foreground = i)
-              buffer$createTag(Paste(i,".background"),background = i)
-            })
-              
-            
-            
-            tags = list(
-              styles = fontStyles,
-              family = "monospace",
-              weights = fontWeights,
-              sizes = names(fontSizes),
-              foreground.colors = fontColors,
-              background.colors = paste(fontColors,".background", sep="")
-              )
 
-            obj = new("gTextRGtk", block=group, widget=textview, tags=tags, toolkit=toolkit)
+#            obj = new("gTextRGtk", block=group, widget=textview, tags=tags, toolkit=toolkit)
+#            obj = new("gTextRGtk", block=sw, widget=textview, tags=tags, toolkit=toolkit)
 
-            tag(obj,"buffer") <- buffer
+            obj <- as.gWidgetsRGtk2(textview, block=sw)
             
             ##   ## Handle attributes
             ##   if(!is.null(font.attr))
@@ -110,13 +65,83 @@ setMethod(".gtext",
             return(obj)
           })
 
-## as.gText converts a textview into gText class for use of its methods
-## need some way to get tags, this is a bit of hack
-#as.gText = function(textview) {
-#  obj = list(ref=NULL, textview=textview, tags=gtext()$tags)
-#  .class(obj) = .class(gtext())
-#  return(obj)
-#}
+
+as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
+
+  theArgs <- list(...)
+  if(!is.null(theArgs$block))
+    block <- theArgs$block
+  else
+    block <- widget
+  
+  obj <- new("gTextRGtk", block=block, widget=widget,
+             toolkit=guiToolkit("RGtk2"))
+
+  ## add tags if not there
+  if(is.null(tag(obj,"tags"))) {
+    buffer <- widget$GetBuffer()
+    tags <- .addTags(buffer)
+    tag(obj,"tags") <- tags
+  }
+  
+  return(obj)
+}
+
+## add tags to buffer
+## return tags
+.addTags <- function(buffer) {
+  ## weights
+  fontWeights = names(PangoWeight)
+  fontWeights = fontWeights[fontWeights != "normal"] # also in Styles
+  for(i in fontWeights)
+    buffer$createTag(i, weight = PangoWeight[i])
+  
+  ## styles
+  fontStyles = names(PangoStyle)
+  for(i in fontStyles)
+    buffer$createTag(i, style = PangoStyle[i])
+  ## family
+  buffer$createTag("monospace",family = "monospace")
+  ## sizes ## old defs for .PangoScale are no longer valid as of 10.4
+  fontSizes = c(
+    "xx-large"= PANGO_SCALE_XX_LARGE,
+    "x-large" = PANGO_SCALE_X_LARGE,
+    "large"   = PANGO_SCALE_LARGE,
+    "medium"  = PANGO_SCALE_MEDIUM,
+    "small"   = PANGO_SCALE_SMALL,
+    "x-small" = PANGO_SCALE_X_SMALL,
+    "xx-small" = PANGO_SCALE_XX_SMALL
+    )
+  
+  for(i in names(fontSizes)) 
+    buffer$createTag(i, scale = fontSizes[i])
+  
+  ## colors -- 
+  ##             fontColors = c("black","blue","red","yellow","brown","green","pink")
+  ##             for(i in fontColors) {
+  ##               buffer$createTag(i,foreground = i)
+  ##               buffer$createTag(Paste(i,".background"),background = i)
+  ##             }
+  fontColors <-  colors()
+  sapply(colors(), function(i) {
+    buffer$createTag(i,foreground = i)
+    buffer$createTag(Paste(i,".background"),background = i)
+  })
+  
+  
+  
+  tags = list(
+    styles = fontStyles,
+    family = "monospace",
+    weights = fontWeights,
+    sizes = names(fontSizes),
+    foreground.colors = fontColors,
+    background.colors = paste(fontColors,".background", sep="")
+    )
+
+  return(tags)
+}
+
 
 ### methods
 
@@ -166,6 +191,7 @@ setMethod(".dispose",
           })
 
 
+
 ### Add method is a workhorse for this class. Value can be
 ## * a line of text
 ## * a vector of lines of text
@@ -182,14 +208,14 @@ setMethod(".add",
             do.newline = ifelse(is.null(theArgs$do.newline), TRUE, as.logical(theArgs$do.newline))
             markup = theArgs$font.attr
             if(!is.null(markup))
-              markup = markup[markup %in% unlist(obj@tags)] # only some markup
+              markup = markup[markup %in% unlist(tag(obj,"tags"))] # only some markup
             where = ifelse(is.null(theArgs$where), "end",theArgs$where)
 
             buffer = obj@widget$GetBuffer()
             iter = switch(where,
               "end"=buffer$GetEndIter()$iter,
               "beginning"=buffer$GetStartIter()$iter,
-              {cat("Only end, beginning implemented")
+              {gwCat("Only end, beginning implemented")
                buffer$GetEndIter()$iter
              })
 
@@ -225,7 +251,7 @@ setMethod(".add",
             iter = switch(where,
               "end"=buffer$GetEndIter()$iter,
               "beginning"=buffer$GetStartIter()$iter,
-              {cat("Only end, beginning implemented")
+              {gwCat("Only end, beginning implemented")
                buffer$GetEndIter()$iter
              })
             
@@ -243,15 +269,14 @@ setReplaceMethod(".font",
                  function(obj, toolkit, ..., value) {
                    ## get tags that are known
                    tags = value
-                   tags = tags[tags %in% unlist(obj@tags)]
+                   tags = tags[tags %in% unlist(tag(obj,"tags"))]
                    if(length(tags) == 0) {
                      cat(gettext("Invalid font specification\n"))
                      return(obj)
                    }
                    
                    ## get start, end iters
-                   buffer <- tag(obj,"buffer")
-#                   buffer = obj@widget$GetBuffer()
+                   buffer <- getWidget(obj)$GetBuffer()
                    bounds = buffer$GetSelectionBounds()
                    if(bounds$retval == FALSE) {
                      cat(gettext("No text selected for changing a font\n"))
@@ -270,6 +295,31 @@ setReplaceMethod(".font",
                    
                    return(obj)
                  })
+
+
+
+### handlers
+setMethod(".addhandlerkeystroke",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTextRGtk"),
+          function(obj,toolkit, handler=NULL, action=NULL,...) {
+            widget <- getWidget(obj)
+            ID <-
+              gSignalConnect(widget,signal = "key-press-event",
+                             f = function(d,widget,event,...) {
+                               h <- list(obj=d$obj,action=d$action)
+                               key <- event$GetString()
+                               h$key <- key
+                               if(!is.null(d$handler) &&
+                                  is.function(d$handler))
+                                 d$handler(h,...)
+                               return(FALSE) # propogate
+                             },
+                             user.data.first = TRUE,
+                             data = list(obj=obj,handler=handler, action=action)
+                             )
+            return(ID)
+          })
+
 
 
 
@@ -353,7 +403,7 @@ movableWidgetButtonPressHandler = function(h, widget, event, ...) {
 movableWidgetButtonReleaseHandler = function(h, widget, event, ...) {
   info = widget$GetData("moveable-widget-data")
   if(!is.list(info[['button']]) || is.na(info[['button']])) {
-    cat("relase handler failed\n")
+    gwCat("relase handler failed\n")
     return(FALSE)
   }
   

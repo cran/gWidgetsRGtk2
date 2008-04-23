@@ -20,8 +20,7 @@ setMethod(".gseparator",
               separator = gtkVSeparatorNew()
             }
 
-            
-            obj = new("gSeparatorRGtk", block=separator, widget=separator, toolkit=toolkit)
+            obj <- as.gWidgetsRGtk2(separator)
 
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -33,4 +32,8 @@ setMethod(".gseparator",
             
           })
 
-
+as.gWidgetsRGtk2.GtkHSeparator <- as.gWidgetsRGtk2.GtkVSeparator <- function(widget,...){
+  obj <- new("gSeparatorRGtk", block=widget, widget=widget,
+             toolkit=guiToolkit("RGtk2"))
+  return(obj)
+}

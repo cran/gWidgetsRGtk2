@@ -83,15 +83,14 @@ setMethod(".gdroplist",
               combo$AddAttribute(cellrenderer,"text", 0)
             }
 
+            obj <- as.gWidgetsRGtk2(combo)
             
-            obj = new("gDroplistRGtk",block=combo,widget=combo, toolkit=toolkit)
+##             obj = new("gDroplistRGtk",block=combo,widget=combo, toolkit=toolkit)
 
-#            if(editable)
-#              obj@widget = combo$GetChild()
-            
-            tag(obj,"store") <- store
-            tag(obj,"combo") <- combo
-            tag(obj,"editable") <- editable
+##             tag(obj,"store") <- store
+##             tag(obj,"combo") <- combo
+##             tag(obj,"editable") <- editable
+
             tag(obj,"items") <- items
             tag(obj,"doIcons") <- doIcons
             tag(obj, "coerce.with") = coerce.with
@@ -127,7 +126,48 @@ setMethod(".gdroplist",
             
             invisible(obj)
           })
-          
+
+as.gWidgetsRGtk2.GtkComboBoxEntry <- function(widget,...) {
+  obj <- .as.gWidgetsRGtk2.gdroplist(widget,...)
+  tag(obj,"editable") <- TRUE
+  return(obj)
+}
+
+as.gWidgetsRGtk2.GtkComboBox <- function(widget,...) {
+
+  obj <- .as.gWidgetsRGtk2.gdroplist(widget,...)
+  tag(obj,"editable") <- FALSE
+  return(obj)
+
+}
+
+.as.gWidgetsRGtk2.gdroplist <- function(widget) {
+  obj = new("gDroplistRGtk",block=widget,widget=widget,
+    toolkit=guiToolkit("RGtk2"))
+
+  store <- widget$GetModel()
+  tag(obj,"store") <- store
+  tag(obj,"combo") <- widget
+
+  ## get items then store. This is only useful for coerced values
+  ## as otherwise set in constructor
+  items <- c()
+
+  iter <- store$GetIterFirst()
+  if(is.logical(iter$retval) && iter$retval) {
+    items <- store$GetValue(iter$iter,0)$value
+    ret <- store$IterNext(iter$iter)
+    while(ret) {
+      items <- c(items,store$GetValue(iter$iter,0)$value)
+      ret <- store$IterNext(iter$iter)
+    }
+  }
+  
+  tag(obj,"items") <- data.frame(items=items, stringsAsFactors=FALSE)
+  
+  return(obj)
+}  
+
 ### methods
 ## value is for getting/setting the selected value
 setMethod(".svalue",
@@ -144,10 +184,10 @@ setMethod(".svalue",
 ##                entry = obj@widget      # entry is widget
                 entry = obj@widget$GetChild()
                 if(!is.null(theArgs$getwidget)) {
-                  cat("DEBUG: getwidget is deprecated\n")
+                  gwCat("DEBUG: getwidget is deprecated\n")
                 }
                 if(!is.null(theArgs$as.numeric)) {
-                  cat("DEBUG: as.numeric as an argument is deprected. Use coerce.with\n")
+                  gwCat("DEBUG: as.numeric as an argument is deprected. Use coerce.with\n")
                 }
                 
                 ## else we return text

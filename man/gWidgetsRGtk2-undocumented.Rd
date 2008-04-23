@@ -23,6 +23,7 @@
 \alias{.delete,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.delete,gToolbarRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.svalue<-,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
+\alias{.svalue<-,gPanedGroupRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gRadioRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gSliderRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
@@ -254,6 +255,7 @@
 \alias{.svalue,gImageRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gLabelRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gMenuRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gPanedGroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gNotebookRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gRadioRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gSliderRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
@@ -357,6 +359,7 @@
 \alias{.add,gContainerRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gDfNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,gGroupRGtk,guiWidgetsToolkitRGtk2,gGraphicsRGtk-method}
+\alias{.add,gGroupRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gGroupRGtk,guiWidgetsToolkitRGtk2,RGtkObject-method}
 \alias{.add,gHelpRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,gHelpbrowserRGtk,guiWidgetsToolkitRGtk2,ANY-method}
@@ -507,7 +510,10 @@
 %%
 \alias{.size-methods}
 \alias{.size,GtkWindow,guiWidgetsToolkitRGtk2-method}
-\alias{.size,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.size,gWindowRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.size,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.size,gWidgetRgtk,guiWidgetsToolkitRGtk2-method}
+\alias{.size,RGtkObject,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  size<- --
 %%
@@ -640,6 +646,60 @@
 \alias{.isExtant,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.isExtant,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 
+%%
+%% --  defaultWidget --
+%%
+\alias{defaultWidget-methods}
+\alias{defaultWidget,guiWidget-method}
+\alias{defaultWidget,gWidgetRGtk-method} 
+
+%%
+%% --  defaultWidget<- --
+%%
+\alias{defaultWidget<--methods}
+\alias{defaultWidget<-,guiWidget-method}
+\alias{defaultWidget<-,gWidgetRGtk-method} 
+
+%%
+%% --  addhandler --
+%%
+\alias{addhandler-methods}
+\alias{addhandler,guiWidget-method}
+\alias{addhandler,gWidgetRGtk-method}
+\alias{addhandler,RGtkObject-method}
+\alias{addandler,ANY-method}
+
+
+%%
+%% --  blockhandler --
+%%
+\alias{blockhandler-methods}
+\alias{blockhandler,guiWidget-method}
+\alias{blockhandler,gWidgetRGtk-method}
+\alias{blockhandler,RGtkObject-method}
+\alias{blockhandler,ANY-method}
+%%
+%% --  .blockhandler --
+%%
+\alias{.blockhandler-methods}
+\alias{.blockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.blockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+
+%%
+%% --  unblockhandler --
+%%
+\alias{unblockhandler-methods}
+\alias{unblockhandler,guiWidget-method}
+\alias{unblockhandler,gWidgetRGtk-method}
+\alias{unblockhandler,RGtkObject-method}
+\alias{unblockhandler,ANY-method}
+%%
+%% --  .unblockhandler --
+%%
+\alias{.unblockhandler-methods}
+\alias{.unblockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.unblockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+
 
 %%
 %% --  removehandler --
@@ -666,6 +726,16 @@
 \alias{addhandlerchanged,gSubsetbyRGtk-method}
 \alias{addhandlerchanged,GtkTreeViewColumn-method} 
 %%
+%% --  addHandlerChanged --
+%%
+\alias{addHandlerChanged-methods}
+\alias{addHandlerChanged,guiWidget-method}
+\alias{addHandlerChanged,gWidgetRGtk-method}
+\alias{addHandlerChanged,RGtkObject-method}
+\alias{addHandlerChanged,ANY-method}
+\alias{addHandlerChanged,gSubsetbyRGtk-method}
+\alias{addHandlerChanged,GtkTreeViewColumn-method} 
+%%
 %% --  .addhandlerchanged --
 %%
 \alias{.addhandlerchanged-methods}
@@ -689,7 +759,8 @@
 \alias{addhandlerkeystroke-methods}
 \alias{addhandlerkeystroke,guiWidget-method}
 \alias{addhandlerkeystroke,gWidgetRGtk-method}
-\alias{addhandlerkeystroke,RGtkObject-method} 
+\alias{addhandlerkeystroke,RGtkObject-method}
+\alias{addhandlerkeystroke,gTextRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .addhandlerkeystroke --
 %%
@@ -824,6 +895,21 @@
 \alias{.add3rdmousepopupmenu,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
  
 %%
+%% --  addmousemotion --
+%%
+\alias{addhandlermousemotion-methods}
+\alias{addhandlermousemotion,guiWidget-method}
+\alias{addhandlermousemotion,gWidgetRGtk-method}
+\alias{addhandlermousemotion,RGtkObject-method} 
+%%
+%% --  .add3rdmousepopupmenu --
+%%
+\alias{.addhandlermousemotion-methods}
+\alias{.addhandlermousemotion,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlermousemotion,RGtkObject,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlermousemotion,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
+
+%%
 %% --  adddropsource --
 %%
 \alias{adddropsource-methods}
@@ -920,7 +1006,8 @@
 %% --  .dim --
 %%
 \alias{.dim-methods}
-\alias{.dim,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.dim,gGridRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.dim,gLayoutRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .dimnames --
 %%
@@ -956,7 +1043,9 @@
 %%
 \alias{.names<--methods}
 \alias{.names<-,gGridRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.names<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.names<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names<-,gFrameRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% -- .getToolkitWidget --
 \alias{.getToolkitWidget,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}

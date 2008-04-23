@@ -1,4 +1,5 @@
 importFrom(gWidgets,
+           "gwCat",
 "glabel", "gbutton", "gcheckbox", "gradio", "gdroplist",
 "gcheckboxgroup", "gspinbutton", "gslider", "gedit", "gtext", "gmenu",
 "gtoolbar", "gtable", "gdf", "gdfnotebook", "gtree", "gfile",
@@ -21,14 +22,17 @@ importMethodsFrom(gWidgets,
 "[", 
 "svalue", "svalue<-", "add", "addSpace", "addSpring", "delete",
 "dispose", "visible", "visible<-", "enabled", "enabled<-", "size",
-"size<-", "focus", "focus<-", "font", "font<-", "tag", "tag<-", "id",
-"id<-", "isExtant",
+"size<-", "focus", "focus<-", "defaultWidget","defaultWidget<-","font", "font<-", "tag", "tag<-", "id",
+"id<-", "isExtant","addhandler",
                   "addhandlerchanged", "addhandlerkeystroke",
 "addhandlerclicked", "addhandlerdoubleclick",
                   "addhandlerrightclick",
 "addhandlerdestroy", "addhandlerexpose", "addhandlerunrealize",
+"addhandlermousemotion",                  
 "addhandleridle", "addpopupmenu", "add3rdmousepopupmenu",
-"adddropsource", "adddropmotion", "adddroptarget", "removehandler",
+"adddropsource", "adddropmotion", "adddroptarget",
+                  "removehandler",
+                  "blockhandler","unblockhandler",
 ".glabel", ".gbutton", ".gcheckbox", ".gradio", ".gdroplist",
 ".gcheckboxgroup", ".gspinbutton", ".gslider", ".gedit", ".gtext",
 ".gmenu", ".gtoolbar", ".gtable", ".gdf", ".gdfnotebook", ".gtree",
@@ -40,18 +44,20 @@ importMethodsFrom(gWidgets,
 ".leftBracket", ".leftBracket<-", ".add", ".addSpace", ".addSpring",
 ".delete", ".dispose", ".visible", ".visible<-", 
 ".enabled", ".size", ".font",
-".enabled<-",  ".size<-", ".focus", ".focus<-", 
+".enabled<-",  ".size<-", ".focus", ".focus<-",  ".defaultWidget",".defaultWidget<-",
 ".font<-", ".tag", ".tag<-", ".id", ".id<-", ".isExtant",
+                  ".addhandler",
                   ".addhandlerchanged",
 ".addhandlerkeystroke", ".addhandlerclicked",
 ".addhandlerdoubleclick",  ".addhandlerrightclick",
 ".addhandlerdestroy", ".addhandlerexpose", ".addhandlerunrealize",
+".addhandlermousemotion",                                    
 ".addhandleridle", ".addpopupmenu", ".add3rdmousepopupmenu",
 ".adddropsource", ".adddropmotion", ".adddroptarget", ".gmessage",
 ".ginput", ".gconfirm", ".gbasicdialog",
 ".addStockIcons",".getStockIcons",
                   ".stockIconFromClass",".stockIconFromObject",
-".removehandler",
+".removehandler",".blockhandler",".unblockhandler",
 "update",".update",
 "length",".length",
 "dim",".dim",
@@ -85,29 +91,46 @@ exportMethods(
 ".gnotebook", ".glayout", ".gpanedgroup", 
 "svalue", "svalue<-", "add", "addSpace", "addSpring", "delete",
 "dispose", "visible", "visible<-", "enabled", "enabled<-", "size",
-"size<-", "focus", "focus<-", "font", "font<-", "tag", "tag<-", "id",
+"size<-", "focus", "focus<-",  "defaultWidget","defaultWidget<-",
+              "font", "font<-", "tag", "tag<-", "id",
 "id<-", "isExtant",
-              "addhandlerchanged", "addhandlerkeystroke",
-"addhandlerclicked", "addhandlerdoubleclick",
+              "addhandler", #"addHandler",
+              "addhandlerchanged","addHandlerChanged",
+              "addhandlerkeystroke",
+              "addhandlerclicked",
+              "addhandlerdoubleclick",
               "addhandlerrightclick",
-"addhandlerdestroy", "addhandlerexpose", "addhandlerunrealize",
-"addhandleridle", "addpopupmenu", "add3rdmousepopupmenu",
-"adddropsource", "adddropmotion", "adddroptarget", "removehandler",
-".svalue", ".svalue<-",
-".leftBracket", ".leftBracket<-", ".add", ".addSpace", ".addSpring",
-".delete", ".dispose", ".visible", ".visible<-", ".enabled",
-".enabled<-", ".size", ".size<-", ".focus", ".focus<-", ".font",
+              "addhandlerdestroy",
+              "addhandlerexpose",
+              "addhandlerunrealize",
+              "addhandlermousemotion",                  
+              "addhandleridle",
+              "addpopupmenu",
+              "add3rdmousepopupmenu",
+              "adddropsource",
+              "adddropmotion",
+              "adddroptarget",
+              "removehandler",
+              "blockhandler",              "unblockhandler",
+              ".svalue", ".svalue<-",
+              ".leftBracket", ".leftBracket<-", ".add", ".addSpace", ".addSpring",
+              ".delete", ".dispose", ".visible", ".visible<-", ".enabled",
+              ".enabled<-", ".size", ".size<-", ".focus", ".focus<-",
+              "defaultWidget","defaultWidget<-",".font",
 ".font<-", ".tag", ".tag<-", ".id", ".id<-", ".isExtant",
-              ".addhandlerchanged",
+              ".addhandler",".addhandlerchanged",
 ".addhandlerkeystroke", ".addhandlerclicked",
 ".addhandlerdoubleclick",  ".addhandlerrightclick",
 ".addhandlerdestroy", ".addhandlerexpose", ".addhandlerunrealize",
-".addhandleridle", ".addpopupmenu", ".add3rdmousepopupmenu",
+              ".addhandlermousemotion",                  
+              ".addhandleridle", ".addpopupmenu", ".add3rdmousepopupmenu",
 ".adddropsource", ".adddropmotion", ".adddroptarget", ".gmessage",
 ".ginput", ".gconfirm", ".gbasicdialog",
 ".addStockIcons",".getStockIcons",
               ".stockIconFromClass",".stockIconFromObject",
 ".removehandler",
+              ".blockhandler",
+              ".unblockhandler",
 ".svalue",
 "update",".update",
 "length",".length",
@@ -117,7 +140,13 @@ exportMethods(
 "names",".names",
 "names<-",".names<-",
               ".getToolkitWidget"
-)
+
+              )
+#,
+#              "as.gWidgetsRGtk2",
+#              "as.gWidgetsRGtk2.default",
+#              "as.gWidgetsRGtk2.GtkButton"
+#)
 
 exportClasses(
 "AtkNoOpObjectFactory", "AtkObjectFactory", "AtkRelationSet", 
@@ -157,3 +186,38 @@ exportClasses(
 "PangoAttrList", "PangoCairoFcFontMap", "PangoCoverage", "PangoFcFontMap", 
 "PangoFontDescription", "PangoFontMap", "PangoGlyphString", "PangoItem", 
 "RGtkDataFrame")
+
+## coercion methods
+#importFrom(gWidgets, "as.gWidget")
+export("as.gWidgetsRGtk2")
+S3method("as.gWidgetsRGtk2","default")
+S3method(as.gWidgetsRGtk2,"GtkButton")
+S3method(as.gWidgetsRGtk2,"GtkCheckButton")
+## no gcheckboxgroup -- made from gWidgets
+S3method(as.gWidgetsRGtk2,"GtkComboBoxEntry") ## ISSUE WITH [, ..
+S3method(as.gWidgetsRGtk2,"GtkComboBox")
+S3method(as.gWidgetsRGtk2,"GtkEntry")
+S3method(as.gWidgetsRGtk2,"GtkExpander")
+S3method(as.gWidgetsRGtk2,"GtkFrame")
+S3method(as.gWidgetsRGtk2,"GtkDrawingArea")
+## ggrid didn't touch
+S3method(as.gWidgetsRGtk2,"GtkHBox")
+S3method(as.gWidgetsRGtk2,"GtkVBox")
+S3method(as.gWidgetsRGtk2,"GtkImage")
+S3method(as.gWidgetsRGtk2,"GtkLabel")
+S3method(as.gWidgetsRGtk2,"GtkTable")   # glayout
+S3method(as.gWidgetsRGtk2,"GtkNotebook")
+S3method(as.gWidgetsRGtk2,"GtkHPaned")  # gpanedgroup
+S3method(as.gWidgetsRGtk2,"GtkVPaned")
+S3method(as.gWidgetsRGtk2,"GtkRadioButton")
+S3method(as.gWidgetsRGtk2,"GtkHSeparator")
+S3method(as.gWidgetsRGtk2,"GtkVSeparator")
+S3method(as.gWidgetsRGtk2,"GtkHScale")
+S3method(as.gWidgetsRGtk2,"GtkVScale")
+S3method(as.gWidgetsRGtk2,"GtkSpinButton")
+S3method(as.gWidgetsRGtk2,"GtkStatusbar")
+S3method(as.gWidgetsRGtk2,"GtkTextView")    
+## no gtoolbar -- odd datastore -- a list
+## no gtree -- odd data store
+S3method(as.gWidgetsRGtk2,"GtkWindow")
+

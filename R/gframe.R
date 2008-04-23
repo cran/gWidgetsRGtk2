@@ -16,21 +16,21 @@ setMethod(".gframe",
             force(toolkit)
 
             frame = gtkFrameNew()
-            if(markup) {
-              label = gtkLabelNew()
-              label$SetMarkup(text)
-              frame$SetLabelWidget(label)
-            } else {
-              frame$SetLabel(text)
-            }
-            frame$SetLabelAlign(pos,0)
             
-            group = ggroup(horizontal=horizontal, ...) # for horizontal, spacing etc.
-            frame$Add(getBlock(group))
+            obj <- as.gWidgetsRGtk2(frame, horizontal=horizontal)
 
-            ## add label to group
-            obj = new("gFrameRGtk",
-              block=frame, widget=group@widget, toolkit=toolkit)
+            ##            group = ggroup(horizontal=horizontal, ...) # for horizontal, spacing etc.
+##             frame$Add(getBlock(group))
+
+##             ## add label to group
+##             obj = new("gFrameRGtk",
+##               block=frame, widget=group@widget, toolkit=toolkit)
+
+            tag(obj,"markup") <- markup
+            names(obj) <- text
+
+            frame$SetLabelAlign(pos,0)
+
 
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -40,5 +40,56 @@ setMethod(".gframe",
             return(obj)
           })
 
+as.gWidgetsRGtk2.GtkFrame <- function(widget,...) {
+
+  if(is.null(tag(widget,"group"))) {
+    theArgs <- list(...)
+    horizontal <- if(is.null(theArgs$horizontal)) TRUE else theArgs$horizontal
+    group <- ggroup(horizontal=horizontal) # for horizontal, spacing etc.
+    widget$Add(getBlock(group))
+  } else {
+    group <- tag(widget,"group")
+  }
+
+  ## add label to group
+  obj <- new("gFrameRGtk",block=widget, widget=getWidget(group),
+    toolkit=guiToolkit("RGtk2"))
+
+  tag(obj,"group") <- group
+  if(is.null(tag(obj,"markup"))) tag(obj,"markup") <- FALSE
+
+  return(obj)
+}
+    
+
 ### methods -- inherited from ggroup
+
+## return label name
+setMethod(".names",signature(toolkit="guiWidgetsToolkitRGtk2",
+                             x="gFrameRGtk"),
+          function(x, toolkit) {
+            if(tag(x,"markup")) {
+              label <- getBlock(x)$GetLabelWidget()
+              label$GetLabel()
+            } else {
+              getBlock(x)$GetLabel()
+            }
+          })
+
+
+setReplaceMethod(".names",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",x = "gFrameRGtk"),
+                 function(x,toolkit,value) {
+
+                   frame <- getBlock(x)
+                   if(is.null(tag(x,"markup")) || !tag(x,"markup")) {
+                     frame$SetLabel(value)
+                   } else {
+                     label <- gtkLabelNew(value)
+                     label$SetMarkup(text)
+                     frame$SetLabelWidget(label)
+                   }
+
+                   return(x)
+                 })
 

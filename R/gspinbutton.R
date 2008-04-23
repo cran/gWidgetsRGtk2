@@ -21,8 +21,8 @@ setMethod(".gspinbutton",
             adjustment = gtkAdjustmentNew(value=value, lower=from,
               upper=to,step.incr=by)
             spin = gtkSpinButtonNew(adjustment,climb.rate=0.6, digits=digits)
-  
-            obj = new("gSpinbuttonRGtk", block=spin, widget=spin, toolkit=toolkit)
+
+            obj <- as.gWidgetsRGtk2(spin) 
 
             svalue(obj) <- value                  # wasn't working as desired
   
@@ -38,6 +38,12 @@ setMethod(".gspinbutton",
             }
             invisible(obj)
           })
+
+as.gWidgetsRGtk2.GtkSpinButton <- function(widget,...) {
+  obj <- new("gSpinbuttonRGtk", block=widget, widget=widget,
+             toolkit=guiToolkit("RGtk2"))
+  return(obj)
+}
 
 ### methods
 setMethod(".svalue",

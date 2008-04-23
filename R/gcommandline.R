@@ -95,7 +95,7 @@ setMethod(".gcommandline",
               gbutton("save",handler=function(h,...) {
                 filename = svalue(saveFileName)
                 if(is.empty(filename)) {
-                  cat("Need file to save to\n")
+                  cat(gettext("Need file to save to\n"))
                   return()
                 }
                 if(svalue(saveType) == "commands")
@@ -109,7 +109,7 @@ setMethod(".gcommandline",
                 filename = gsub('"$',"", filename)
                 err = gtktry(writeLines(values, filename),silent=TRUE)
                 if(inherits(err, "try-error")) {
-                  cat("Saving gave an error:",err,"\n")
+                  cat(sprintf("Saving gave an error: %s\n",err))
                 }
                 dispose(win)
               }, container=buttonGroup)
@@ -137,7 +137,7 @@ setMethod(".gcommandline",
             selectHistory = function(h,...) {
               previous = svalue(h$action, index=25)
               if(length(previous) == 0) {
-                cat("No previous commandline history\n")
+                cat(gettext("No previous commandline history\n"))
                 return()
               }
               win = gwindow("Select a previous value", visible=TRUE)
@@ -310,7 +310,7 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
     if(useGUI)
       add(widget, chunkexps, font.attr = c("monospace"))
 #    addTextWidget(widget, chunkexps)
-    cat("Houston, we have a problem with:\n",chunk,"\n")
+    cat(sprintf("Houston, we have a problem with: %s\n",chunk))
     return(c())
   }
   if(length(chunkexps) == 0)

@@ -14,9 +14,10 @@ setMethod(".gedit",
 
             if (is.null(text)) text<-""
   
+
             entry <- gtkEntryNew()
 
-            obj = new("gEditRGtk",block=entry, widget=entry, toolkit=toolkit)
+            obj <- as.gWidgetsRGtk2(entry)
 
             tag(obj, "coerce.with") <- coerce.with
   
@@ -24,11 +25,18 @@ setMethod(".gedit",
             ## of values that can be completed use gEditobject[]<- values
             
             completion = gtkEntryCompletionNew()
-                                        #  model = gtkListStoreNew("gchararray")
+            ## set model
+            ##  model = gtkListStoreNew("gchararray")
             ## this caps out at 1000 -- is this a speed issue?
-            model = rGtkDataFrame(hack.as.data.frame(matrix("",nrow=1000,ncol=1)))
+#            model = rGtkDataFrame(hack.as.data.frame(matrix("",nrow=1000,ncol=1)))
+            model <- rGtkDataFrame(data.frame(character(1000),stringsAsFactors=FALSE))
             completion$SetModel(model)
             completion$SetTextColumn(0)           # Columns count from 0 -- not 1
+
+            ## set properties
+            completion['inline-completion'] <- TRUE
+            completion['inline-selection'] <- TRUE
+
             entry$SetCompletion(completion)
             
             ##  entry$setMaxLength(max(width,length(unlist(strsplit(text,"")))))
@@ -36,19 +44,6 @@ setMethod(".gedit",
             tag(obj,"value")  <- text        # store for later
             tag(obj,"completion") <- completion
 
-            ## Drag and drop
-            dropHandler =   function(h,...) {
-              theName = id(h$dropdata)
-              if(is.null(theName)) theName == ""
-              svalue(h$obj) <- ""                 # funny, why isn't this svalue(h$obj)<-theName?
-              ## override value -- in case it is a widget
-              tag(h$obj, "value") <- h$dropdata
-              return(TRUE)
-            }
-            handler.ids = list()
-            id = adddroptarget(obj, targetType="object",handler=dropHandler)
-            handler.ids[['dnd']] = id
-            
             
   
             if (!is.null(container)) {
@@ -65,6 +60,29 @@ setMethod(".gedit",
             
             
           })
+
+
+as.gWidgetsRGtk2.GtkEntry <- function(widget, ...) {
+
+  obj = new("gEditRGtk",block=widget, widget=widget,
+    toolkit=guiToolkit("RGtk2"))
+
+  ## Drag and drop
+  dropHandler =   function(h,...) {
+    theName = id(h$dropdata)
+    if(is.null(theName)) theName == ""
+    svalue(h$obj) <- ""                 # funny, why isn't this svalue(h$obj)<-theName?
+    ## override value -- in case it is a widget
+    tag(h$obj, "value") <- h$dropdata
+    return(TRUE)
+  }
+  handler.ids = list()
+  id = adddroptarget(obj, targetType="object",handler=dropHandler)
+  handler.ids[['dnd']] = id
+  
+
+  return(obj)
+}
 
 ## methods
 setMethod("svalue", signature(obj="GtkEntry"),
@@ -168,6 +186,22 @@ setMethod(".addhandlerchanged",
 setMethod(".addhandlerkeystroke",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj,toolkit, handler=NULL, action=NULL,...) {
-            addhandler(obj,"changed",handler,action)
+            widget <- getWidget(obj)
+            ID <-
+              gSignalConnect(widget,signal = "key-press-event",
+                             f = function(d,widget,event,...) {
+                               h <- list(obj=d$obj,action=d$action)
+                               key <- event$GetString()
+                               h$key <- key
+                               if(!is.null(d$handler) &&
+                                  is.function(d$handler))
+                                 d$handler(h,...)
+                               return(FALSE) # propogate
+                             },
+                             user.data.first = TRUE,
+                             data = list(obj=obj,handler=handler, action=action)
+                             )
+            return(ID)
+##            addhandler(obj,"changed",handler,action)
           })
 

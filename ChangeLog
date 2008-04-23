@@ -1,3 +1,84 @@
+2008-04-23  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gdialogs.R: added parent argument to dialogs
+
+2008-04-19  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): added anchor arugment to ggroup
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): getBlock, not getWidget
+	for alignment
+
+2008-04-13  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gradio.R: fixed handler to call only select part of toggled.
+	(as.gWidgetsRGtk2.GtkRadioButton): fixed up gradio to be able to
+	use as.gWidgetsRGtk2
+
+2008-04-12  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: added blockHandler, unblockHandler to API as in
+	between of add remove
+
+2008-04-06  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): removed the visible()<-
+	requirement of the old glayout. Now lays ou dynamically
+
+2008-04-01  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gwindow.R: ".add" method works for RGtkObjects too.
+
+	* R/ggrid.R (make.row.names): fixed names() in leftbracket
+	method. (Olivier Nunez)
+
+2008-03-17  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gtext.R: added addHandlerKeystroke with h$key returning keyvalue
+
+2008-03-11  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gwindow.R: add toolkit=toolkit option in the constructors used
+	within main constructors. This makes toolkit work better.
+
+2008-03-05  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/glayout.R: Added expand=TRUE/FALSE argument to [<-
+	method. Should work as expected, default is FALSE.
+
+	Fixed so that [<- works with RGtk2Object too. We don't dispatch
+	on "value" so we do this by class of value object within [<- and
+	visible methods.
+	
+
+2008-02-15  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/glayout.R: put in anchor argument for [i,j,anchor=c(x,y)]<-value
+	
+
+2008-02-14  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/aaaGenerics.R: put in defaultWidget method
+
+	* R/gbutton.R: changed clicked siganl to "clicked" from "pressed"
+	as clicked capture keyboard usage too.
+
+2008-02-12  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gedit.R: fixed completion to popup, not just downarrow
+
+2008-02-07  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/ghelp.R: added expand=TRUE to fix size issue due to changes in
+	gwindow(). 
+
+	* R/aaaGenerics.R: implement size() to return c(width, height)
+
+2008-02-04  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gpanedgroup.R: added svalue, svalue<- for paned groups
+
 2008-01-23  jverzani  <verzani@csilaptop.Belkin>
 
 	* R/gtext.R: typo in return value from font<-; fixed font so that

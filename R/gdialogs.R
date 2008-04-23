@@ -9,6 +9,7 @@ setMethod(".gmessage",
                    message,
                    title = "message",
                    icon = c("info","warning","error","question"),
+                   parent=NULL,
                    handler = NULL,
                    action = NULL,
                    ...
@@ -20,10 +21,21 @@ setMethod(".gmessage",
             
             icon = Paste("GTK_MESSAGE_",toupper(match.arg(icon)))
             button = "GTK_BUTTONS_OK"
+
+            ## parent
+            if(!is.null(parent)) {
+              parent <- getBlock(parent)
+              if(!is(parent,"GtkWindow"))
+                parent <- parent$GetWindow()
+              if(!is(parent,"GtkWindow"))
+                parent <- NULL          # give up
+            }
+              
             
             ## use message dialog for Gtk
             dlg = gtkMessageDialogNew(
               message.format = message,
+              parent = parent,
               flags = 0,
               buttons = button,
               type=icon)
@@ -56,7 +68,8 @@ setMethod(".gconfirm",
           function(toolkit,
                    message,
                    title = "Confirm",
-                   icon = c("info", "warning", "error", "question"), 
+                   icon = c("info", "warning", "error", "question"),
+                   parent=NULL,
                    handler = NULL,
                    action = NULL,
                    ...
@@ -69,8 +82,20 @@ setMethod(".gconfirm",
             icon = "GTK_MESSAGE_QUESTION"
             buttons = "GTK_BUTTONS_OK_CANCEL"
             
+            ## parent
+            if(!is.null(parent)) {
+              parent <- getBlock(parent)
+              if(!is(parent,"GtkWindow"))
+                parent <- parent$GetWindow()
+              if(!is(parent,"GtkWindow"))
+                parent <- NULL          # give up
+            }
+              
+
+
             dlg = gtkMessageDialogNew(
               message.format = message,
+              parent = parent,
               flags = 0,
               buttons = buttons,
               type=icon)
@@ -109,17 +134,29 @@ setMethod(".ginput",
                    message,
                    text="",
                    title = "Input",
-                   icon = c("info", "warning", "error", "question"), 
+                   icon = c("info", "warning", "error", "question"),
+                   parent=NULL,                   
                    handler = NULL,
                    action = NULL,
                    ...
                    ) {
             
             icon = Paste("GTK_MESSAGE_",toupper(match.arg(icon)))
+
+            ## parent
+            if(!is.null(parent)) {
+              parent <- getBlock(parent)
+              if(!is(parent,"GtkWindow"))
+                parent <- parent$GetWindow()
+              if(!is(parent,"GtkWindow"))
+                parent <- NULL          # give up
+            }
             
+
             ## use message dialog for Gtk
             dlg = gtkMessageDialogNew(
               message.format = NULL,
+              parent = parent,
               flags = 0,
               buttons = "GTK_BUTTONS_OK_CANCEL",
               type=icon
@@ -165,13 +202,28 @@ setMethod(".gbasicdialog",
           function(toolkit,
                    title = "Dialog",
                    widget,
+                   parent=NULL,                   
                    handler = NULL,
                    action = NULL,
                    ...
                    ) {
-  
-            window = gtkWindowNew(show=FALSE)
-            dlg = gtkDialog(title, window,
+
+
+            ## parent
+            if(!is.null(parent)) {
+              parent <- getBlock(parent)
+              if(!is(parent,"GtkWindow"))
+                parent <- parent$GetWindow()
+              if(!is(parent,"GtkWindow"))
+                parent <- NULL          # give up
+            } else {
+              parent <- gtkWindowNew(show=FALSE)
+            }
+
+
+            
+            dlg = gtkDialog(title,
+              parent=parent,
               c("modal"),
               "gtk-ok", GtkResponseType["ok"],
               "gtk-cancel", GtkResponseType["cancel"])

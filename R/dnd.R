@@ -4,17 +4,22 @@
 ## helper, like rawToChar. From R.oo/R/ASCII.R
 # Alternatively one can do like this. Idea by Peter Dalgaard,
 # Dept. of Biostatistics, University of Copenhagen, Denmark.
-ASCII <- c("\000", sapply(1:255, function(i) parse(text=paste("\"\\",
-                                                     structure(i,class="octmode"), "\"", sep=""))[[1]]) );
 
-intToChar = function(i, ...) {
-  ASCII[i %% 256 + 1];
-}
+## ASCII <- c("\000", sapply(1:255, function(i) parse(text=paste("\"\\",
+##                                                      structure(i,class="octmode"), "\"", sep=""))[[1]]) );
 
+## intToChar = function(i, ...) {
+##   ASCII[i %% 256 + 1];
+## }
+
+## Brian Ripley says the above will fail as of 2.8.0 version of R.
+## So we try this instead
+
+intToChar <- function(x) rawToChar(as.raw(x), multiple = TRUE)
 
 ## A little buggy right now: drop target had drag-data-received called 2 times
 ## action argument in addhandler isn't handled properly
-## a gross hack to allows objects to be dropped.
+## a gross hack to allow objects to be dropped.
 
 TARGET.TYPE.TEXT   = 80                 # 
 TARGET.TYPE.PIXMAP = 81                 # NOT IMPLEMENTED
@@ -80,7 +85,7 @@ addDropSource = function(obj, toolkit, targetType="text", handler=NULL, action=N
       } else {
         value  = gtktry(handler(h), silent=TRUE)
         if(inherits(value,"try-error")) {
-          cat("Error: handler returns:",value,"\n")
+          gwCat(sprintf("Error: handler returns: %s\n",value))
         }
       }
       ## what gets set here is passed to drop target
@@ -182,10 +187,10 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
                     eventTime=eventTime),
             silent=TRUE)
           if(inherits(out,"try-error")) {
-            cat("Error: handler has issue:",out,"\n")
+            gwCat(sprintf("Error: handler has issue: %s\n",out))
           }
         } else{
-          cat("No default handler when action object is passed in\n")
+          gwCat(gettext("No default handler when action object is passed in\n"))
         }
       } else {
         ## this is text case
@@ -200,7 +205,7 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
                               eventTime=eventTime),
                       silent=TRUE)
                     if(inherits(out,"try-error")) {
-                      cat("Error: handler has issue:",out,"\n")
+                      gwCat(sprintf("Error: handler has issue: %s\n",out))
                     }
                   } else {
                     svalue(h$obj) <- dropdata
@@ -208,7 +213,7 @@ addDropTarget = function(obj, toolkit, targetType="text", handler=NULL, action=N
                 }
                 return(TRUE)
               } else {
-                cat("Nothing defined for this Target type\n")
+                gwCat(gettext("Nothing defined for this Target type\n"))
               }
             }
             

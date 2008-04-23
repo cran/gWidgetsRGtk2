@@ -138,10 +138,10 @@ setMethod(".gvarbrowser",
               col.types=data.frame(Name="string",Type="string"),
               icon.FUN = function(d,...) {
                 byReturnVector(d,function(x) stockIconFromClass(x[,'type']))
-              }
+              },
+              container = group, expand=TRUE
               )
             
-            add(group,tree, expand=TRUE) 
             ## update the tree this way
             addhandlerclicked(filterPopup,
                               handler = function(h,...) {

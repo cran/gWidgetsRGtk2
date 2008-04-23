@@ -1,10 +1,7 @@
 ## try without stack smashing
 gtktry = function(expr, silent=TRUE) {
   tryCatch(expr, error = function(e) {
-    cat("Error:\n")
-    print(e)
-#    print(msg)
-#    return(msg)
+    gwCat(sprintf("Error: %s\n",e))
     msg = conditionMessage(e)
     invisible(structure(msg, class = "try-error"))
   })
@@ -17,7 +14,7 @@ getBlock = function(widget) {
   if(is(widget,"RGtkObject")) return(widget)
   if(is(widget,"gWidgetRGtk")) return(getBlock(widget@block))
   if(is(widget,"guiWidget")) return(getBlock(widget@widget))
-  cat("Can't get block")
+  gwCat(gettext("Can't get block"))
   return(NULL)
 }
 
@@ -91,7 +88,7 @@ setMethod("id",signature(obj="GtkTreeViewColumn"),
           function(obj,  ...) {
             curname = tag(obj,"name")
             if(is.null(curname) || length(curname) == 0) {
-              cat("No name for this view column\n")
+              cat(gettext("No name for this view column\n"))
               return(NA)
             } else {
               return(curname)

@@ -19,7 +19,8 @@ setMethod(".gslider",
             else scale <- gtkVScaleNewWithRange(from, to, by)
             scale$setValue(value)
 
-            obj = new("gSliderRGtk",block=scale, widget=scale, toolkit=toolkit)
+            obj <- as.gWidgetsRGtk2(scale)
+
             
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -34,6 +35,12 @@ setMethod(".gslider",
             invisible(obj)
           })
 
+as.gWidgetsRGtk2.GtkHScale <- as.gWidgetsRGtk2.GtkVScale <-
+  function(widget,...) {
+    obj <- new("gSliderRGtk",block=widget, widget=widget,
+               toolkit=guiToolkit("RGtk2"))
+    return(obj)
+  }
 
 ### methods
 setMethod(".svalue",

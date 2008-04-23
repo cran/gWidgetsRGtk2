@@ -17,9 +17,9 @@ setMethod(".gcalendar",
 
             force(toolkit)
 
-            group = ggroup(horizontal=TRUE, container=container, ...)
+            group = ggroup(horizontal=TRUE, container=container, ..., toolkit=toolkit)
             entry = gedit(text=text, container=group,
-              handler=handler,action=action,...)
+              handler=handler,action=action,..., toolkit=toolkit)
 
             calendar.cb = function(h,...) {
               ## called when button is clicked

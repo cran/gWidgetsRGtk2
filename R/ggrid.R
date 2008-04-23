@@ -549,7 +549,7 @@ setMethod("[",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="GtkTreeView"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            cat("DEBUG: call leftBracket on gtkTreeView: deprecate?\n")
+            gwCat("DEBUG: call leftBracket on gtkTreeView: deprecate?\n")
 
             gridObj = tag(x,"gridObj")
             if(missing(i) && missing(j))
@@ -584,7 +584,8 @@ setMethod(".leftBracket",
             
             frame = store[ , 3*((1:n)+1), drop=FALSE]
             rownames(frame) <- make.row.names(store[,3])
-
+            names(frame) <- names(x)
+            
             ## handle missing values
             if(missing(i) && missing(j)) {
               i = if(showVisible) which(visible(x)) else 1:nrow(x)
@@ -611,7 +612,7 @@ setReplaceMethod("[",
 setReplaceMethod(".leftBracket",
                  signature(toolkit="guiWidgetsToolkitRGtk2",x="GtkTreeView"),
                  function(x, toolkit, i, j, ..., value) {
-                   cat("DEBUG: call leftBracket<- on gtkTreeView: deprecate?\n")
+                   gwCat("DEBUG: call leftBracket<- on gtkTreeView: deprecate?\n")
                    
                    gridObj = tag(x,"gridObj")
                    if(missing(i) && missing(j))
@@ -1593,7 +1594,7 @@ setMethod("gsubsetby",
             ## changing var name resets subsetHow
             addhandlerchanged(subsetVar, handler = function(h,...) {
               varName = svalue(subsetVar)
-              if(varName == "NA") {
+              if(!length(varName) || varName == "NA") {
                 subsetHow[] = c("")
               } else {
                 theColumn = which(varName == names(gridObj))
@@ -1663,7 +1664,7 @@ setMethod("update",
 setMethod("length",
           signature(x="gSubsetbyRGtk"),
           function(x) {
-            cat("DEBUG: length called on gSubsetbyRGtk\n")
+            gwCat("DEBUG: length called on gSubsetbyRGtk\n")
           })
 
 ## returns a vector of TRUE or FALSE
@@ -1673,7 +1674,7 @@ setMethod("svalue",
             subsetVar = tag(obj, "subsetVar")
             subsetHow = tag(obj, "subsetHow")
             varName = svalue(subsetVar)
-            if(varName == "NA")
+            if(!length(varName) || varName == "NA")
               return(NA)
             ## have a variable
             values = svalue(varName)
