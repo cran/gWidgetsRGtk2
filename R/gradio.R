@@ -41,6 +41,8 @@ setMethod(".gradio",
                    function(i) g$PackStart(i))
 
             obj <- as.gWidgetsRGtk2(radiogp, block=g)
+
+            svalue(obj,index=TRUE) <- selected
             
             
             ## do we add to the container?

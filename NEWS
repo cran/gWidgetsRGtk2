@@ -1,4 +1,16 @@
-gWidgetsRGtk2
+Dear Emacs, please make this -*-Text-*- mode!
+
+     	    NEWS for gWidgetsRGtk2
+
+
+
+Changes for version 0.0-30
+--------------------------
+
+* Fixed bug with gradio and selected
+
+* added tests directory to run tests from gWidgets package
+
 
 Changes for version 0.0-30
 --------------------------
