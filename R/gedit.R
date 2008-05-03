@@ -34,8 +34,10 @@ setMethod(".gedit",
             completion$SetTextColumn(0)           # Columns count from 0 -- not 1
 
             ## set properties
-            completion['inline-completion'] <- TRUE
-            completion['inline-selection'] <- TRUE
+            if("inline-completion" %in% names(completion))
+              completion['inline-completion'] <- TRUE
+            if("inline-selection" %in% names(completion))
+              completion['inline-selection'] <- TRUE
 
             entry$SetCompletion(completion)
             

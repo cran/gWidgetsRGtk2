@@ -22,8 +22,9 @@
 \alias{[,gVarbrowserRGtk-method}
 \alias{.delete,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.delete,gToolbarRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+
 \alias{.svalue<-,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
-\alias{.svalue<-,gPanedGroupRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
+\alias{.svalue<-,gPanedgroupRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gRadioRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gSliderRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
@@ -255,7 +256,7 @@
 \alias{.svalue,gImageRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gLabelRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gMenuRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
-\alias{.svalue,gPanedGroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gPanedgroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gNotebookRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gRadioRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gSliderRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
@@ -651,14 +652,16 @@
 %%
 \alias{defaultWidget-methods}
 \alias{defaultWidget,guiWidget-method}
-\alias{defaultWidget,gWidgetRGtk-method} 
+\alias{defaultWidget,gWidgetRGtk-method}
+\alias{defaultWidget,RGtkObject-method} 
 
 %%
 %% --  defaultWidget<- --
 %%
 \alias{defaultWidget<--methods}
 \alias{defaultWidget<-,guiWidget-method}
-\alias{defaultWidget<-,gWidgetRGtk-method} 
+\alias{defaultWidget<-,gWidgetRGtk-method}
+\alias{defaultWidget<-,RGtkObject-method} 
 
 %%
 %% --  addhandler --
@@ -683,6 +686,7 @@
 %%
 \alias{.blockhandler-methods}
 \alias{.blockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.blockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.blockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 
 %%
@@ -698,6 +702,7 @@
 %%
 \alias{.unblockhandler-methods}
 \alias{.unblockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.unblockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.unblockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 
 
@@ -716,6 +721,23 @@
 \alias{.removehandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.removehandler,RGtkObject,guiWidgetsToolkitRGtk2-method} 
 %%
+
+
+%%
+%% --  addhandler --
+%%
+\alias{addhandler-methods}
+\alias{addhandler,guiWidget-method}
+\alias{addhandler,gWidgetRGtk-method}
+\alias{addhandler,RGtkObject-method}
+\alias{addhandler,GtkTreeViewColumn-method} 
+%%
+%% --  .addhandler --
+%%
+\alias{.addhandler-methods}
+\alias{.addhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandler,RGtkObject,guiWidgetsToolkitRGtk2-method} 
+
 %% --  addhandlerchanged --
 %%
 \alias{addhandlerchanged-methods}
@@ -767,6 +789,7 @@
 \alias{.addhandlerkeystroke-methods}
 \alias{.addhandlerkeystroke,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerkeystroke,gEditRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerkeystroke,gTextRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerkeystroke,gDroplistRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerclicked --
@@ -785,7 +808,8 @@
 \alias{.addhandlerclicked,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gImageRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.addhandlerclicked,gLabelRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlerclicked,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerclicked,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerdoubleclick --
 %%
@@ -1025,12 +1049,16 @@
 \alias{names,ANY-method}
 \alias{names,guiWidget-method}
 \alias{names,gWidgetRGtk-method} 
+\alias{names,gFrameRGtk-method}
+\alias{names,gExpandgroupRGtk-method} 
 %%
 %% --  .names --
 %%
 \alias{.names-methods}
 \alias{.names,gGridRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.names,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.names,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names,gFrameRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  names<- --
 %%

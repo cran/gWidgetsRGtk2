@@ -2,6 +2,16 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-33
+--------------------------
+
+* changes to docs, DESCRIPTION to pass R CMD check.
+
+
+Changes for version 0.0-32
+--------------------------
+
+* minor bug fix for gedit also glabel(editable=TRUE)
 
 
 Changes for version 0.0-30

@@ -2,9 +2,8 @@ require(gWidgets)
 options("guiToolkit"="RGtk2")
 
 
-## remove once new gWidgets is installed
 gWidgetsDir <- system.file("tests",package="gWidgets")
-
+## should be there, but just in case
 if(gWidgetsDir != "") {
   files <- list.files(gWidgetsDir,
                       pattern = "\\.R$",

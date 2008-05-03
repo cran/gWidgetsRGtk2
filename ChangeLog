@@ -1,3 +1,14 @@
+2008-05-03  jverzani  <verzani@csilaptop.Belkin>
+
+	* DESCRIPTION (Depends): put cairoDevice from extends to suggests
+
+	* man/gWidgetsRGtk2-undocumented.Rd: documentation errors
+
+2008-05-02  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gedit.R: fixed bug in windows with completion. Not all
+	completion properties are available here.
+
 2008-04-23  jverzani  <verzani@csilaptop.Belkin>
 
 	* R/gdialogs.R: added parent argument to dialogs
