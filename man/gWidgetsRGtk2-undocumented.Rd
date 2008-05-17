@@ -719,7 +719,8 @@
 %%
 \alias{.removehandler-methods}
 \alias{.removehandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.removehandler,RGtkObject,guiWidgetsToolkitRGtk2-method} 
+\alias{.removehandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
+\alias{.removehandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 
 

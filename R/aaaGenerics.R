@@ -195,23 +195,9 @@ setClassUnion("guiWidgetORgWidgetRGtkORRGtkObject",
               c("guiWidget","gWidgetRGtk","RGtkObject"))
 
 ## subclss
-## setClass("gComponentRGtk",
-##          representation(
-##                         block="guiWidgetORgWidgetRGtkORRGtkObject",
-##                         widget="guiWidgetORgWidgetRGtkORRGtkObject",
-##                         toolkit="guiWidgetsToolkit"
-##                         ),
-##          contains="gWidgetRGtk",
-##          )
-## setClass("gContainerRGtk",
-##          representation(
-##                         block="guiWidgetORgWidgetRGtkORRGtkObject",
-##                         widget="guiWidgetORgWidgetRGtkORRGtkObject",
-##                         toolkit="guiWidgetsToolkit"
-##                    ),
-##          contains="gWidgetRGtk",
-##          )
-
+## work around an error in 2.7.0
+.Rversion <- R.Version()
+if(.Rversion$major == "2" && .Rversion$minor == "7.0" ) {
 setClass("gComponentRGtk",
          representation(
                         block="ANY",
@@ -228,8 +214,25 @@ setClass("gContainerRGtk",
                    ),
          contains="gWidgetRGtk",
          )
+} else {
+setClass("gComponentRGtk",
+         representation(
+                        block="guiWidgetORgWidgetRGtkORRGtkObject",
+                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        toolkit="guiWidgetsToolkit"
+                        ),
+         contains="gWidgetRGtk",
+         )
+setClass("gContainerRGtk",
+         representation(
+                        block="guiWidgetORgWidgetRGtkORRGtkObject",
+                        widget="guiWidgetORgWidgetRGtkORRGtkObject",
+                        toolkit="guiWidgetsToolkit"
+                   ),
+         contains="gWidgetRGtk",
+          )
 
-
+}
 
 
 

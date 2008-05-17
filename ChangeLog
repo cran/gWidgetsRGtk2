@@ -1,3 +1,11 @@
+2008-05-17  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gcheckboxgroup.R: used obj inplace of x in leftbracket
+	def. Made [<- method work to replace values if called
+	obj[]<-newitems.
+	
+	
+
 2008-05-03  jverzani  <verzani@csilaptop.Belkin>
 
 	* DESCRIPTION (Depends): put cairoDevice from extends to suggests

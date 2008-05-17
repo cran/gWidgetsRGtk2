@@ -34,6 +34,8 @@ setMethod(".gcheckboxgroup",
   
             tag(obj, "items") <- items
             tag(obj, "itemlist") <- lst
+            tag(obj, "handlerList") <- list()
+            tag(obj, "handlerCount") <- 0
 
             ## add handler
             if(!is.null(handler))
@@ -82,7 +84,7 @@ setMethod("[",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gCheckboxgroupRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            items = tag(obj,"items")
+            items = tag(x,"items")
             if(missing(i))
               return(items)
             else
@@ -104,13 +106,48 @@ setReplaceMethod(".leftBracket",
             lst = tag(x,"itemlist")
             n = length(items)
 
-            if(missing(i))
-              i = 1:length(items)
+            ## if i is missing, we can relabel if length the same
+            ## otherwise we delete and start again
+            ## We will need to add the handlers back
+            
+            if(missing(i)) {
+              if(length(value) != n) {
+                group <- x@widget
+                ## delete
+                sapply(rev(lst), function(child)
+                       delete(group, child))
+                ## add
+                lst <- list()
+                for(i in 1:length(value)) {
+                  newItem = gcheckbox(value[i], checked=FALSE)
+                  lst[[ as.character(value[i]) ]] = newItem
+                  add(group, newItem)
+                }
+                tag(x, "items") <- value
+                tag(x, "itemlist") <- lst
+
+                ## addhandlers
+                handlerList <- tag(x,"handlerList")
+                if(length(handlerList) > 0) {
+                  for(j in handlerList) {
+                    sapply(lst, function(i)
+                           addhandlerchanged(i,
+                                             handler=j$handler, action=j$action,
+                                             actualobj=x, ...))
+                  }
+                }
+                ## return
+                return(x)
+              } else {
+                ## back to our regularly scheduled programming
+                i = 1:n
+              }
+            }
   
             if(is.logical(i))
               i = which(i)
+
             items[i] = value
-            
             sapply(1:n, function(i) 
                    lst[[i]][] <- items[i]
                    )
@@ -124,8 +161,31 @@ setReplaceMethod(".leftBracket",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
+            handlerList <- tag(obj,"handlerList")
+            ct <- tag(obj,"handlerCount")
+            ID <- as.character(ct+1)
+            handlerList[[ID]] <- list(
+                                      handler=handler,
+                                      action=action
+                                      )
+            tag(obj,"handlerList") <- handlerList
+            ## now call on each
             lst = tag(obj,"itemlist")
             sapply(lst, function(i)
                    addhandlerchanged(i,handler=handler, action=action, actualobj=obj, ...))
+            return(ID)
           })
           
+
+setMethod(".removehandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            ## internal store for replacement
+            handlerList <- tag(obj,"handlerList")
+            handlerList[[ID]] <- NULL
+            tag(obj,"handlerList") <- handlerList
+
+            lst = tag(obj,"itemlist")
+            sapply(lst, function(i)
+                   removehandler(i, ID))
+          })
