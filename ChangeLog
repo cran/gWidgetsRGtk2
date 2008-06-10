@@ -1,3 +1,8 @@
+2008-05-19  jverzani  <verzani@csilaptop.Belkin>
+
+	* NAMESPACE: added addHandlerChanged eg. to fix errors with
+	R-devel check
+
 2008-05-17  jverzani  <verzani@csilaptop.Belkin>
 
 	* R/gcheckboxgroup.R: used obj inplace of x in leftbracket

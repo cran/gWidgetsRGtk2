@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-35
+--------------------------
+
+* changes to NAMESPACE to get pass check cleanly
+
 Changes for version 0.0-34
 --------------------------
 
