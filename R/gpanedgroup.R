@@ -107,7 +107,7 @@ setReplaceMethod(".svalue",
                      min <- panedWindow['min-position']
                      max <- panedWindow['max-position']
                      placement <- min + value * (max - min)
-                     g['position'] <- placement
+                     panedWindow['position'] <- placement
                    }
                    return(obj)
                  })

@@ -526,6 +526,7 @@
 %%
 \alias{.enabled<--methods}
 \alias{.enabled<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.enabled<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.enabled<-,RGtkObject,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  size --
@@ -1036,7 +1037,8 @@
 %% --  .update --
 %%
 \alias{.update-methods}
-\alias{.update,gComponentRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.update,gComponentRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.update,gVarbrowserRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .length --
 %%

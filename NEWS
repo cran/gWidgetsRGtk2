@@ -2,10 +2,16 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-36
+--------------------------
+
+
 Changes for version 0.0-35
 --------------------------
 
 * changes to NAMESPACE to get pass check cleanly
+
+* fixed issue with S4 methods and oldClasses by avoiding the whole thing
 
 Changes for version 0.0-34
 --------------------------

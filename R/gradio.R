@@ -195,6 +195,19 @@ setMethod(".length",
           })
 
 
+## enabled must go on each button
+## enabled <-
+setReplaceMethod(".enabled",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   radiogp <- getWidget(obj)
+                   btns <- rev(radiogp$GetGroup())
+                   sapply(btns, function(i) {
+                     i$SetSensitive(as.logical(value))
+                     })
+                   return(obj)
+                 })
+
 ##################################################
 ## handlers
 setMethod(".addhandlerclicked",

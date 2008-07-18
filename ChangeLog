@@ -1,3 +1,16 @@
+2008-07-15  jverzani  <verzani@csilaptop.Belkin>
+
+	* R/gvarbrowser.R: update() method extended to gvarbrowser
+
+	* R/gtoolbar.R: fixed expand=TRUE in adding toolbar group to
+	container. This can be passed in via ... if desired.
+
+	* R/gradio.R (as.gWidgetsRGtk2.GtkRadioButton): fixed error with
+	enable<-. Needed to map to all buttons.
+
+	* R/gpanedgroup.R (as.gWidgetsRGtk2.GtkHPaned <-
+	as.gWidgetsRGtk2.GtkVPaned): typo in svalue<-
+
 2008-05-19  jverzani  <verzani@csilaptop.Belkin>
 
 	* NAMESPACE: added addHandlerChanged eg. to fix errors with

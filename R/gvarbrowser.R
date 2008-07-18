@@ -11,7 +11,7 @@
     "lme","lmList","gls",
   "ar","arma","arima0","fGARCH","fAPARCH"
     )
-.ts = c("ts", "mts", "timeSeries", "its", "zoo")
+.ts = c("ts", "mts", "timeSeries", "its", "zoo","xts")
 .functions=c("function")
 .plots = c("recordedplot")
 
@@ -187,6 +187,12 @@ setMethod(".gvarbrowser",
 
 ### methods
 ## push methods and handlers down to tree in this case
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkitRGtk2",object="gVarbrowserRGtk"),
+          function(object, toolkit, ...) {
+            tree <- obj@widget
+            update(tree)
+          })
 
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gVarbrowserRGtk"),
