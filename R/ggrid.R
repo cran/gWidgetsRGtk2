@@ -64,9 +64,9 @@ setMethod(".gdf",
             force(toolkit)
             ## the colors
             theArgs = list(...)
-            colors = theArgs$colors
+            .colors = theArgs$colors
             if(is.null(colors))
-              colors = c(
+              .colors = c(
                 bg = "navajo white",fg = "black",
                 rbg = "white smoke",rfg="red"
                 )
@@ -107,7 +107,7 @@ setMethod(".gdf",
                          handler=NULL,
                          action=NULL,
                          container=container,
-                         colors=colors,
+                         colors=.colors,
                          ...)
             tag(obj,"type") <- "gdf" ## should be a class -- ughh
             

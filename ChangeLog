@@ -1,3 +1,9 @@
+2008-08-06  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): fixed issue with centering as
+	anchor had mistaken default.
+
 2008-07-15  jverzani  <verzani@csilaptop.Belkin>
 
 	* R/gvarbrowser.R: update() method extended to gvarbrowser

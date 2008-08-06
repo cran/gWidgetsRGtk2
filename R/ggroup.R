@@ -83,7 +83,7 @@ setMethod(".add",
             ## anchor is tricky. If block is able do it.
             ## If not, try in the widget
             
-            anchor <- if(is.null(theArgs$anchor)) c(.5,.5) else theArgs$anchor
+            anchor <- if(is.null(theArgs$anchor)) c(0,0) else theArgs$anchor
             anchor <- (anchor+1)/2      # [0,1]
             anchor[2] <- 1 - anchor[2]     # flip yalign
             ## property
