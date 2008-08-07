@@ -44,10 +44,14 @@ setMethod(".gtree",
             
             
             ## get GTK types -- force first to be character
-            types = c("gchararray",sapply(col.types[ ,-1],RtoGObjectConversion))
+            if(length(col.types) > 1) {
+              types = c("gchararray",sapply(col.types[ ,-1],RtoGObjectConversion))
+            } else {
+              types <- "gchararray"
+            }
             if(iconFudge == 1)
               types = c("gchararray", types)       # stores filename of image
-            
+
             ## define treestore, sorted, view
             treestore = gtkTreeStoreNew(types)
             treestoreModel = gtkTreeModelSortNewWithModel(treestore)

@@ -2,8 +2,10 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
-Changes for version 0.0-36
+Changes for version 0.0-37
 --------------------------
+
+* fix to gtree. Bug with single column offspring.
 
 
 Changes for version 0.0-35
