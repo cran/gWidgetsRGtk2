@@ -64,6 +64,7 @@ c(
   "GtkExpander",
   "GtkFileFilter",
   "GtkFileSelection",
+  "GtkFileChooserWidget",
   "GtkFixed",
   "GtkFontButton",
   "GtkFontSelection",

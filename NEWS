@@ -2,6 +2,20 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+
+Changes for version 0.0-39
+--------------------------
+
+* fix to EventBox(es) so that under windows the coloring is consistent.	
+
+Changes for version 0.0-38
+--------------------------
+
+* fixed bug with markup argument in gframe, yalign property 
+
+* fixed bug with width argument in gedit
+
+
 Changes for version 0.0-37
 --------------------------
 

@@ -328,6 +328,7 @@ setMethod(".addhandlerkeystroke",
 ## testing This is copied from pygtk tutorial
 addWidgetAtPoint = function(obj, value) {
   evb = gtkEventBoxNew()
+  evb$SetVisibleWindow(FALSE)
   evb$SetBorderWidth(15)
   evb$AddEvents(c(GdkEventMask["button-press-mask"],
                   GdkEventMask["button-release-mask"],

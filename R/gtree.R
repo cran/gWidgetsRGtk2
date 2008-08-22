@@ -81,6 +81,8 @@ setMethod(".gtree",
             if(iconFudge == 1) {
               cellrenderer = gtkCellRendererPixbufNew()
               view.col = gtkTreeViewColumnNew()
+              ## properties
+#              view.col$SetMaxWidth(20) # 20 pixel icons
               view.col$PackStart(cellrenderer, TRUE)
               view.col$AddAttribute(cellrenderer, "stock-id", 0)
               view$InsertColumn(view.col,0)

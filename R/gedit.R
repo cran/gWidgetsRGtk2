@@ -46,6 +46,10 @@ setMethod(".gedit",
             tag(obj,"value")  <- text        # store for later
             tag(obj,"completion") <- completion
 
+            ## width -- ths sets minimum -- it ay expand to fill space
+            if(!is.null(width))
+              entry$SetSizeRequest(as.numeric(width) * 8, -1)
+            
             
   
             if (!is.null(container)) {

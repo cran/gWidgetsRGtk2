@@ -21,6 +21,7 @@ setMethod(".glabel",
             obj <- as.gWidgetsRGtk2(label)
 #            obj = new("gLabelRGtk",block=evb, widget=label,toolkit=toolkit)
 
+            
             if(markup) 
               tag(obj,"markup")<-TRUE
             else
@@ -30,6 +31,7 @@ setMethod(".glabel",
               svalue(obj) <- text
 
             if(editable) {
+              tag(obj,"editable") <- TRUE
               edit = gedit()
               tag(obj, "edit") <- edit
               handler = NULL                      # override handler
@@ -74,6 +76,11 @@ as.gWidgetsRGtk2.GtkLabel <- function(widget,...) {
   ## pack into an event box so that we can get signals
   ## doesn't work if there is already a parent!
   evb <- gtkEventBoxNew()
+  ## Issue with labels and notebooks can be fixed here, but
+  ## may mask editable event response
+  ## Thanks to Felix A. for this
+  evb$SetVisibleWindow(FALSE)
+  
   if(is.null(label$GetParent()))
     evb$Add(label)
 #  else

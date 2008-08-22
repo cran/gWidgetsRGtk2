@@ -29,7 +29,7 @@ setMethod(".gframe",
             tag(obj,"markup") <- markup
             names(obj) <- text
 
-            frame$SetLabelAlign(pos,0)
+            frame$SetLabelAlign(pos,0.5) # was 0, suggested value by felix andrews
 
 
             if (!is.null(container)) {
@@ -85,8 +85,8 @@ setReplaceMethod(".names",
                    if(is.null(tag(x,"markup")) || !tag(x,"markup")) {
                      frame$SetLabel(value)
                    } else {
-                     label <- gtkLabelNew(value)
-                     label$SetMarkup(text)
+                     label <- gtkLabelNew()
+                     label$SetMarkup(value)
                      frame$SetLabelWidget(label)
                    }
 

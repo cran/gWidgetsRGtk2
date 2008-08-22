@@ -42,6 +42,7 @@ setMethod(".gimage",
             
             ## pack into an event box so that we can get signals
             evb <- gtkEventBoxNew()
+            evb$SetVisibleWindow(FALSE)
             evb$Add(image)
 
             obj <- as.gWidgetsRGtk2(image, block=evb)
