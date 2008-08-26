@@ -3,65 +3,11 @@
 ## function to look up stock icons
 ## ie. ok returns "gtk-ok"
 
+stockIcons <- list(); updateStockIcons <- TRUE
+assignInNamespace("stockIcons",list(), ns = "gWidgetsRGtk2")
+assignInNamespace("updateStockIcons",TRUE, ns = "gWidgetsRGtk2")
+
 loadGWidgetIcons = function() {
-  ## These should definitely be grabbed from directory!
-##   ## these were lifted from scigraphica
-##   iconNames = c("2dlayer",
-##     "3dcontour",
-##     "arrows",
-##     "arrows1",
-##     "larrow",
-##     "rarrow",
-##     "darrow",
-##     "uarrow",
-##     "barplot",
-##     "boxplot",
-##     "boxplot1",
-##     "bubbles",
-##     "calendar",                         # from KDE
-##     "cloud",
-##     "contour",
-##     "curve",
-##     "dataframe",
-##     "density",
-##     "evaluate",
-##     "factor",
-##     "numeric",
-##     "integer",
-##     "logical",
-##     "function",
-##     "function1",
-##     "graph",
-##     "graph2",
-##     "hist",
-##     "lines",
-##     "matrix",
-##     "newplot",
-##     "pch2",
-##     "plot",
-##     "plot1",
-##     "points",
-##     "polar",
-##     "scatterplot3d",
-##     "select",
-##     "spike",
-##     "subset",
-##     "symbol_circle",
-##     "symbol_cross",
-##     "symbol_diamond",
-##     "symbol_dntriangle",
-##     "symbol_dot",
-##     "symbol_impulse",
-##     "symbol_ltriangle",
-##     "symbol_none",
-##     "symbol_plus",
-##     "symbol_rtriangle",
-##     "symbol_square",
-##     "symbol_star",
-##     "symbol_uptriangle",
-##     "target",
-##     "ts")
-  
   ## add the icons
   ## we use xpm icons gimp can convert
   iconFullNames = list.files(system.file("images", package="gWidgetsRGtk2"))
@@ -80,10 +26,12 @@ loadGWidgetIcons = function() {
 setMethod(".addStockIcons",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit, iconNames, iconFiles, ...) {
+            assignInNamespace("updateStockIcons",TRUE, ns = "gWidgetsRGtk2")
             addToGtkStockIcons(iconNames, iconFiles)
           })
 
 addToGtkStockIcons = function(iconNames, iconFiles) {
+
   iconfactory = gtkIconFactoryNew()
   for(i in 1:length(iconNames)) {
     iconsource = gtkIconSourceNew()
@@ -107,13 +55,19 @@ addToGtkStockIcons = function(iconNames, iconFiles) {
 setMethod(".getStockIcons",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit) {
-            .stockicons = list()
-            for(i in unlist(gtkStockListIds())) {
-              name = sub("[a-zA-Z0-9]*-","",i)
-              .stockicons[[name]] = i
-            }
-            return(.stockicons)
-          })
+           if(getFromNamespace("updateStockIcons", ns = "gWidgetsRGtk2")) {
+             ## create icon list
+             .stockicons <- list()
+             for(i in unlist(gtkStockListIds())) {
+               name <- sub("[a-zA-Z0-9]*-","",i)
+               .stockicons[[name]] = i
+             }
+             assignInNamespace("stockIcons", .stockicons, ns = "gWidgetsRGtk2")
+             assignInNamespace("updateStockIcons",FALSE, ns = "gWidgetsRGtk2")
+           }
+           return(getFromNamespace("stockIcons", ns = "gWidgetsRGtk2"))
+         })
+                
 
 ## name can be a vector
 ## return NA, if not there

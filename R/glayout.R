@@ -89,16 +89,21 @@ setReplaceMethod(".leftBracket",
               childWidget <- getWidget(value)
               ## but not so fast, not all components have xalign, yalign
               ## property
-              if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
-                child['xalign'] <- anchor[1]
-              else if('xalign' %in% names(childWidget)
-                      && class(childWidget) != "GtkEntry") 
-                childWidget['xalign'] <- anchor[1]
 
-              if('yalign' %in% names(child)) 
-                child['yalign'] <- anchor[2]
-              else if('yalign' %in% names(childWidget)) 
-                childWidget['yalign'] <- anchor[2]
+              ## in gtkstuff 
+              setXYalign(child, childWidget, anchor)
+              
+              ## XXX this is slower
+##               if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
+##                 child['xalign'] <- anchor[1]
+##               else if('xalign' %in% names(childWidget)
+##                       && class(childWidget) != "GtkEntry") 
+##                 childWidget['xalign'] <- anchor[1]
+
+##               if('yalign' %in% names(child)) 
+##                 child['yalign'] <- anchor[2]
+##               else if('yalign' %in% names(childWidget)) 
+##                 childWidget['yalign'] <- anchor[2]
             }
 
             ## fix up number of columns

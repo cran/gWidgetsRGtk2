@@ -193,7 +193,7 @@ replayAPlot = function(...) {
 
   recordedPlots =c()
   for(i in ls(envir=.GlobalEnv)) {
-    if("recordedplot" %in% class(getObjectFromString(i))) {
+    if(inherits(getObjectFromString(i),"recordedplot")) {
       recordedPlots = c(recordedPlots, i)
     }
   }

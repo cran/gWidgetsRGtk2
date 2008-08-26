@@ -1,5 +1,5 @@
 Package: gWidgetsRGtk2
-Version: 0.0-39
+Version: 0.0-40
 Title: Toolkit implementation of gWidgets for RGtk2
 Author: Michael Lawrence, John Verzani
 Maintainer: John Verzani <gwidgetsrgtk@gmail.com>
@@ -11,4 +11,4 @@ Description: Port of gWidgets API to RGtk2
 License: GPL (>= 2)
 URL: http://www.math.csi.cuny.edu/pmg
 LazyLoad: yes
-Packaged: Fri Aug 22 12:27:29 2008; verzani
+Packaged: Tue Aug 26 16:17:54 2008; verzani

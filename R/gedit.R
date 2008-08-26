@@ -34,10 +34,12 @@ setMethod(".gedit",
             completion$SetTextColumn(0)           # Columns count from 0 -- not 1
 
             ## set properties
-            if("inline-completion" %in% names(completion))
-              completion['inline-completion'] <- TRUE
-            if("inline-selection" %in% names(completion))
-              completion['inline-selection'] <- TRUE
+            gtktry({completion['inline-completion'] <- TRUE}, silent = TRUE)
+            gtktry({completion['inline-selection'] <- TRUE}, silent = TRUE)
+##             if("inline-completion" %in% names(completion))
+##               completion['inline-completion'] <- TRUE
+##             if("inline-selection" %in% names(completion))
+##               completion['inline-selection'] <- TRUE
 
             entry$SetCompletion(completion)
             
@@ -48,7 +50,7 @@ setMethod(".gedit",
 
             ## width -- ths sets minimum -- it ay expand to fill space
             if(!is.null(width))
-              entry$SetSizeRequest(as.numeric(width) * 8, -1)
+              entry$setWidthChars(as.numeric(width))
             
             
   

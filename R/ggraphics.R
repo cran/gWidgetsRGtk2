@@ -94,7 +94,7 @@ as.gWidgetsRGtk2.GtkDrawingArea <- function(widget,...) {
 
 
 as.gGd = function(obj) {
-  if("GtkDrawingArea" %in% class(obj)) {
+  if(inherits(obj,"GtkDrawingArea")) {
     newobj = list(ref = obj, device = obj$GetData("device"))
     class(newobj) <- c("gGd", "gComponent")
     return(newobj)

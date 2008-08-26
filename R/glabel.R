@@ -216,7 +216,7 @@ setMethod("gaddlabel",
           signature("gWidgetRGtk"),
           function(obj, text="", markup=FALSE, pos=1, container=NULL, ...) {
             ## wrap widget into a new package with label
-            if(pos %in% c(2,4)) {
+            if(pos ==2 || pos == 4) {
               group = ggroup(horizontal=TRUE,container=container,
                 toolkit=obj@toolkit)
             } else {
@@ -225,7 +225,7 @@ setMethod("gaddlabel",
             }
             
             
-            if(pos %in% 2:3) {
+            if(pos ==2 || ps == 3) {
               glabel(text, markup=markup, container=group, toolkit=obj@toolkit)
               add(group, obj,expand=TRUE)
             } else {

@@ -1,3 +1,18 @@
+2008-08-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtkStuff.R: no speed up to gtktry? This is slow, but
+	changes didn't make a difference.
+
+	* R/common.R: speed fixes by avoiding %in% when ==+|| will do.
+
+	* R/icons.R: Speed up to getstockicons. Use cache to keep list
+	(avoiding regeneration each time) with flag for when new icons
+	are added. This speeds up gcombobox significantly.
+
+	* R/gtkStuff.R (setXYalign): New function to speed up ggroup,
+	glayout. The lookup of property names via names(gtkobject) was
+	very slow, so instead we just use try to catch errors
+
 2008-08-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gnotebook.R (as.gWidgetsRGtk2.GtkNotebook): fix to event

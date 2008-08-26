@@ -7,7 +7,6 @@ setClass("guiWidgetsToolkitRGtk2",
 
 
 
-
 ##################################################
 ## put S3 classes from RGtk2 into S4 classes
 ## got these from apropos("New") -> try(class(do.call(i,list())))
@@ -341,8 +340,13 @@ setReplaceMethod("size",signature(obj="gWidgetRGtk"),
 setReplaceMethod(".size", 
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
                  function(obj, toolkit, ..., value) {
-                   width = value[1]; height=value[2]
-
+                   if(length(value) >= 2) {
+                     width <- value[1]; height <- value[2]
+                   } else if(names(value) == "height") {
+                     width <- -1; height <- value
+                   } else {
+                     width <- value; height <- -1
+                   }
                    widget = obj@widget
                    widget$SetSizeRequest(width,height)
 #                   widget$SetDefaultSize(width,height)
@@ -650,19 +654,16 @@ setReplaceMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidget
             .tag( obj@block, toolkit,  i, replace, ...) <- value
             return(obj)
           })
+
 setReplaceMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit, i, replace=TRUE, ..., value) {
             if(missing(i) || is.null(i)) {
               warning("Need to specify a key to the 'i' argument of tag<-")
             } else {
-              theArgs = list(...)
-              replaceIt = as.logical(replace)
-
-              
               allData = obj$GetData(".tagKey")
               if(is.null(allData)) allData = list()
               
-              if(replaceIt) {
+              if(as.logical(replace)) {
                 allData[[i]] <- value
               } else {
                 allData[[i]] <- c(allData[[i]], value)
@@ -868,12 +869,12 @@ setMethod(".dispose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, ...) {
             widget = getWidget(obj)
-            if("GtkWindow" %in% class(widget)) {
+            if(inherits(widget,"GtkWindow")) {
               widget$Destroy()
               return(TRUE)
             } else {
               widget = widget$GetParentWindow()
-              if("<invalid>" %in% class(widget))
+              if(inherits(widget,"<invalid>"))
                 return(FALSE)
               else
                 widget$Destroy()

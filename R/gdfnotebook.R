@@ -283,7 +283,7 @@ addPopupToPage = function(obj, nb) {    # obj is gdf instance
 
 ## save current page
 savePageDfNotebook = function(nb, ...) {
-  if(! "gDfNotebookRGtk" %in% class(nb))
+  if(! inherits(nb,"gDfNotebookRGtk"))
     stop("Must be a dfNotebook to use me")
   
   ## dataframe

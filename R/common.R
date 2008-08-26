@@ -83,7 +83,7 @@ is.gGrid = function(obj) {
 is.invalid = function(obj) {
   widget = getWidget(obj)
   parent = widget$GetParentWindow()
-  ifelse("<invalid>" %in% class(parent), TRUE, FALSE)
+  ifelse(inherits(parent,"<invalid>"), TRUE, FALSE)
 }
 ## used to check output 
 is.empty = function(obj) {
@@ -187,10 +187,10 @@ rpel = function(string, envir=.GlobalEnv) {
 ## get does not work with name$component, this gets around that
 ## returns NULL if not available
 getObjectFromString = function(string="", envir=.GlobalEnv) {
-  tmp = try(get(string, envir), silent = TRUE)
+  tmp = gtktry(get(string, envir), silent = TRUE)
   if(!inherits(tmp, "try-error")) return(tmp)
   
-  tmp = try(rpel(string,envir), silent=TRUE)
+  tmp = gtktry(rpel(string,envir), silent=TRUE)
   if(!inherits(tmp, "try-error"))  return(tmp)
 
   ## out of chances
@@ -229,7 +229,7 @@ getObjectsWithType = function(root=NULL, filter = NULL, envir=.GlobalEnv) {
     objects = ls(envir=envir)
   } else {
     string = Paste("with(",root,",ls())")
-    objects = try(rpel(string,envir=envir), silent=TRUE)
+    objects = gtktry(rpel(string,envir=envir), silent=TRUE)
   }
   ## objects is character vector of components of root.
   badnames = grep("[[<-]|\\*",objects)

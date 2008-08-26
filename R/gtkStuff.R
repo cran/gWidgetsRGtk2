@@ -6,6 +6,21 @@ gtktry = function(expr, silent=TRUE) {
     invisible(structure(msg, class = "try-error"))
   })
 }
+
+
+## set alignment
+setXYalign <- function(child, childWidget, anchor) {
+  ## x align
+  out <- gtktry({child['xalign'] <- anchor[1]}, silent = TRUE)
+  if(inherits(out,'try-error') && !is.null(childWidget))
+    gtktry({childWidget['xalign'] <- anchor[1]}, silent = TRUE)
+  ## y align
+  out <- gtktry({child['yalign'] <- anchor[2]}, silent = TRUE)
+  if(inherits(out,'try-error') && !is.null(childWidget))
+    gtktry({childWidget['yalign'] <- anchor[2]}, silent = TRUE)
+}
+
+
          
 
 ## return gtk objects from others
@@ -46,7 +61,7 @@ setMethod(".getToolkitWidget",
 
 
 RtoGObjectConversion = function(obj) {
-  if("gComponent" %in% class(obj)) return("GObject")
+  if(inherits(obj,"gComponent")) return("GObject")
   if(is.list(obj)) return("GObject")
   
   Klasse = class(obj)[1]                # silly name?

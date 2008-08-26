@@ -286,8 +286,10 @@ setMethod(".ggrid",
             theArgs = list(...)                   # for colors
             if(is.null(theArgs$colors)) {
               theColors = c(
-                fg="black",bg="white",            # default for fg and bg
-                rfg="white",rbg="black"          # for rows
+                bg = "navajo white",fg  = "black",
+                rbg = "white smoke",rfg ="red"
+#                fg="black",bg="white",            # default for fg and bg
+#                rfg="white",rbg="black"          # for rows
                 )
             } else {
               theColors = theArgs$colors          # must have names

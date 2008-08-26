@@ -21,7 +21,7 @@ setMethod(".gnotebook",
             notebook$SetTabPos(tabposition[tab.pos])
 
             ## add close button, in same level as tab.pos
-            if(tab.pos %in% c(1,3)) 
+            if(tab.pos == 1 || tab.pos == 3) 
               group = ggroup(container=container, ...)
             else
               group = ggroup(horizontal=FALSE,container=container, ...)
