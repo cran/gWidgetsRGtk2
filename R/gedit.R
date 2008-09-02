@@ -24,42 +24,21 @@ setMethod(".gedit",
             ## this adds completion fields to this widget. To *add* to the list
             ## of values that can be completed use gEditobject[]<- values
             
-            completion = gtkEntryCompletionNew()
-            ## set model
-            ##  model = gtkListStoreNew("gchararray")
-            ## this caps out at 1000 -- is this a speed issue?
-#            model = rGtkDataFrame(hack.as.data.frame(matrix("",nrow=1000,ncol=1)))
-            model <- rGtkDataFrame(data.frame(character(1000),stringsAsFactors=FALSE))
-            completion$SetModel(model)
-            completion$SetTextColumn(0)           # Columns count from 0 -- not 1
-
-            ## set properties
-            gtktry({completion['inline-completion'] <- TRUE}, silent = TRUE)
-            gtktry({completion['inline-selection'] <- TRUE}, silent = TRUE)
-##             if("inline-completion" %in% names(completion))
-##               completion['inline-completion'] <- TRUE
-##             if("inline-selection" %in% names(completion))
-##               completion['inline-selection'] <- TRUE
-
-            entry$SetCompletion(completion)
-            
             ##  entry$setMaxLength(max(width,length(unlist(strsplit(text,"")))))
             entry$SetText(text)
             tag(obj,"value")  <- text        # store for later
-            tag(obj,"completion") <- completion
+            tag(obj,"completion") <- NULL    # a completion object if set via [<-
 
             ## width -- ths sets minimum -- it ay expand to fill space
             if(!is.null(width))
               entry$setWidthChars(as.numeric(width))
             
-            
-  
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow()
               add(container, obj,...)
             }
-
+            
             if (!is.null(handler)) {
               id = addhandlerchanged(obj,handler,action)
             }
@@ -91,6 +70,29 @@ as.gWidgetsRGtk2.GtkEntry <- function(widget, ...) {
 
   return(obj)
 }
+
+## code to add  completion to the entry
+## only do so if set via [<-
+.setCompletion <- function(obj,...) {
+  completion = gtkEntryCompletionNew()
+  ## set model
+  ## this caps out at 1000 -- is this a speed issue?
+  model <- rGtkDataFrame(data.frame(character(1000),stringsAsFactors=FALSE))
+  completion$SetModel(model)
+  completion$SetTextColumn(0)           # Columns count from 0 -- not 1
+
+  ## set properties
+  gtktry({completion['inline-completion'] <- TRUE}, silent = TRUE)
+  gtktry({completion['inline-selection'] <- TRUE}, silent = TRUE)
+
+  ## set completion
+  tag(obj,"completion") <- completion
+
+  ## get entry from obj
+  entry <- obj@widget
+  entry$SetCompletion(completion)
+}
+
 
 ## methods
 setMethod("svalue", signature(obj="GtkEntry"),
@@ -134,24 +136,36 @@ setReplaceMethod(".svalue",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gEditRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
+            obj <- x
+            if(!is.null(tag(obj,"completion"))) {
+              store = obj@widget$GetCompletion()$GetModel()
+              nrows = dim(store)[1]
+              if(missing(i))
+                i = 1:nrows
+              
+              return(store[i , ])
+            } else {
+              return(c())
+            }
           })
             
 setMethod("[",
           signature(x="gEditRGtk"),
           function(x, i, j, ..., drop=TRUE) {
-            store = obj@widget$GetCompletion()$GetModel()
-            nrows = dim(store)[1]
             if(missing(i))
-              i = 1:nrows
-
-            return(store[i , ])
-            
+              .leftBracket(x,x@toolkit, ...)
+            else
+              .leftBracket(x,x@toolkit, i, ...)
           })
 
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gEditRGtk"),
           function(x, toolkit, i, j, ..., value) {
-            store = x@widget$GetCompletion()$GetModel()
+            obj <- x
+            if(is.null(tag(obj,"completion"))) 
+              .setCompletion(obj)
+
+            store = obj@widget$GetCompletion()$GetModel()
             nrows = dim(store)[1]
             n =length(value)
             if(n > nrows)
@@ -161,7 +175,7 @@ setReplaceMethod(".leftBracket",
             store[i , ]<- value
 
             ## all done
-            return(x)
+            return(obj)
           })
 
 setReplaceMethod("[",

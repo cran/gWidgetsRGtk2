@@ -82,14 +82,13 @@ setMethod(".add",
 
             ## anchor is tricky. If block is able do it.
             ## If not, try in the widget
-            
-            anchor <- if(is.null(theArgs$anchor)) c(0,0) else theArgs$anchor
-            anchor <- (anchor+1)/2      # [0,1]
-            anchor[2] <- 1 - anchor[2]     # flip yalign
-            ## property
-
-            ## in gtkstuff
-            setXYalign(child, childWidget, anchor)
+            if(!is.null(theArgs$anchor)) { ## logic thanks to Felix
+              anchor <- theArgs$anchor ## anchor is in [-1,1]^2
+              anchor <- (anchor+1)/2      # [0,1]
+              anchor[2] <- 1 - anchor[2]     # flip yalign
+              ## in gtkstuff
+              setXYalign(child, childWidget, anchor)
+            }
             ## names lookup seemed to take a bit of time, is try faster?
 ##             ## can't do this for gtkEntry
 ##             if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
@@ -102,7 +101,8 @@ setMethod(".add",
 ##               child['yalign'] <- anchor[2]
 ##             else if('yalign' %in% names(childWidget))
 ##               childWidget['yalign'] <- anchor[2]
-            
+
+            ## expand
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
             parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE
             
@@ -130,11 +130,15 @@ setMethod(".add",
             child <- value
             theArgs <- list(...)
 
-            anchor <- if(is.null(theArgs$anchor)) c(.5,.5) else theArgs$anchor
-            anchor <- (anchor+1)/2      # [0,1]
-            anchor[2] <- 1 - anchor[2]
-            ## gtkstuff
-            setXYalign(child, NULL, anchor)            
+            if(!is.null(theArgs$anchor)) {
+              anchor <- theArgs$anchor ## anchor is in [-1,1]^2
+              anchor <- (anchor+1)/2      # [0,1]
+              anchor[2] <- 1 - anchor[2]     # flip yalign
+              ## property
+              
+              ## in gtkstuff
+              setXYalign(child, childWidget, anchor)
+            }
             
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
             parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE

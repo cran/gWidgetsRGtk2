@@ -1,3 +1,13 @@
+2008-09-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): set default for alignment to be
+	RGtk2 default so no setXYalign call if not requested. (Thanks Felix)
+
+	* R/gedit.R (.setCompletion): added this function -- if
+	completion is set via [<-, then this gets added otherwise
+	not. Should speed things up. (Thanks Felix)
+
 2008-08-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtkStuff.R: no speed up to gtktry? This is slow, but
