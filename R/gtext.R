@@ -304,7 +304,7 @@ setMethod(".addhandlerkeystroke",
           function(obj,toolkit, handler=NULL, action=NULL,...) {
             widget <- getWidget(obj)
             ID <-
-              gSignalConnect(widget,signal = "key-press-event",
+              gSignalConnect(widget,signal = "key-release-event", # or key-press-event
                              f = function(d,widget,event,...) {
                                h <- list(obj=d$obj,action=d$action)
                                key <- event$GetString()

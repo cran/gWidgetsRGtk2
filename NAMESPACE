@@ -126,7 +126,7 @@ exportMethods(
               ".leftBracket", ".leftBracket<-", ".add", ".addSpace", ".addSpring",
               ".delete", ".dispose", ".visible", ".visible<-", ".enabled",
               ".enabled<-", ".size", ".size<-", ".focus", ".focus<-",
-              "defaultWidget","defaultWidget<-",".font",
+              ".defaultWidget",".defaultWidget<-",".font",
 ".font<-", ".tag", ".tag<-", ".id", ".id<-", ".isExtant",
               ".addhandler",".addhandlerchanged",
 ".addhandlerkeystroke", ".addhandlerclicked",

@@ -682,6 +682,7 @@
 \alias{defaultWidget,guiWidget-method}
 \alias{defaultWidget,gWidgetRGtk-method}
 \alias{defaultWidget,RGtkObject-method} 
+\alias{.defaultWidget,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 
 %%
 %% --  defaultWidget<- --
@@ -690,6 +691,8 @@
 \alias{defaultWidget<-,guiWidget-method}
 \alias{defaultWidget<-,gWidgetRGtk-method}
 \alias{defaultWidget<-,RGtkObject-method} 
+\alias{.defaultWidget<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.defaultWidget<-,RGtkObject,guiWidgetsToolkitRGtk2-method}
 
 %%
 %% --  addhandler --

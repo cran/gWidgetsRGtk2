@@ -465,6 +465,7 @@ setReplaceMethod("focus",signature(obj="RGtkObject"),
             return(obj)
           })
 
+## window
 setReplaceMethod(".focus",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
           function(obj, toolkit, ..., value) {
@@ -475,7 +476,7 @@ setReplaceMethod(".focus",
               obj$GetWindow()$Lower()
             return(obj)
           })
-
+## other objects
 setReplaceMethod(".focus",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit, ..., value) {
@@ -487,7 +488,6 @@ setReplaceMethod(".focus",
               obj$GetParentWindow()$Lower()
             }
             return(obj)
-
           })
 
 ## default Widget
@@ -510,16 +510,18 @@ setReplaceMethod("defaultWidget",signature(obj="gWidgetRGtk"),
                    return(obj)
                  })
 
-setReplaceMethod(".defaultWidget",
-          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
-          function(obj, toolkit, ..., value) {
-            defaultWidget(obj@widget, toolkit, ...) <- value
-            return(obj)
-          })
-
 setReplaceMethod("defaultWidget",signature(obj="RGtkObject"),
           function(obj, ..., value) {
             .defaultWidget(obj, toolkit=guiToolkit("RGtk2"),...) <- value
+            return(obj)
+          })
+
+
+setReplaceMethod(".defaultWidget",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ..., value) {
+            widget <- getWidget(obj)
+            .defaultWidget(widget, toolkit, ...) <- value
             return(obj)
           })
 
@@ -528,7 +530,8 @@ setReplaceMethod(".defaultWidget",
           function(obj, toolkit, ..., value) {
             value = as.logical(value)
             obj['can-default'] <- value
-            obj['receives-default'] <- value
+            obj$grabDefault()
+#            obj['receives-default'] <- value
             return(obj)
           })
 

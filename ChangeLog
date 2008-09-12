@@ -1,3 +1,19 @@
+2008-09-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fixes to defaultWidget<-; 
+
+	* R/gdialogs.R: fixed processing of response in dialog -- was
+	issue when closing out via window manager. Added focus to
+	input box in ginput.
+
+2008-09-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (.setCompletion): make key-release-event -- not
+	key-press-event for keystroke handler
+
+	* R/ggrid.R: put in doSort=FALSE so that visible<- works
+	except when sorting is explicitly called
+
 2008-09-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-

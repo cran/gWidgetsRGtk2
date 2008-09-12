@@ -42,6 +42,7 @@ setMethod(".gtable",
               filter.column = filter.column,
               filter.labels = filter.labels,
               filter.FUN = filter.FUN,
+              doSort = FALSE,           # makes visible work
               doRownames = FALSE,
               handler=handler,
               action=action,
@@ -829,7 +830,7 @@ setReplaceMethod(".visible",
                    m = nrow(frame)
                    frame[,1] <- rep(value, length=m)
                    
-                   tag(obj,"view")$GetModel()$Refilter()            # show
+                   try(tag(obj,"view")$GetModel()$Refilter(), silent=TRUE)            # show
                    return(obj)
                  })
 

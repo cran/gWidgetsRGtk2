@@ -47,10 +47,9 @@ setMethod(".gmessage",
             ## run in modal mode
             response = dlg$Run()
             h = list(obj=dlg, ref=dlg, action=action)
-            if(response == GtkResponseType["cancel"]) {
-              dlg$Destroy()
-              invisible(FALSE)
-            } else if (response == GtkResponseType["close"]) {
+            if(response == GtkResponseType["cancel"] ||
+               response == GtkResponseType["close"] ||
+               response == GtkResponseType["delete-event"]) {
               dlg$Destroy()
               invisible(FALSE)
             } else if(response == GtkResponseType["ok"]) {
@@ -58,7 +57,10 @@ setMethod(".gmessage",
               dlg$Destroy()
               invisible(TRUE)
             } else {
+              gwcat("Don't know this response")
               print(response)
+              dlg$Destroy()
+              invisible(NA)
             }
           })
 
@@ -109,10 +111,9 @@ setMethod(".gconfirm",
             ## run in modal mode
             response = dlg$Run()
             h = list(obj=dlg, action=action)
-            if(response == GtkResponseType["cancel"]) {
-              dlg$Destroy()
-              invisible(FALSE)
-            } else if (response == GtkResponseType["close"]) {
+            if (response == GtkResponseType["close"] ||
+                response == GtkResponseType["delete-event"] ||
+                response == GtkResponseType["cancel"]) {
               dlg$Destroy()
               invisible(FALSE)
             } else if(response == GtkResponseType["ok"]) {
@@ -120,7 +121,10 @@ setMethod(".gconfirm",
               dlg$Destroy()
               invisible(TRUE)
             } else {
+              gwcat("Don't know this response")
               print(response)
+              dlg$Destroy()
+              invisible(NA)
             }
             
           })
@@ -169,21 +173,27 @@ setMethod(".ginput",
             glabel(message, container=group)
             input = gedit(text,container=group)
             
+            
             ## find the area to pack the entry widget
             dlg$GetVbox()[[1]]$PackStart(getBlock(group)) 
             ##  dlg$GetVbox()[[2]]$GetWidget()$PackStart(group$ref) 
             ##  dlg$GetVbox()$PackStart(group$ref)
-            
+
+            ## set as default
+            widget <- getWidget(input)
+            widget['can-default'] <- TRUE
+            widget$grabFocus()
+            widget$grabDefault()
+
             
             ## run in modal mode
             response = dlg$Run()
             h = list(obj=dlg, ref=dlg, action=action, input=svalue(input))
-            if(response == GtkResponseType["cancel"]) {
+            if(response == GtkResponseType["cancel"] ||
+               response == GtkResponseType["close"] ||
+               response == GtkResponseType["delete-event"]) {
               dlg$Destroy()
               invisible("")
-            } else if (response == GtkResponseType["close"]) {
-              dlg$Destroy()
-              invisible(NA)                # NA or ""?
             } else if(response == GtkResponseType["ok"]) {
               if(!is.null(handler)) handler(h)
               val = svalue(input)
@@ -191,7 +201,10 @@ setMethod(".ginput",
               ## input is widget, return value of widget
               invisible(val)
             } else {
+              gwcat("Don't know this response")
               print(response)
+              dlg$Destroy()
+              invisible(NA)
             }
             
           })
@@ -244,21 +257,23 @@ setMethod(".gbasicdialog",
             ## run in modal mode
             response = dlg$Run()
             h = list(obj=widget, action=action)
-            if(response == GtkResponseType["cancel"]) {
+            if(response == GtkResponseType["cancel"] ||
+               response == GtkResponseType["close"] ||
+               response == GtkResponseType["delete-event"]) {
               ## cancel action
               dlg$Destroy()
               return(FALSE)
-            } else if (response == GtkResponseType["close"]) {
-              ## close action
-              dlg$Destroy()
-              return(FALSE)
             } else if(response == GtkResponseType["ok"]) {
-              if(!is.null(handler)) handler(h)
+              if(!is.null(handler))
+                handler(h)
               dlg$Destroy()
               return(TRUE)              # was widget, but TRUE now
             } else {
               ## default action
+              gwcat("Don't know this response")
+              print(response)
               dlg$Destroy()
+              invisible(NA)
             }
             
           })

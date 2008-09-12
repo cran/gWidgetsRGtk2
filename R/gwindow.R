@@ -174,7 +174,6 @@ setMethod(".add",
             theArgs=list(...)
             theArgs$expand=TRUE
             gp <- tag(obj,"contentPane")
-            print(theArgs)
             do.call("add",list(obj=gp,value=value,theArgs))
 #            add(tag(obj,"contentPane"), value, ...)
           })
