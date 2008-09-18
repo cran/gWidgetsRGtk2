@@ -35,6 +35,7 @@
 \alias{.svalue<-,gBivariateRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gModelRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gWindowRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
+\alias{.svalue<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2,ANY,numeric-method}
 %%
 %%
 %% --  .glabel --

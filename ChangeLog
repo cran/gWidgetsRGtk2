@@ -1,4 +1,17 @@
+2008-09-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gframe.R (as.gWidgetsRGtk2.GtkFrame): fixed methods for
+	svalue, names, names<-
+
+	* R/gexpandgroup.R (as.gWidgetsRGtk2.GtkExpander): fixed up
+	svalue method
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): Work on anchor argument
+
 2008-09-12  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtkStuff.R (setXYalign): rewrote to test class of object,
+	not  use try()
 
 	* R/aaaGenerics.R: fixes to defaultWidget<-; 
 

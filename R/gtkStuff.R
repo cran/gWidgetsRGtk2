@@ -9,15 +9,20 @@ gtktry = function(expr, silent=TRUE) {
 
 
 ## set alignment
+#Sets the alignment of the child. This property has no effect unless the child is a GtkMisc or a GtkAligment.
+# xalign : the horizontal position of the child, 0.0 is left aligned, 1.0 is right aligned
+# yalign : the vertical position of the child, 0.0 is top aligned, 1.0 is bottom aligned
+
 setXYalign <- function(child, childWidget, anchor) {
-  ## x align
-  out <- gtktry({child['xalign'] <- anchor[1]}, silent = TRUE)
-  if(inherits(out,'try-error') && !is.null(childWidget))
-    gtktry({childWidget['xalign'] <- anchor[1]}, silent = TRUE)
-  ## y align
-  out <- gtktry({child['yalign'] <- anchor[2]}, silent = TRUE)
-  if(inherits(out,'try-error') && !is.null(childWidget))
-    gtktry({childWidget['yalign'] <- anchor[2]}, silent = TRUE)
+  if(is(child,"GtkMisc") || is(child,"GtkAlignment")) {
+    child['xalign'] <- anchor[1]
+    child['yalign'] <- anchor[2]
+  } else if(!is.null(childWidget)) {
+    if(is(childWidget,"GtkMisc") || is(childWidget,"GtkAlignment")) {
+      childWidget['xalign'] <- anchor[1]
+      childWidget['yalign'] <- anchor[2]
+    }
+  }
 }
 
 
@@ -103,7 +108,7 @@ setMethod("id",signature(obj="GtkTreeViewColumn"),
           function(obj,  ...) {
             curname = tag(obj,"name")
             if(is.null(curname) || length(curname) == 0) {
-              cat(gettext("No name for this view column\n"))
+#              gwcat(gettext("No name for this view column\n"))
               return(NA)
             } else {
               return(curname)

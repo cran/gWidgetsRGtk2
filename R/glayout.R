@@ -81,10 +81,11 @@ setReplaceMethod(".leftBracket",
             args <- list(...)
             expand <- args$expand; if(is.null(expand)) expand <- FALSE
             
-            anchor <- if(is.null(args$anchor)) c(.5,.5) else args$anchor
-            anchor <- (anchor + 1)/2; anchor[2] <- 1 - anchor[2]
-            ## fix up widget alignment if asked
-            if(!is.null(anchor)) {
+            ## fix up widget alignment if asked via anchor
+            if(!is.null(args$anchor)) {
+              anchor <- args$anchor
+              anchor <- (anchor + 1)/2; anchor[2] <- 1 - anchor[2]
+
               child <- getBlock(value)
               childWidget <- getWidget(value)
               ## but not so fast, not all components have xalign, yalign
@@ -115,7 +116,7 @@ setReplaceMethod(".leftBracket",
             if(expand)
               opts <- c("fill","expand","shrink")
             else
-              opts <- "fill"
+              opts <- c("fill")
             
             child <- getBlock(value)
             tbl$Attach(child,

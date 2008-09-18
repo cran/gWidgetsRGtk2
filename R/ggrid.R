@@ -42,7 +42,8 @@ setMethod(".gtable",
               filter.column = filter.column,
               filter.labels = filter.labels,
               filter.FUN = filter.FUN,
-              doSort = FALSE,           # makes visible work
+#              doSort = FALSE,           # makes visible work
+              doSort = TRUE,           # makes visible work
               doRownames = FALSE,
               handler=handler,
               action=action,
@@ -251,7 +252,7 @@ setGeneric(".ggrid",function(toolkit,
                    filter.labels = NULL,                 # if we filter harder
                    filter.FUN = NULL,   # two args gtable instance, filter.labels element
                    doIcons = ifelse(is.null(icon.FUN),FALSE, TRUE),
-                   doFilter = ifelse(is.null(filter.column) && is.null(filter.FUN), FALSE, TRUE),
+                   doFilter = FALSE,    # see belo
                    doSort = TRUE,
                    doRownames = FALSE,
                    doSubsetBy = FALSE,
@@ -273,7 +274,7 @@ setMethod(".ggrid",
                    filter.labels = NULL,                 # if we filter harder
                    filter.FUN = NULL,   # two args gtable instance, filter.labels element
                    doIcons = ifelse(is.null(icon.FUN),FALSE, TRUE),
-                   doFilter = ifelse(is.null(filter.column) && is.null(filter.FUN), FALSE, TRUE),
+                   doFilter = FALSE,
                    doSort = TRUE,
                    doRownames = FALSE,
                    doSubsetBy = FALSE,
@@ -310,6 +311,12 @@ setMethod(".ggrid",
             tag(obj,"doIcons") <- doIcons
             tag(obj,"icon.FUN") <- icon.FUN
             tag(obj,"doRownames") <- doRownames
+
+            ## sort offilter?
+            if(doFilter || !is.null(filter.column) ||
+               !is.null(filter.FUN) ) {
+              doFilter <- TRUE
+            }
             if(doFilter) doSort <- FALSE          # can't sort and filter
             tag(obj,"doSort") <- doSort
             tag(obj,"doFilter") <- doFilter
@@ -354,21 +361,22 @@ setMethod(".ggrid",
                 glabel("Filter by:", container=filterGroup)
                 filter.popup = gdroplist(filter.labels, container=filterGroup)
               } else {
-                if(!is.null(filter.FUN)) {
+                if(is.function(filter.FUN)) {
                   filterGroup = ggroup(container = group)
                   glabel("Filter by:", container=filterGroup)
                   filter.popup = gdroplist(filter.labels, container=filterGroup)
                 }
-                
-                
               }
               tag(obj,"filter.FUN") <- filter.FUN
-              tag(obj,"filter.popup") <- filter.popup
-              
-              addhandlerchanged(filter.popup, action=obj,handler = function(h,...) {
-                vals = tag(h$action,"filter.FUN")(h$action, svalue(h$obj))
-                visible(h$action) <- vals
-              })
+
+              ## if filter.FUN = is non null and *not* a function, no sorting
+              if(is.function(filter.FUN)) {
+                tag(obj,"filter.popup") <- filter.popup
+                addhandlerchanged(filter.popup, action=obj,handler = function(h,...) {
+                  vals = tag(h$action,"filter.FUN")(h$action, svalue(h$obj))
+                  visible(h$action) <- vals
+                })
+              }
             }
 
 

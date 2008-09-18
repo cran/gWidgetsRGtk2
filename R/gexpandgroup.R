@@ -74,18 +74,48 @@ as.gWidgetsRGtk2.GtkExpander <- function(widget,...) {
 
 ## methods
 
-## value refers to label
+## value refers to border width
+## but it used to refer to the label, we keep this here but suggest
+## names be used instead
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
+            gwcat("Use names() to access label")
             obj@block$GetLabel()        # not @widget@
           })
 
+## if numeric -- set padding to match ggroup
+## else set as a label
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk",
+                           value = "numeric"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   ## set as padding
+                   getWidget(obj)$SetBorderWidth(value)                   
+                   return(obj)
+                 })
+## set label, but deprecated
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+                   .Deprecated("names<-",
+                               msg = "Use the names<- method to the label")
                    obj@block$SetLabel(value)
                    return(obj)
+                 })
+
+## names refers to label
+setMethod(".names",signature(toolkit="guiWidgetsToolkitRGtk2",
+                             x="gExpandgroupRGtk"),
+          function(x,toolkit) {
+            x@block$GetLabel()
+          })
+
+setReplaceMethod(".names",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",x = "gExpandgroupRGtk"),
+                 function(x,toolkit,value) {
+                   obj@block$SetLabel(value)
+                   return(x)
                  })
 
 ## control expand/close with logical
