@@ -121,6 +121,9 @@ setReplaceMethod(".svalue",
             ## set the text
             markup = tag(obj, "markup")
             if(is.null(markup)) markup = FALSE
+
+            ## if multiline, paste with \n
+            value <- paste(value, collapse="\n")
             
             if(as.logical(markup)==TRUE)
               obj@widget$SetMarkup(value)

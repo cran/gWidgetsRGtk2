@@ -60,7 +60,7 @@ setMethod(".gtext",
             }
             
             if (!is.null(handler)) {
-              id = addhandler(obj, "changed", handler, action)
+              id = addhandlerkeystorke(obj, handler, action)
             }
             return(obj)
           })
@@ -321,7 +321,12 @@ setMethod(".addhandlerkeystroke",
           })
 
 
-
+## generic
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTextRGtk"),
+          function(obj,toolkit, handler=NULL, action=NULL,...) {
+            .addhandlerkeystroke(obj,toolkit,handler,action)
+          })
 
 ##################################################
 ##################################################

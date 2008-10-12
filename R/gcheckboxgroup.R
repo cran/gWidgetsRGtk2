@@ -12,9 +12,13 @@ setMethod(".gcheckboxgroup",
                    handler = NULL, action = NULL, container = NULL, ...) {
 
             force(toolkit)
-            
-            if(missing(items) || length(items) == 0)
-              stop("Need items to be a vector of items")
+
+            if(missing(items))
+              stop(gettext("Need items to be defined"))
+
+            if(is.data.frame(items))
+              items <- items[, 1, drop=TRUE]
+
             
             checked = rep(checked, length(items))
 
@@ -65,9 +69,12 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+                   if(is.data.frame(value))
+                     value <- value[,1,drop=TRUE]
+                   
                    items = tag(obj,"items")
                    lst = tag(obj,"itemlist")
-                   values = rep(value, length.out=length(items))
+                   values = rep(value, length.out=length(items)) ## recycle
 
                    sapply(1:length(items), function(i) svalue(lst[[i]]) <- values[i])
                    
@@ -157,6 +164,14 @@ setReplaceMethod(".leftBracket",
              return(x)
           })
 
+## length
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gCheckboxgroupRGtk"),
+          function(x,toolkit) {
+            length(tag(x,"items"))
+          })
+
+
 ## handlers
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
@@ -171,21 +186,39 @@ setMethod(".addhandlerchanged",
             tag(obj,"handlerList") <- handlerList
             ## now call on each
             lst = tag(obj,"itemlist")
-            sapply(lst, function(i)
+            IDs <- lapply(lst, function(i)
                    addhandlerchanged(i,handler=handler, action=action, actualobj=obj, ...))
-            return(ID)
+            return(IDs)
           })
           
 
 setMethod(".removehandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
           function(obj, toolkit, ID=NULL, ...) {
-            ## internal store for replacement
-            handlerList <- tag(obj,"handlerList")
-            handlerList[[ID]] <- NULL
-            tag(obj,"handlerList") <- handlerList
-
-            lst = tag(obj,"itemlist")
-            sapply(lst, function(i)
-                   removehandler(i, ID))
+            tag(obj,"handlerList") <- NULL
+            lst <- tag(obj,"itemlist")
+            sapply(1:length(lst), function(i)
+                   removehandler(lst[[i]], ID[[i]])
+                 )
           })
+
+setMethod(".blockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+
+            lst <- tag(obj,"itemlist")
+            sapply(1:length(lst), function(i)
+                   blockhandler(lst[[i]], ID[[i]])
+                   )
+          })
+
+setMethod(".unblockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+
+            lst <- tag(obj,"itemlist")
+            sapply(1:length(lst), function(i)
+              unblockhandler(lst[[i]], ID[[i]])
+            )
+          })
+

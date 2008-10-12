@@ -79,11 +79,15 @@ setReplaceMethod("[",
                    return(x)
                  })
 
-### no method to change the value of text???
-
-### handlers
-setMethod(".addhandlerchanged",
+## handlers
+setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             addhandler(obj, "toggled", handler, action=action,...)
+          })
+
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerclicked(obj, toolkit, handler, action=action,...)
           })

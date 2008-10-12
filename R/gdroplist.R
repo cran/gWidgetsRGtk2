@@ -18,15 +18,16 @@ setMethod(".gdroplist",
 
             ## Changed this. Make objects a data.frame if
             ## two columns, second is a stock-icon name.
+            ## ideally third column would specify tooltip
             
-            ## items must be a vector here
+            ## items must be a vector or data frame
             if(!inherits(items,"data.frame")) {
               items = as.vector(items)              # undoes factor
               items = unique(items)                 # unique
               items = data.frame(items, stringsAsFactors=FALSE)
             }
-
-            doIcons = ifelse(ncol(items) == 2, TRUE, FALSE)
+            
+            doIcons = ifelse(ncol(items) >= 2, TRUE, FALSE)
             if(doIcons)
               types = c(data="gchararray",icons="gchararray")
             else
@@ -102,6 +103,15 @@ setMethod(".gdroplist",
             ## should I have actiirst be blank? Use 0 (to make -1) for this
             combo$Show()
             combo$SetActive(selected-1)
+
+            ## set size if really small under windows
+            if(.Platform$OS != "windows") {
+              if(dim(items)[1] > 0) {
+                colChars <- max(sapply(items[,1,drop=TRUE],nchar))
+                if(colChars < 3)
+                  combo['width-request'] <- 15*(1 + colChars)
+              }
+            }
             
             ## add drophandler -- switch if drop matches
             adddroptarget(obj, handler = function(h,...) {

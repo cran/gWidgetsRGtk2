@@ -1173,7 +1173,7 @@ setMethod("unblockhandler", signature("RGtkObject"),
 setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, ID=NULL, ...) {
-            .blockhandler(getWidget(obj),toolkit,ID,...)
+            .unblockhandler(getWidget(obj),toolkit,ID,...)
           })
 
 setMethod(".unblockhandler",
@@ -1383,7 +1383,55 @@ setMethod(".addhandlerrightclick",
                 silent=TRUE)
           })
 
+## focus -- on focus call this
+setMethod("addhandlerfocus",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerfocus(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerfocus",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerfocus(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
 
+setMethod(".addhandlerfocus",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj,toolkit,
+                        signal="focus-in-event",
+                        handler, action, ...)
+          })
+
+
+
+## blur -- leave focus
+setMethod("addhandlerblur",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerblur(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlerblur",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerblur(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+setMethod(".addhandlerblur",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            ## blur handler should return FALSE
+            f <- function(h,...) {
+              handler(h,...)
+              return(FALSE)
+            }
+            .addHandler(obj,toolkit,
+                        signal="focus-out-event",
+                        f, action, ...)
+          })
+
+
+
+
+##
 ## mousemotion -- like mouseover
 setMethod("addhandlermousemotion",signature(obj="gWidgetRGtk"),
           function(obj, handler=NULL, action=NULL, ...) {

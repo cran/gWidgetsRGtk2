@@ -19,6 +19,9 @@ setMethod(".gradio",
                    ) {
 
             force(toolkit)
+
+            if(is.data.frame(items))
+              items <- items[,1, drop=TRUE] # first column
             
             if (length(items)<2)
               stop("Radio button group makes sense only with at least two items.")
@@ -94,6 +97,9 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
 
+                   if(is.data.frame(value))
+                     value <- value[,1, drop=TRUE]
+                   
                    radiogp <- getWidget(obj)
                    btns <- rev(radiogp$GetGroup())
                    items <- obj[]

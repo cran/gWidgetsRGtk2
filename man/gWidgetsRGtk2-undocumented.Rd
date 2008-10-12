@@ -720,6 +720,7 @@
 \alias{.blockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.blockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.blockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.blockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 
 %%
 %% --  unblockhandler --
@@ -735,6 +736,7 @@
 \alias{.unblockhandler-methods}
 \alias{.unblockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.unblockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
+\alias{.unblockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.unblockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 
 
@@ -808,6 +810,7 @@
 \alias{.addhandlerchanged,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlerchanged,gTextRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerkeystroke --
 %%
@@ -837,6 +840,7 @@
 \alias{.addhandlerclicked-methods}
 \alias{.addhandlerclicked,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerclicked,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gGridRGtk,guiWidgetsToolkitRGtk2-method}
@@ -910,6 +914,30 @@
 \alias{.addhandlerunrealize-methods}
 \alias{.addhandlerunrealize,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerunrealize,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
+%%
+%% --  addhandlerblur --
+%%
+\alias{addhandlerblur-methods}
+\alias{addhandlerblur,guiWidget-method}
+\alias{addhandlerblur,gWidgetRGtk-method}
+\alias{addhandlerblur,RGtkObject-method} 
+%%
+%% --  .addhandlerblur --
+%%
+\alias{.addhandlerblur-methods}
+\alias{.addhandlerblur,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+%%
+%% --  addhandlerfocus --
+%%
+\alias{addhandlerfocus-methods}
+\alias{addhandlerfocus,guiWidget-method}
+\alias{addhandlerfocus,gWidgetRGtk-method}
+\alias{addhandlerfocus,RGtkObject-method} 
+%%
+%% --  .addhandlerfocus --
+%%
+\alias{.addhandlerfocus-methods}
+\alias{.addhandlerfocus,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 %%
 %% --  addhandleridle --
 %%
@@ -1048,8 +1076,9 @@
 %%
 \alias{.length-methods}
 \alias{.length,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.length,gGridRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.length,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.length,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gHelpRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 

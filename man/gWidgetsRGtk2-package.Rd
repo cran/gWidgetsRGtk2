@@ -25,6 +25,10 @@ Port of gWidgets API to RGtk2
   one uses \code{getToolkitWidget(obj)$getParent()} \cr
 
   \bold{Widgets:}\cr
+  
+  For the data frame viewer \code{gtable} when no filtering is
+  requested, the default, the column headers can be clicked to sort the values.
+
 
   In the data frame editor \code{gdf} the \code{subset} option only works if the
   column names have not been changed.

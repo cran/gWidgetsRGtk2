@@ -85,7 +85,7 @@ setMethod(".gmenu",
             tag(obj, "mb") <- mb                  # the real menubar
             
   
-            addSubMenu(mb,menulist, action=action)
+            .addSubMenu(mb,menulist, action=action)
             
             
             if(!is.null(container)) {
@@ -125,7 +125,7 @@ setReplaceMethod(".svalue",
                    if(!is.list(menulist))
                      stop("value is not a menubar or a list")
                    
-                   addSubMenu(mb,menulist, action=tag(obj,"action"))
+                   .addSubMenu(mb,menulist, action=tag(obj,"action"))
                    
                    delete(obj@block, tag(obj,"mbgroup")) # delete from group()
                    add(obj@block, mbgroup, expand=TRUE) # add to block
@@ -225,7 +225,7 @@ setMethod("[",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gMenuRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            lst = svalue(obj)
+            lst = svalue(x)
             if(missing(i))
               return(lst)
             else
@@ -242,15 +242,15 @@ setReplaceMethod("[",
 setReplaceMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gMenuRGtk"),
           function(x, toolkit, i, j, ..., value) {
-            lst = svalue(obj)
+            lst = svalue(x)
             theNames = names(lst)
             if(is.character(i))
               i = max(which(i %in% theNames))
             lst[[i]] <- value[[1]]
             theNames[i] = names(value)
             names(lst) = theNames
-            svalue(obj) <- lst
-            return(obj)
+            svalue(x) <- lst
+            return(x)
           })
 
 ###
@@ -265,7 +265,7 @@ setReplaceMethod(".leftBracket",
 }
 
 ## workhorse for this
-addSubMenu = function(subMenu, menu.list, action=NULL, ...) {
+.addSubMenu = function(subMenu, menu.list, action=NULL, ...) {
   
   for(i in names(menu.list)) {
     data = menu.list[[i]]
@@ -275,7 +275,7 @@ addSubMenu = function(subMenu, menu.list, action=NULL, ...) {
       item = gtkMenuItem(i)
       subMenu$Append(item)
       newSubMenu =  gtkMenu()
-      addSubMenu(newSubMenu, data)
+      .addSubMenu(newSubMenu, data)
       item$SetSubmenu(newSubMenu)
     } else if(!is.null(data$separator)) {
       ## add a separator

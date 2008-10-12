@@ -826,6 +826,11 @@ setReplaceMethod(".leftBracket",
 setMethod(".visible",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
           function(obj,toolkit,set=NULL, ...) {
+            ## visible is only of value if sorting is not taking place
+            if(tag(obj, "doSort"))
+              return(rep(TRUE, dim(obj)[1]))
+
+            ## not sorting, so first column holds visibility info
             frame = .getRGtkDataFrame(obj)
             return(frame[,1, drop=TRUE])
           })
@@ -834,6 +839,11 @@ setMethod(".visible",
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
                  function(obj, toolkit, ..., value) {
+                   if(tag(obj, "doSort")) {
+                     cat(gettext("Can use visible<- method unless filtering is being used\n"))
+                     return(obj)        # no means to set
+                   }
+                   
                    frame = .getRGtkDataFrame(obj)
                    m = nrow(frame)
                    frame[,1] <- rep(value, length=m)

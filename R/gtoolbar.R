@@ -1,5 +1,4 @@
 ## gtoolbar, similar to gmenu
-## need to incorporate delete/add methods as in imenu
 
 setClass("gToolbarRGtk",
          contains="gComponentRGtk",
@@ -18,7 +17,7 @@ setMethod(".gtoolbar",
             force(toolkit)
             
             style = match.arg(style)
-            toolbar = mapListToToolBar(toolbarlist, style)
+            toolbar = .mapListToToolBar(toolbarlist, style)
 
 
             group = ggroup(spacing=0)
@@ -48,7 +47,7 @@ setMethod(".gtoolbar",
           })
 
 ### main function returns toolbar from list
-mapListToToolBar = function(lst, style, ...) {
+.mapListToToolBar = function(lst, style, ...) {
   
   ## some helper functions for this
   is.leaf = function(lst) {
@@ -174,7 +173,7 @@ setReplaceMethod(".svalue",
                    if(!is.list(value)) 
                      stop("A toolbar requires a list to define it.")
 
-                   toolbar = mapListToToolBar(value, tag(obj,"style"))
+                   toolbar = .mapListToToolBar(value, tag(obj,"style"))
                    ## swap out
                    delete(tag(obj,"group"), tag(obj,"toolbar") )
                    add(tag(obj,"group"), toolbar, expand=TRUE)
