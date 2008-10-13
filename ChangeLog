@@ -1,3 +1,7 @@
+2008-10-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): fix to tags to get past strict type checking
+
 2008-10-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gcheckboxgroup.R: Fixed handler code in gcheckboxgroup to

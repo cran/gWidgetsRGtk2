@@ -223,11 +223,16 @@ setMethod(".add",
               if(is.null(markup)) {
                 buffer$Insert(iter, value[i])
               } else {
-                  lst = list(object=buffer, iter=iter, text=value[i])
-                  for(tag in markup)
-                    lst = c(lst,tag)
-                  do.call("gtkTextBufferInsertWithTagsByName",lst)
+                ## add in markup
+                lst = list(object=buffer, iter=iter, text=value[i])
+                for(key in names(markup)) {
+                  if(is.list(markup))
+                    lst[[key]] <- markup[[key]]
+                  else
+                    lst[[key]] <- markup[key]
                 }
+                do.call("gtkTextBufferInsertWithTagsByName",lst)
+              }
               if(do.newline) buffer$Insert(iter,"\n")
             }
           })
