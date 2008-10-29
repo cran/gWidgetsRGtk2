@@ -1,3 +1,17 @@
+2008-10-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): fixed type calling keystroke handler
+
+	* R/gdroplist.R: added width= argument through ... Should make
+	this part of gcombobox API
+
+	* R/gframe.R: fixed expand argument -- was always TRUE
+
+2008-10-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: fix to get gtable to work with CO2 data frame
+	(coercion to data.frame, ordered factors)
+
 2008-10-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R (.addTags): fix to tags to get past strict type checking

@@ -95,6 +95,7 @@ setMethod(".gdroplist",
             tag(obj,"items") <- items
             tag(obj,"doIcons") <- doIcons
             tag(obj, "coerce.with") = coerce.with
+
             
             ## load up the store
             if(length(items) > 0) {
@@ -128,6 +129,10 @@ setMethod(".gdroplist",
                 container = gwindow(visible=TRUE)
               add(container, obj,...)
             }
+
+            ## pass in a size via width=
+            if(!is.null(theArgs$width)) 
+              size(obj) <- c(width=theArgs$width,height=0)
             
             if (!is.null(handler)) {
               id <- addhandlerchanged(obj, handler, action)

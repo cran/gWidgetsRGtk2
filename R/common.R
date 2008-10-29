@@ -309,6 +309,10 @@ hack.as.data.frame = function(items) {
   if(is.matrix(items)) {
     items = hack.as.data.frame.matrix(items) # fun in common.R
   }
+
+  ## make a data frame (CO2)
+  items <- as.data.frame(items)
+  
   return(items)
 }
 

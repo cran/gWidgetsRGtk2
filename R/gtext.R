@@ -60,7 +60,7 @@ setMethod(".gtext",
             }
             
             if (!is.null(handler)) {
-              id = addhandlerkeystorke(obj, handler, action)
+              id = addhandlerkeystroke(obj, handler, action)
             }
             return(obj)
           })

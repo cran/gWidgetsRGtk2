@@ -363,7 +363,7 @@ setMethod("visible",signature(obj="gWidgetRGtk"),
 setMethod(".visible",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, set=TRUE, ...) {
-            widget = obj@widget
+            widget <- getWidget(obj)
             if(as.logical(set))
               widget$Show()
             else
@@ -381,7 +381,7 @@ setReplaceMethod("visible",signature(obj="gWidgetRGtk"),
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
                  function(obj, toolkit, ..., value) {
-                   .visible(obj@widget, toolkit, set=as.logical(value))
+                   visible(obj, value)
                    return(obj)
                  })
 

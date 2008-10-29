@@ -16,8 +16,8 @@ setMethod(".gframe",
             force(toolkit)
 
             frame = gtkFrameNew()
-            
-            obj <- as.gWidgetsRGtk2(frame, horizontal=horizontal)
+
+            obj <- as.gWidgetsRGtk2(frame, horizontal=horizontal,...)
 
             ##            group = ggroup(horizontal=horizontal, ...) # for horizontal, spacing etc.
 ##             frame$Add(getBlock(group))
@@ -35,7 +35,7 @@ setMethod(".gframe",
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
                 container = gwindow(visible=TRUE)
-              add(container, obj, expand=TRUE)
+              add(container, obj, ...)
             }
             return(obj)
           })
@@ -45,7 +45,8 @@ as.gWidgetsRGtk2.GtkFrame <- function(widget,...) {
   if(is.null(tag(widget,"group"))) {
     theArgs <- list(...)
     horizontal <- if(is.null(theArgs$horizontal)) TRUE else theArgs$horizontal
-    group <- ggroup(horizontal=horizontal) # for horizontal, spacing etc.
+    spacing <- if(is.null(theArgs$spacing)) 5 else theArgs$spacing
+    group <- ggroup(horizontal=horizontal, spacing=spacing) # for horizontal, spacing etc.
     widget$Add(getBlock(group))
   } else {
     group <- tag(widget,"group")

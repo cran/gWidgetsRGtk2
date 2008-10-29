@@ -56,11 +56,11 @@ as.gWidgetsRGtk2.GtkExpander <- function(widget,...) {
     group <- tag(widget,"group")
   } else {
     theArgs <- list(...)
-    if(!is.null(theArgs$horizontal))
-      horizontal = theArgs$horizontal
-    else
-      horizontal = TRUE
-    group = ggroup(horizontal=horizontal)
+
+    horizontal <- if(is.null(theArgs$horizontal)) TRUE else theArgs$horizontal
+    spacing <- if(is.null(theArgs$spacing)) 5 else theArgs$spacing
+
+    group = ggroup(horizontal=horizontal, spacing=spacing)
     widget$Add(getBlock(group)) # down from guiWidget to gWidgetRGtk
   }
   ## we put widget=group here to get gGroup methods, but

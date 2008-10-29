@@ -381,7 +381,7 @@ setMethod(".ggrid",
 
 
             if(doSort) {
-              ## model = gtkTreeModelSort(store)
+              ##model = gtkTreeModelSort(store)
               model = store
             } else {
               model = store$FilterNew()
@@ -1107,7 +1107,12 @@ makePaddedDataFrame <- function(obj,
   m = nrow(items)
   n = ncol(items)
   cnames = colnames(items)
-  theClass = sapply(items, class)
+  reducedClass <- function(x) {
+    out <- class(x)
+    out[length(out)]
+  }
+  theClass = sapply(items, reducedClass)
+  
   
   firstCol = rep(visible, length=m)
   

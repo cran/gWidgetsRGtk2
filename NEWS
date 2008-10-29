@@ -2,6 +2,20 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-46
+--------------------------
+
+* fix to gframe for expand=FALSE
+
+* fix to gframe, gexpandgroup for spacing argument
+
+* added width argument for gcombobox via ... This needs to be
+  incorporated into generic in gWidgets are
+
+* fix to visible<-
+
+* fix typo in addhandlerkeystroke for gtext
+
 Changes for version 0.0-44
 --------------------------
 
