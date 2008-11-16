@@ -2,6 +2,14 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-47
+--------------------------
+
+* added gaction implementation. This can be used for gbutton, gmenu,
+  gtoolbar. The svalue<- method does not work
+
+* added ability in gWidgetsRGtk2 to put widgets into toolbars
+
 Changes for version 0.0-46
 --------------------------
 

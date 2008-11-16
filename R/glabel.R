@@ -228,7 +228,7 @@ setMethod("gaddlabel",
             }
             
             
-            if(pos ==2 || ps == 3) {
+            if(pos ==2 || pos == 3) {
               glabel(text, markup=markup, container=group, toolkit=obj@toolkit)
               add(group, obj,expand=TRUE)
             } else {

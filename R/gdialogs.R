@@ -57,7 +57,7 @@ setMethod(".gmessage",
               dlg$Destroy()
               invisible(TRUE)
             } else {
-              gwcat("Don't know this response")
+              gwCat("Don't know this response")
               print(response)
               dlg$Destroy()
               invisible(NA)
@@ -121,7 +121,7 @@ setMethod(".gconfirm",
               dlg$Destroy()
               invisible(TRUE)
             } else {
-              gwcat("Don't know this response")
+              gwCat("Don't know this response")
               print(response)
               dlg$Destroy()
               invisible(NA)
@@ -201,7 +201,7 @@ setMethod(".ginput",
               ## input is widget, return value of widget
               invisible(val)
             } else {
-              gwcat("Don't know this response")
+              gwCat("Don't know this response")
               print(response)
               dlg$Destroy()
               invisible(NA)
@@ -270,7 +270,7 @@ setMethod(".gbasicdialog",
               return(TRUE)              # was widget, but TRUE now
             } else {
               ## default action
-              gwcat("Don't know this response")
+              gwCat("Don't know this response")
               print(response)
               dlg$Destroy()
               invisible(NA)

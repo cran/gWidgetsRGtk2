@@ -52,7 +52,60 @@ as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
   return(obj)
 }
 
+## constructor for actions
+## proper call is gbutton(action = gaction_instnace, cont = ...)
+## setMethod(".gbutton",
+##           signature(toolkit="guiWidgetsToolkitRGtk2",
+##                     text = "guiComponent"),
+##           function(toolkit,
+##                    text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
+##                    ) {
+##             .gbutton(toolkit, "", border, handler, text@widget, container, ...)
+##           })
 
+setMethod(".gbutton",
+          signature(toolkit="guiWidgetsToolkitRGtk2",
+                    action = "guiComponent"),
+          function(toolkit,
+                   text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
+                   ) {
+            .gbutton(toolkit,  "", border, handler, action@widget, container, ...)
+          })
+
+setMethod(".gbutton",
+          signature(toolkit="guiWidgetsToolkitRGtk2",
+                    action = "gActionRGtk"),
+          function(toolkit,
+                   text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
+                   ) {
+            force(toolkit)
+
+            action <- getWidget(action)
+            
+            button <- gtkButton()
+            obj <- new("gButtonRGtk",
+                       block=button, widget=button, toolkit=guiToolkit("RGtk2"))
+
+            action$connectProxy(button)
+            ## icon
+            icon <- action['stock-id']
+            if(!is.null(icon)) {
+              image <- action$createIcon(GtkIconSize[4])
+              button$setImage(image)
+            }
+
+            if(!is.null(container)) {
+              if(is.logical(container) && container) {
+                container <- gwindow()
+                add(container, obj)
+              } else {
+                add(container, obj, ...)
+              }
+            }
+                
+            
+            return(obj)
+          })
 ### methods
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),

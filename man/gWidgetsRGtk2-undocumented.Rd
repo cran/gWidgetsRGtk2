@@ -47,6 +47,10 @@
 %%
 \alias{.gbutton-methods}
 \alias{.gbutton,guiWidgetsToolkitRGtk2-method} 
+\alias{.gbutton,guiWidgetsToolkitRGtk2,ANY,ANY,ANY,ANY-method}
+\alias{.gbutton,guiWidgetsToolkitRGtk2,ANY,ANY,ANY,gActionRGtk-method}	 
+\alias{.gbutton,guiWidgetsToolkitRGtk2,ANY,ANY,ANY,guiComponent-method} 
+
 %%
 %% --  .gcheckbox --
 %%
@@ -87,6 +91,11 @@
 %%
 \alias{.gtext-methods}
 \alias{.gtext,guiWidgetsToolkitRGtk2-method} 
+%%
+%% --  .gaction --
+%%
+\alias{.gaction-methods}
+\alias{.gaction,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .gmenu --
 %%
@@ -242,6 +251,8 @@
 %%
 \alias{.svalue-methods}
 \alias{.svalue,character,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gActionRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gActionRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gButtonRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxgroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
@@ -312,6 +323,7 @@
 %% --  .svalue<- --
 %%
 \alias{.svalue<--methods}
+\alias{.svalue<-,gActionRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gButtonRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gCheckboxRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
@@ -583,6 +595,19 @@
 \alias{.focus<-,GtkWindow,guiWidgetsToolkitRGtk2-method}
 \alias{.focus<-,RGtkObject,guiWidgetsToolkitRGtk2-method} 
 %%
+%% --  tooltip<- --
+%%
+\alias{tooltip<--methods}
+\alias{tooltip<-,gWidgetRGtk-method}
+\alias{tooltip<-,RGtkObject-method} 
+%%
+%% --  .tooltip<- --
+%%
+\alias{.tooltip<--methods}
+\alias{.tooltip<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+
+
+%%
 %% --  font --
 %%
 \alias{font-methods}
@@ -797,6 +822,7 @@
 %%
 \alias{.addhandlerchanged-methods}
 \alias{.addhandlerchanged,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gActionRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}

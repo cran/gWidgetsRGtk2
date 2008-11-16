@@ -34,7 +34,21 @@ Port of gWidgets API to RGtk2
   column names have not been changed.
   \cr
 
+  The \code{gaction} constructor produces action objects. The
+  \code{enabled<-} method can be used to set their sensitivity. The
+  objects can be used with \code{gbutton} through the \code{action}
+  argument, and in the lists defining menubars and toolbars. The
+  \code{key.accel} argument of the constructor is ignored for now. The
+  \code{tooltip} is OS sensitive, as it depends on the event loop
+  implementation.\cr
+
+  The \code{gtoolbar} list can have components that are a) lists with
+  a handler componented, b) lists with a separator component, c)
+  gaction instances d) gWidgets, in which case the widget appears in
+  the toolbar. The latter is not portable to other gWidgets
+  implementations.\cr
   
+
   \bold{Methods:}\cr
   
   The \code{font} method is not implemented. 

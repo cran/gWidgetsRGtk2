@@ -190,7 +190,7 @@ setMethod(".gvarbrowser",
 setMethod(".update",
           signature(toolkit="guiWidgetsToolkitRGtk2",object="gVarbrowserRGtk"),
           function(object, toolkit, ...) {
-            tree <- obj@widget
+            tree <- object@widget
             update(tree)
           })
 

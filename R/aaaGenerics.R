@@ -465,6 +465,7 @@ setReplaceMethod("focus",signature(obj="RGtkObject"),
             return(obj)
           })
 
+
 ## window
 setReplaceMethod(".focus",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
@@ -487,6 +488,33 @@ setReplaceMethod(".focus",
             } else {
               obj$GetParentWindow()$Lower()
             }
+            return(obj)
+          })
+
+
+## tooltip<-
+setReplaceMethod("tooltip",signature(obj="gWidgetRGtk"),
+          function(obj, ..., value) {
+            .tooltip(obj, obj@toolkit,...) <- value
+            return(obj)
+          })
+
+setReplaceMethod(".tooltip",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ..., value) {
+            tooltip(obj@widget, toolkit, ...) <- value
+            return(obj)
+          })
+
+setReplaceMethod("tooltip",signature(obj="RGtkObject"),
+          function(obj, ..., value) {
+            ## set the tip.
+            tooltipGroup <- try(gtkTooltips(), silent = TRUE)
+            if(inherits(tooltipGroup, "try-error"))
+              return(obj)
+            ## some widgets don't allow a tooltip (glabel, ...)
+            ## right check is widget.flags()&gtk.NO_WINDOW
+            try(tooltipGroup$setTip(obj, tip.text = value), silent=TRUE)
             return(obj)
           })
 
@@ -1545,7 +1573,7 @@ add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, 
 setMethod(".addpopupmenu",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, menulist, action=NULL, ...) {
-            addPopupMenuWithSignal(obj, toolkit, menulist, ..)
+            addPopupMenuWithSignal(obj, toolkit, menulist, ...)
 })
 
 

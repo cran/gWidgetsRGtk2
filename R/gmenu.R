@@ -257,7 +257,9 @@ setReplaceMethod(".leftBracket",
 
 ## some helper functions for this
 .isLeaf = function(lst) {
-  if(is.list(lst) & (!is.null(lst$handler) | !is.null(lst$separator))) {
+  if(.isgAction(lst) ||
+     (is.list(lst) & (!is.null(lst$handler) | !is.null(lst$separator)))
+     ) {
     return(TRUE)
   } else {
     return(FALSE)
@@ -269,8 +271,13 @@ setReplaceMethod(".leftBracket",
   
   for(i in names(menu.list)) {
     data = menu.list[[i]]
-    
-    if(!.isLeaf(data)) {
+
+    if(.isgAction(data)) {
+      action <- getWidget(data)
+      item <- gtkImageMenuItem("")
+      subMenu$Append(item)
+      action$connectProxy(item)
+    }  else if(!.isLeaf(data)) {
       ## do submenu
       item = gtkMenuItem(i)
       subMenu$Append(item)

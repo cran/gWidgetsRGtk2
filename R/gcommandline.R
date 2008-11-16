@@ -273,7 +273,7 @@ setMethod("[",
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gCommandlineRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
-            history = tag(obj, "history")
+            history = tag(x, "history")
 
             if(missing(i))
               return(history)

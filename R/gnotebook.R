@@ -183,7 +183,7 @@ setMethod(".dispose",
 setMethod(".delete",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gNotebookRGtk"),
           function(obj, toolkit, widget,  ...) {
-            obj@widget$remove(getGTKwidget(widget))
+            obj@widget$remove(getWidget(widget))
           })
 
 

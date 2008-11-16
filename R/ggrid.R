@@ -472,7 +472,7 @@ setMethod(".ggrid",
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkTreeView"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            svalue(tag(obj,"gridObj"),index, drop...)
+            svalue(tag(obj,"gridObj"),index, drop, ...)
           })
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
@@ -544,10 +544,10 @@ setReplaceMethod(".svalue",
 
 ## helper function here
 ## unlike make.names this doesn't put "X" prefix
-make.row.names <- function(x) {
+make.row.names <- function(x, unique=TRUE) {
   dups = duplicated(x)
   if(any(dups))
-    x[dups] <- make.names(x,unique=TRUE)[dups]
+    x[dups] <- make.names(x,unique=unique)[dups]
   return(x)
 }
 
@@ -730,7 +730,7 @@ setReplaceMethod(".leftBracket",
                   ## lengthen rows
                   for(i in (m+1):dv[1]) {
                     newRowName = rownames(value)[i]
-                    newRowName = make.row.names(c(newRowName,rownames(frame)), unique=T)
+                    newRowName = make.row.names(c(newRowName,rownames(frame)), unique=TRUE)
                     replaceList = list(TRUE,"",newRowName,frame[1,4],frame[1,5])
                     for(j in 1:n) {
                       replaceList[[3*(j+1)]] <- value[i,j] # value

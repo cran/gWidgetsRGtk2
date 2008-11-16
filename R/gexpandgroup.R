@@ -80,7 +80,7 @@ as.gWidgetsRGtk2.GtkExpander <- function(widget,...) {
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
-            gwcat("Use names() to access label")
+            gwCat("Use names() to access label")
             obj@block$GetLabel()        # not @widget@
           })
 

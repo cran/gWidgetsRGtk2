@@ -46,8 +46,68 @@ setMethod(".gtoolbar",
   
           })
 
-### main function returns toolbar from list
+
 .mapListToToolBar = function(lst, style, ...) {
+  
+  ## some helper functions for this
+  is.leaf = function(lst) {
+    if(.isgAction(lst) ||
+       is.list(lst) & (!is.null(lst$handler) | !is.null(lst$separator))) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  }
+
+  ### XXX ### CHECK THIS
+  toolbar <- gtkToolbar()
+  ## toolbar has no recurse
+  for(i in names(lst)) {
+    itemData <- lst[[i]]
+    item <- gtkToolButtonNew()
+    if(.isgAction(itemData)) {
+      action <- getToolkitWidget(itemData)
+      item <- action$createToolItem()
+      toolbar$insert(item,pos = -1)
+    } else if(is.list(itemData)) {
+      if(!is.null(itemData$separator)) {
+        ## XX put in separator into toolbar
+        item <- gtkSeparatorToolItemNew()
+        toolbar$insert(item,pos = -1)
+      } else if(!is.null(itemData$handler)) {
+        ## XXX put in value from itemData (label handler, ...)
+        item <- gtkToolButtonNew()
+        item$setLabel(itemData$icon)
+        if(!is.null(itemData$icon))
+          item$setStockId(getstockiconname(itemData$icon))
+        
+
+        gSignalConnect(item,signal="clicked",
+                       f = function(a,...) {
+                         handler <- a$handler
+                         action <- a$action
+                         h <- list(action = action)
+                         handler(h,...)
+                       },
+                       data = itemData,
+                       user.data.first=TRUE
+                       )
+        toolbar$insert(item,pos = -1)
+      }
+    } else if(is(itemData,"guiWidget")) {
+      ## can add in a button or popup et
+      widget <- getBlock(itemData)
+      item <- gtkToolItemNew()
+      item$Add(widget)
+      toolbar$insert(item,pos = -1)
+    }
+  }
+    
+  return(toolbar)
+}
+### main function returns toolbar from list
+## replaced by above -- simpler, uses older API
+.mapListToToolBar.old = function(lst, style, ...) {
   
   ## some helper functions for this
   is.leaf = function(lst) {

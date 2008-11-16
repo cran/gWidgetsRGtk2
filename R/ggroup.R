@@ -128,6 +128,7 @@ setMethod(".add",
 
             parent <- getWidget(obj)
             child <- value
+            childWidget <- getWidget(value)
             theArgs <- list(...)
 
             if(!is.null(theArgs$anchor)) {

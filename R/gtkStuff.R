@@ -108,7 +108,7 @@ setMethod("id",signature(obj="GtkTreeViewColumn"),
           function(obj,  ...) {
             curname = tag(obj,"name")
             if(is.null(curname) || length(curname) == 0) {
-#              gwcat(gettext("No name for this view column\n"))
+#              gwCat(gettext("No name for this view column\n"))
               return(NA)
             } else {
               return(curname)
