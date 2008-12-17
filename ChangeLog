@@ -1,3 +1,32 @@
+2008-12-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: added new feature with gbasicdialog
+
+2008-12-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): if inserting at end, moves scrollbar
+	to bottomS
+
+2008-12-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): added insert method to replace
+	overworked add
+	(.addTags): move to end when adding if at end
+
+2008-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: fixed return value of ginput
+
+2008-11-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcalendar.R (lgedit): coerce with failed to be implemented
+
+2008-11-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: More consistent defn of svalue<-
+
+	* R/gaction.R: implemented svalue<-
+
 2008-10-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R (.addTags): fixed type calling keystroke handler

@@ -72,12 +72,26 @@ setReplaceMethod(".svalue",
                    if(is.data.frame(value))
                      value <- value[,1,drop=TRUE]
                    
-                   items = tag(obj,"items")
                    lst = tag(obj,"itemlist")
-                   values = rep(value, length.out=length(items)) ## recycle
+                   n <- length(obj)
+                   ## compute values -- logical vector with length n
+                   if(!is.null(index) && index) {
+                     ## indices
+                     values <- rep(FALSE, n)
+                     values[value] <- TRUE
+                   } else if(!is.logical(value)) {
+                     ## characters
+                    ind <- match(value, obj[])
+                    ind <- ind[!is.na(ind)]
+                    values <- rep(FALSE,length=n)
+                    values[ind] <- TRUE
+                   } else {
+                     ## logical vector, we recycle
+                     values = rep(value, length.out=n) ## recycle
+                   }
+                   ## apply to each checkbox
+                   sapply(1:n, function(i) svalue(lst[[i]]) <- values[i])
 
-                   sapply(1:length(items), function(i) svalue(lst[[i]]) <- values[i])
-                   
                    return(obj)
                  })
 

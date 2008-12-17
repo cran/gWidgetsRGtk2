@@ -1,7 +1,8 @@
 ## reusuabel chunk of code
 setClass("gActionRGtk",
          contains="gComponentRGtk",
-         prototype=prototype(new("gComponentRGtk"))
+         representation(e = "environment"),
+         prototype=prototype(e=new.env())
          )
 
 
@@ -31,6 +32,7 @@ setMethod(".gaction",
             ## add for later use
             ## should be defined when used in a menu bar.
             tag(obj,"key.accel") <- key.accel
+            obj@e$buttons <- list()     # for svalue<- with buttons, menu items work
             
             if(!is.null(handler))
               addHandlerChanged(obj, handler, action)
@@ -52,11 +54,18 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gActionRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   cat("svalue<- not defined\n")
+                   gtkaction <- getWidget(obj)
 
-                   ## this sets label, but does not update GUI
-                   ##                   widget <- getWidget(obj)
-                   #                   widget['label'] <- value
+                   ## for menu, toolbar est label propoerty
+                   gtkaction['label'] <- value
+
+                   ## for buttons, we work harder
+                   buttons <- obj@e$buttons
+                   if(length(buttons) > 0)
+                     sapply(buttons, function(i) {
+                       if(isExtant(i))
+                         svalue(i) <- value
+                     })
 
                    return(obj)
                  })

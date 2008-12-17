@@ -79,7 +79,7 @@ setMethod(".gmenu",
   
             
             tag(obj, "menulist") <- menulist
-            tag(obj,"action") <- action
+            tag(obj, "action") <- action
             tag(obj,"popup") <- popup
             tag(obj, "mbgroup") <- mbgroup
             tag(obj, "mb") <- mb                  # the real menubar
@@ -272,6 +272,11 @@ setReplaceMethod(".leftBracket",
   for(i in names(menu.list)) {
     data = menu.list[[i]]
 
+    if(.isgSeparator(data)) {
+      data <- list(separator = TRUE)
+    }
+      
+    
     if(.isgAction(data)) {
       action <- getWidget(data)
       item <- gtkImageMenuItem("")

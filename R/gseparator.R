@@ -37,3 +37,8 @@ as.gWidgetsRGtk2.GtkHSeparator <- as.gWidgetsRGtk2.GtkVSeparator <- function(wid
              toolkit=guiToolkit("RGtk2"))
   return(obj)
 }
+
+.isgSeparator <- function(obj) {
+  (is(obj,"guiComponent") && is(obj@widget,"gSeparatorRGtk") ) ||
+    is(obj,"gSeparatorRGtk")
+}

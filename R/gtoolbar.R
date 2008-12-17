@@ -52,7 +52,9 @@ setMethod(".gtoolbar",
   ## some helper functions for this
   is.leaf = function(lst) {
     if(.isgAction(lst) ||
-       is.list(lst) & (!is.null(lst$handler) | !is.null(lst$separator))) {
+       .isgSeparator(lst) ||
+       (is.list(lst) & (!is.null(lst$handler) | !is.null(lst$separator)))
+       ) {
       return(TRUE)
     } else {
       return(FALSE)
@@ -64,6 +66,8 @@ setMethod(".gtoolbar",
   ## toolbar has no recurse
   for(i in names(lst)) {
     itemData <- lst[[i]]
+    if(.isgSeparator(itemData))
+      itemData <- list(separator = TRUE)
     item <- gtkToolButtonNew()
     if(.isgAction(itemData)) {
       action <- getToolkitWidget(itemData)

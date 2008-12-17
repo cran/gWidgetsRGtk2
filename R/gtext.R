@@ -200,6 +200,17 @@ setMethod(".dispose",
 ## add, as a method, needs to have a consistent signature. I'
 
 ## add text
+setMethod(".insert",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj = "gTextRGtk"),
+          function(obj, toolkit, value, where = c("end","beginning","at.cursor"),
+                   font.attr = NULL,
+                   do.newline = TRUE, ...) {
+            ## just call add
+            where = match.arg(where)
+            .add(obj, toolkit, value, where=where, font.attr=font.attr,
+                 do.newline=do.newline, ...)
+          })
+## add does all the work
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTextRGtk",value="character"),
           function(obj, toolkit, value,  ...) {
@@ -211,7 +222,9 @@ setMethod(".add",
               markup = markup[markup %in% unlist(tag(obj,"tags"))] # only some markup
             where = ifelse(is.null(theArgs$where), "end",theArgs$where)
 
-            buffer = obj@widget$GetBuffer()
+            
+            view <- obj@widget
+            buffer = view$GetBuffer()
             iter = switch(where,
               "end"=buffer$GetEndIter()$iter,
               "beginning"=buffer$GetStartIter()$iter,
@@ -234,6 +247,12 @@ setMethod(".add",
                 do.call("gtkTextBufferInsertWithTagsByName",lst)
               }
               if(do.newline) buffer$Insert(iter,"\n")
+            }
+            ## scroll to end -- if appended to end
+            if(where == "end") {
+              end <- buffer$getEndIter()$iter
+              view$scrollToIter(end, within.margin = 0,
+                                use.align=TRUE)
             }
           })
 

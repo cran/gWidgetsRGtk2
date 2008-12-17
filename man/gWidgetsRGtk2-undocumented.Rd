@@ -254,6 +254,8 @@
 \alias{.svalue,gActionRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gActionRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gButtonRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gCalendarRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gCalendarRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxgroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCommandlineRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
@@ -396,6 +398,8 @@
 \alias{.add-methods}
 \alias{.add,guiWidget,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,guiWidget,guiWidgetsToolkitRGtk2,guiWidgetORgWidgetRGtkORRGtkObject-method}
+\alias{.add,gBasicDialogNoParentRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
+\alias{.add,gBasicDialogNoParentRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gContainerRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.add,gContainerRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gDfNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method}
@@ -490,6 +494,11 @@
 \alias{.dispose,gTextRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.dispose,gHelpRGtk,guiWidgetsToolkitRGtk2-method}
 %%
+%% --  .insert --
+%%
+\alias{.insert-methods}
+\alias{.insert,gTextRGtk,guiWidgetsToolkitRGtk2-method}
+%%
 %% --  visible --
 %%
 \alias{visible-methods}
@@ -500,6 +509,7 @@
 %%
 \alias{.visible-methods}
 \alias{.visible,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible,gBasicDialogNoParentRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  visible<- --
@@ -1054,14 +1064,21 @@
 \alias{adddroptarget,guiWidget-method}
 \alias{adddroptarget,gWidgetRGtk-method}
 \alias{adddroptarget,RGtkObject-method} 
+\alias{adddroptarget,gEditRGtk-method} 
 %%
 %% --  .adddroptarget --
 %%
 \alias{.adddroptarget-methods}
 \alias{.adddroptarget,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.adddroptarget,RGtkObject,guiWidgetsToolkitRGtk2-method}
-\alias{.adddroptarget,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.adddroptarget,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.adddroptarget,gImageRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.adddroptarget,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
+%%
+%% --  .galert --
+%%
+\alias{.galert-methods}
+\alias{.galert,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .gmessage --
 %%
@@ -1082,6 +1099,11 @@
 %%
 \alias{.gbasicdialog-methods}
 \alias{.gbasicdialog,guiWidgetsToolkitRGtk2-method} 
+%%
+%% --  .gbasicdialognoparent --
+%%
+\alias{.gbasicdialognoparent-methods}
+\alias{.gbasicdialognoparent,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  update --
 %%

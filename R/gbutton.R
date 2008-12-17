@@ -80,17 +80,20 @@ setMethod(".gbutton",
                    ) {
             force(toolkit)
 
-            action <- getWidget(action)
+            gtkaction <- getWidget(action)
             
             button <- gtkButton()
             obj <- new("gButtonRGtk",
                        block=button, widget=button, toolkit=guiToolkit("RGtk2"))
 
-            action$connectProxy(button)
+
+            action@e$buttons <- c(action@e$buttons, obj)
+            
+            gtkaction$connectProxy(button)
             ## icon
-            icon <- action['stock-id']
+            icon <- gtkaction['stock-id']
             if(!is.null(icon)) {
-              image <- action$createIcon(GtkIconSize[4])
+              image <- gtkaction$createIcon(GtkIconSize[4])
               button$setImage(image)
             }
 

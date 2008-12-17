@@ -188,6 +188,14 @@ setReplaceMethod("[",
 ##################################################
 ## handlers
 
+### doesn't work -- double writes
+setMethod(".adddroptarget",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
+          function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
+            gwCat("drop target for gedit uses default only")
+          })
+
+
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
