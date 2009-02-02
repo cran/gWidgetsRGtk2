@@ -1,14 +1,17 @@
 ## Use this to filter by type
 ## knownTypes in common
 ### Use this for filtering by (gvarbrowser, gvarbrowsertree)
+
+## This is *ugly* -- how to get a reasonable set of values here?
 .datasets = c(
-  "numeric","logical","factor","character",
+  "numeric","logical","factor","character","integer",
   "data.frame","matrix","list",
   "table","xtabs",
-  "nfnGroupedData","nffGroupedData","nmGroupedData"
+  "nfnGroupedData","nffGroupedData","nmGroupedData",
+  "POSIXct","POSIXlt","POSIXt"
   )
 .models = c("lm","glm","lqs","aov","anova",
-    "lme","lmList","gls",
+  "lme","lmList","gls",
   "ar","arma","arima0","fGARCH","fAPARCH"
     )
 .ts = c("ts", "mts", "timeSeries", "its", "zoo","xts")
@@ -17,7 +20,7 @@
 
 knownTypes = list(
   "data sets and models"=c(.datasets, .models, .ts),
-  "data sets"= c(.datasets,ts),
+  "data sets"= c(.datasets,.ts),
   "model objects" = .models,
   "time series objects" = .ts,
   "functions"=.functions,
@@ -39,43 +42,48 @@ lsFunctions = function(envir=.GlobalEnv)  lsType(.functions, envir)
 
 
 offspring = function(path=c(), data=NULL) {
+
+  if(!is.null(data) && is.function(data)) data <- data()
+
+  ## data is knownClass value. This checks through inheritance but still the
+  ## question of what classes to show is hardcoded -- eh
+  .inClass <- function(x,data) {
+    any(sapply(1:length(data), function(i) is(x,data[i])))
+  }
+  
   if(length(path) == 0) {
-    x = ls(envir=.GlobalEnv)
-    if(length(x) == 0) {
-      return(data.frame(names="",hasSubTree=FALSE,type=""))
-    }
-
-    type = c();hasTree=c()
-    for(i in 1:length(x)) {
-      y = getObjectFromString(x[i])
-      type[i] = str2(y)
-      hasTree[i] = hasSubTree(y)
-    }
+    x <- ls(envir=.GlobalEnv)
   } else {
-    string = paste(path,collapse="$")
-    obj = getObjectFromString(string)
+    string <- paste(path,collapse="$")
+    obj <- getObjectFromString(string)
 
-    x = with(obj, ls())
+    x <- with(obj, ls())
 
-    if(length(x) == 0) {
-      return(data.frame(names="",hasSubTree=FALSE,type=""))
-    }
-
-    type = c();hasTree=c()
-    for(i in 1:length(x)) {
-      y = getObjectFromString(paste(string,x[i],sep="$"))
-      type[i] = str2(y)
-      hasTree[i] = hasSubTree(y)
-    }
   }
 
-  allValues = data.frame(names=I(x), hasSubTree=hasTree, type=I(type))
-
-  if(!is.null(data)) {
-    return(allValues[allValues$type %in% data, ,drop=FALSE])
-  } else {
-    return(allValues)
+  if(length(x) == 0) {
+    return(data.frame(names="",hasSubTree=FALSE,type=""))
   }
+
+  type <- c(); hasTree <- c(); newNames <- c()
+    
+  for(i in 1:length(x)) {
+    y <-  getObjectFromString(x[i])
+    if(.inClass(y,data)) {
+      j <- length(type)+ 1
+      type[j] <- str2(y)
+      hasTree[j] <- hasSubTree(y)
+      newNames[j] <- x[i]
+    }
+  }
+  
+  if(length(type) == 0) {
+    return(data.frame(names="",hasSubTree=FALSE,type=""))
+  }
+
+  allValues <-  data.frame(names=I(newNames), hasSubTree=hasTree, type=I(type), stringsAsFactors=FALSE)
+  return(allValues)
+  
 }
 
 hasSubTree = function(x) {
@@ -118,23 +126,23 @@ setMethod(".gvarbrowser",
             ## fix handler if action is non-null
             if(is.null(handler) && !is.null(action)) {
               handler = function(h, ...) {
-                values = h$obj[]
-                value = paste(values, collapse = "$")
+                values <- h$obj[]
+                value <- paste(values, collapse = "$")
                 if (!is.null(action))
                         print(do.call(h$action, list(svalue(value))))
               }
             }
 
             ## begin
-            group = ggroup(horizontal=FALSE, container=container,...)
-            filterGroup = ggroup(container=group)
+            group <- ggroup(horizontal=FALSE, container=container,...)
+            filterGroup <- ggroup(container=group)
             glabel("Filter by:",container=filterGroup)
-            filterPopup = gdroplist(names(knownTypes), container=filterGroup)
+            filterPopup <- gdroplist(names(knownTypes), container=filterGroup)
             svalue(filterPopup) <- "data sets"
             
             ## main tree
             tree = gtree(offspring=offspring,
-              offspring.data=knownTypes[[svalue(filterPopup)]],
+              offspring.data=function() knownTypes[[svalue(filterPopup)]],
               col.types=data.frame(Name="string",Type="string"),
               icon.FUN = function(d,...) {
                 byReturnVector(d,function(x) stockIconFromClass(x[,'type']))

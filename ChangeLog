@@ -1,3 +1,9 @@
+2009-01-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): fix to gvarbrowser to list
+	knownTypes better using is(), added POSIXt to data types. How to get a list
+	of these.
+
 2008-12-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdialogs.R: added new feature with gbasicdialog

@@ -128,20 +128,21 @@ setMethod(".gtree",
             addhandler(obj,"row-expanded",action = offspring.data,
                        handler = function(h,view, iter, path,...) {
                          ## get unsorted iter from path
-                         uspath = treestoreModel$ConvertPathToChildPath(path)
-                         iter = treestore$GetIter(uspath)$iter
-                         
-                         children = offspring(.getValuesFromIter(h$obj,iter),h$action)
-                         
-                         lst = getOffSpringIcons(children, hasOffspring, icon.FUN)
-                         children = lst$children
-                         doExpand = lst$doExpand
+                         uspath <- treestoreModel$ConvertPathToChildPath(path)
+                         iter <- treestore$GetIter(uspath)$iter
+                         path <- .getValuesFromIter(h$obj,iter)
+                         children <- offspring(path,h$action)
 
+                         lst <- getOffSpringIcons(children, hasOffspring, icon.FUN)
+                         children <- lst$children
+                         doExpand <- lst$doExpand
+
+                         
                          
                          addChildren(treestore, children, doExpand,
                                      tag(h$obj,"iconFudge"), iter)
                          ## remove errant offspring
-                         child.iter = treestore$IterChildren(iter)
+                         child.iter <- treestore$IterChildren(iter)
                          if(child.iter$retval)
                            treestore$Remove(child.iter$iter)
                        })
