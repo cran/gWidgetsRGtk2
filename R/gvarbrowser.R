@@ -48,17 +48,23 @@ offspring = function(path=c(), data=NULL) {
   ## data is knownClass value. This checks through inheritance but still the
   ## question of what classes to show is hardcoded -- eh
   .inClass <- function(x,data) {
-    any(sapply(1:length(data), function(i) is(x,data[i])))
+    if(is.null(data)) return(TRUE)
+    any(sapply(1:length(data), function(i) {
+      out <- is(x,data[i])
+      if(inherits(out,"try-error")) return(FALSE)
+      return(out)
+    }
+               ))
   }
   
   if(length(path) == 0) {
-    x <- ls(envir=.GlobalEnv)
+    fullx <- x <- ls(envir=.GlobalEnv)
   } else {
     string <- paste(path,collapse="$")
     obj <- getObjectFromString(string)
 
     x <- with(obj, ls())
-
+    fullx <- paste(string,x,sep="$")
   }
 
   if(length(x) == 0) {
@@ -68,7 +74,7 @@ offspring = function(path=c(), data=NULL) {
   type <- c(); hasTree <- c(); newNames <- c()
     
   for(i in 1:length(x)) {
-    y <-  getObjectFromString(x[i])
+    y <-  getObjectFromString(fullx[i])
     if(.inClass(y,data)) {
       j <- length(type)+ 1
       type[j] <- str2(y)
@@ -78,7 +84,7 @@ offspring = function(path=c(), data=NULL) {
   }
   
   if(length(type) == 0) {
-    return(data.frame(names="",hasSubTree=FALSE,type=""))
+    return(data.frame(names="",hasSubTree=FALSE,type="", stringsAsFactors=TRUE))
   }
 
   allValues <-  data.frame(names=I(newNames), hasSubTree=hasTree, type=I(type), stringsAsFactors=FALSE)

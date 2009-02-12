@@ -231,12 +231,11 @@ setMethod(".add",
               {gwCat("Only end, beginning implemented")
                buffer$GetEndIter()$iter
              })
-
+            
             for(i in 1:length(value) ) {
               if(is.null(markup)) {
                 buffer$Insert(iter, value[i])
               } else {
-                ## add in markup
                 lst = list(object=buffer, iter=iter, text=value[i])
                 for(key in names(markup)) {
                   if(is.list(markup))
