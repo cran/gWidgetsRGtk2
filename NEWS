@@ -2,6 +2,11 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-51
+--------------------------
+
+* changed polling for gvarbrowser, can also change with inteval=secs*1000
+
 Changes for version 0.0-50
 --------------------------
 

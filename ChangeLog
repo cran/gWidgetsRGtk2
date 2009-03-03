@@ -1,3 +1,8 @@
+2009-03-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): put in secret interval argument for
+	gvarbrowser to slow down polling
+
 2009-01-31  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R (.inClass): fix to gvarbrowser to list

@@ -53,8 +53,7 @@ offspring = function(path=c(), data=NULL) {
       out <- is(x,data[i])
       if(inherits(out,"try-error")) return(FALSE)
       return(out)
-    }
-               ))
+    }))
   }
   
   if(length(path) == 0) {
@@ -127,7 +126,9 @@ setMethod(".gvarbrowser",
                    ...) {
 
             force(toolkit)
-            
+
+            theArgs <- list(...)
+            interval <- ifelse(is.null(theArgs$interval), 2000, theArgs$inteval)
 
             ## fix handler if action is non-null
             if(is.null(handler) && !is.null(action)) {
@@ -165,8 +166,8 @@ setMethod(".gvarbrowser",
                               },
                               action=tree)
             
-            ## add an idle handler for updating tree every  second
-            idleid = addhandleridle(tree, interval=1000, handler = function(h,...) {
+            ## add an idle handler for updating tree every  second (or interval)
+            idleid = addhandleridle(tree, interval=interval, handler = function(h,...) {
               key = svalue(filterPopup)
               offspring.data = knownTypes[[key]]
               update(h$obj, offspring.data)
