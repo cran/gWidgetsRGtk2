@@ -150,7 +150,7 @@ setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, signal, handler, action=NULL, ...) {
             ID = .addHandler(obj@block, toolkit, signal, handler, action, actualobj=obj,...)
-            return(ID)
+            invisible(ID)
           })
 
 setMethod(".addhandlerclicked",

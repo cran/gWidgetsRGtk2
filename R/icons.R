@@ -49,6 +49,7 @@ addToGtkStockIcons = function(iconNames, iconFiles) {
   }
   
   iconfactory$AddDefault()
+  invisible(TRUE)
 }
 
 ## find the stock icons. This includes those added bia loadGWidgetIcons()

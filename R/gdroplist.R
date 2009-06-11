@@ -106,7 +106,7 @@ setMethod(".gdroplist",
             combo$SetActive(selected-1)
 
             ## set size if really small under windows
-            if(.Platform$OS != "windows") {
+            if(.Platform$OS == "windows") {
               if(dim(items)[1] > 0) {
                 colChars <- max(sapply(items[,1,drop=TRUE],nchar))
                 if(colChars < 3)

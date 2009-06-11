@@ -81,7 +81,7 @@ setMethod(".addhandlerchanged",
                            data = list(action = action),
                            user.data.first = TRUE)
 
-            return(ID)
+            invisible(ID)
           })
 
                              

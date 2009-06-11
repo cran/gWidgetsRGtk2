@@ -67,7 +67,7 @@ setMethod(".gfile",
             
             cancelhandler = function(h,...) {
               dispose(h$obj)
-              return(NULL)
+              return(NA)
             }
             
             filechooser = gtkFileChooserDialogNew(title=text, action=actiontype)
@@ -105,7 +105,7 @@ setMethod(".gfile",
             if(response == GtkResponseType["cancel"]) {
               ## just close
               filechooser$Destroy()
-              return("")
+              return(NA)
             } else if(response == GtkResponseType["ok"]) {
               filechooser$Destroy()
               if(!is.null(handler)) handler(h)
@@ -115,7 +115,7 @@ setMethod(".gfile",
                 return(file)
             } else {
               filechooser$Destroy()
-              return("")
+              return(NA)
             }
           })
 

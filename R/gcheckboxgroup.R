@@ -202,7 +202,7 @@ setMethod(".addhandlerchanged",
             lst = tag(obj,"itemlist")
             IDs <- lapply(lst, function(i)
                    addhandlerchanged(i,handler=handler, action=action, actualobj=obj, ...))
-            return(IDs)
+            invisible(IDs)
           })
           
 

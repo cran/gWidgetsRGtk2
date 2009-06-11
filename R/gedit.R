@@ -231,7 +231,7 @@ setMethod(".addhandlerkeystroke",
                              user.data.first = TRUE,
                              data = list(obj=obj,handler=handler, action=action)
                              )
-            return(ID)
+            invisible(ID)
 ##            addhandler(obj,"changed",handler,action)
           })
 

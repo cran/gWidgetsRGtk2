@@ -34,11 +34,18 @@ setMethod(".gmessage",
             
             ## use message dialog for Gtk
             dlg = gtkMessageDialogNew(
-              message.format = message,
               parent = parent,
               flags = 0,
               buttons = button,
-              type=icon)
+              type=icon,
+              message[1]
+              )
+
+            ## secret bit. Needs API! If message has length more than
+            ## 1, use rest for secondary text.
+            if(length(message) > 1)
+              dlg['secondary-text'] <- paste(message[-1], collapse = "\n")
+            
             dlg$SetTitle(title)
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
@@ -96,11 +103,17 @@ setMethod(".gconfirm",
 
 
             dlg = gtkMessageDialogNew(
-              message.format = message,
               parent = parent,
               flags = 0,
               buttons = buttons,
-              type=icon)
+              type=icon,
+              message[1]
+              )
+            ## secret bit. Needs API! If message has length more than
+            ## 1, use rest for secondary text.
+            if(length(message) > 1)
+              dlg['secondary-text'] <- paste(message[-1], collapse = "\n")
+            
             dlg$SetTitle(title)            
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
@@ -159,23 +172,29 @@ setMethod(".ginput",
 
             ## use message dialog for Gtk
             dlg = gtkMessageDialogNew(
-              message.format = NULL,
               parent = parent,
               flags = 0,
               buttons = "GTK_BUTTONS_OK_CANCEL",
-              type=icon
+              type=icon,
+              message[1]
               )
             dlg$SetTitle(title)
+            ## secret bit. Needs API! If message has length more than
+            ## 1, use rest for secondary text.
+            if(length(message) > 1)
+              dlg['secondary-text'] <- paste(message[-1], collapse = "\n")
             dlg$GrabFocus()
             dlg$GetWindow()$Raise()
 
+            
             group = ggroup(horizontal=FALSE)
-            glabel(message, container=group)
+#            glabel(message, container=group)
             input = gedit(text,container=group)
             
             
             ## find the area to pack the entry widget
-            dlg$GetVbox()[[1]]$PackStart(getBlock(group)) 
+##            dlg$GetVbox()[[1]]$PackStart(getBlock(group))
+            dlg$GetVbox()$PackStart(getBlock(group)) 
             ##  dlg$GetVbox()[[2]]$GetWidget()$PackStart(group$ref) 
             ##  dlg$GetVbox()$PackStart(group$ref)
 

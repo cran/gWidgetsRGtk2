@@ -1,3 +1,12 @@
+2009-06-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: fixed bug with this under windows/mac that came up
+	for new RGtk2. Also added subtext if length(message) > 1.
+
+2009-05-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: fixed return to NA -- not "" if no file
+
 2009-03-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R (.inClass): put in secret interval argument for
