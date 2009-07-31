@@ -606,13 +606,16 @@ setReplaceMethod(".font",
                      string = Paste(string," ",value$weight)
                    if(!is.null(value$style) && value$style %in% .font.styles$styles)
                      string = Paste(string," ",value$style)
-                   if(!is.null(value$color) && value$color %in% .font.styles$colors)
-                     string = Paste(string," ",value$color)
                    if(!is.null(value$size))
                      string = Paste(string," ",as.integer(value$size))
                    
                    fontDescr = pangoFontDescriptionFromString(string)
                    obj$ModifyFont(fontDescr)
+
+                   ## colors
+                   if(!is.null(value$color) && value$color %in% .font.styles$colors)
+                     obj$modifyFg(GtkStateType[0], value$color)
+
                    
                    return(obj)
                  })

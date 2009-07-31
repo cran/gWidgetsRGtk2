@@ -409,6 +409,7 @@
 \alias{.add,gHelpRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,gHelpbrowserRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.add,gLayoutRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.add,gLayoutRGtk,guiWidgetsToolkitRGtk2,gWidgetRGtk-method}
 \alias{.add,gMenuRGtk,guiWidgetsToolkitRGtk2,guiWidget-method}
 \alias{.add,gMenuRGtk,guiWidgetsToolkitRGtk2,gMenuRGtk-method}
 \alias{.add,gMenuRGtk,guiWidgetsToolkitRGtk2,list-method}
@@ -1119,6 +1120,7 @@
 \alias{.update-methods}
 \alias{.update,gComponentRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.update,gVarbrowserRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.update,gTreeRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .length --
 %%

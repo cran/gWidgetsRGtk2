@@ -128,7 +128,8 @@ setMethod(".gvarbrowser",
             force(toolkit)
 
             theArgs <- list(...)
-            interval <- ifelse(is.null(theArgs$interval), 2000, theArgs$inteval)
+            if(!is.null(theArgs$inteval)) theArgs$interval <- theArgs$interval ## typo fix. Remove later
+            interval <- ifelse(is.null(theArgs$interval), 2000, theArgs$interval)
 
             ## fix handler if action is non-null
             if(is.null(handler) && !is.null(action)) {
@@ -205,8 +206,7 @@ setMethod(".gvarbrowser",
 setMethod(".update",
           signature(toolkit="guiWidgetsToolkitRGtk2",object="gVarbrowserRGtk"),
           function(object, toolkit, ...) {
-            tree <- object@widget
-            update(tree)
+            update(object@widget, ...)
           })
 
 setMethod(".svalue",

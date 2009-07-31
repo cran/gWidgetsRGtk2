@@ -69,7 +69,11 @@ setMethod(".gbutton",
           function(toolkit,
                    text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
                    ) {
-            .gbutton(toolkit,  "", border, handler, action@widget, container, ...)
+            if(is(action@widget, "gActionRGtk")) {
+              .gbutton(toolkit,  "", border, handler, action@widget, container, ...)
+            } else {
+              callNextMethod(toolkit, text, border, handler, action, container, ...)
+            }
           })
 
 setMethod(".gbutton",

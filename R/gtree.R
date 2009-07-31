@@ -32,15 +32,16 @@ setMethod(".gtree",
             
             ## get base offspring
             children = offspring(c(), offspring.data)
+            
+            lst <- getOffSpringIcons(children, hasOffspring, icon.FUN)
+
+            children <- lst$children
+            doExpand <- lst$doExpand
+
+
             ## ask before we put in icon info if asked
             if(is.null(col.types))
               col.types = children[1,]
-            
-            lst = getOffSpringIcons(children, hasOffspring, icon.FUN)
-            children = lst$children
-            doExpand = lst$doExpand
-            
-            
             
             
             ## get GTK types -- force first to be character
@@ -52,6 +53,7 @@ setMethod(".gtree",
             if(iconFudge == 1)
               types = c("gchararray", types)       # stores filename of image
 
+            
             ## define treestore, sorted, view
             treestore = gtkTreeStoreNew(types)
             treestoreModel = gtkTreeModelSortNewWithModel(treestore)
@@ -220,13 +222,14 @@ getOffSpringIcons = function(children, hasOffspring, icon.FUN) {
 addChildren = function(treestore, children, doExpand, iconFudge, parent.iter=NULL) {
   if(nrow(children) == 0)
     return(NULL)
+  ## load row by row, column by column
   for(i in 1:nrow(children)) {
     iter = treestore$Append(parent=parent.iter)$iter
     ## set for each column for(j in 1:ncol())...
     ## write label
-    for(j in 1:ncol(children)) 
+    for(j in 1:ncol(children)) {
       treestore$SetValue(iter,column=j-1, children[i,j])
-    
+    }
     ## add branch
     if(!is.na(doExpand[i]) && doExpand[i]) {
       treestore$Append(parent=iter)
@@ -236,59 +239,65 @@ addChildren = function(treestore, children, doExpand, iconFudge, parent.iter=NUL
 
 ## has different arguments, but we mask this with ...
 ## this has offspringdata as first argument
+
 setMethod("update",
           signature(object="gTreeRGtk"),
           function(object,...) {
+            .update(object, object@toolkit, ...)
+          })
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkitRGtk2",object="gTreeRGtk"),
+          function(object, toolkit, ...) {
+            
             theArgs = list(...)
             offspring.data = theArgs$offspring.data
-            if(is.null(offspring.data))
+            if(is.null(offspring.data) && length(theArgs))
               offspring.data = theArgs[[1]]
+
             obj = object                          # rename, object from update generic
-  ## what should now be in this part of the tree
+            ## what should now be in this part of the tree
             newchildren = tag(obj,"offspring")(c(), offspring.data)
             newvalues = as.character(newchildren[,1])
             alreadyThere = c()
             
             ## loop over values in the treestore, if not in newchildren, remove
             i = 0
-            
             remove.these = c()
             iter = tag(obj,"store")$GetIterFromString(i)
-  while(iter$retval) {
-    treeValue = tag(obj,"store")$GetValue(iter$iter,0+tag(obj,"iconFudge"))$value
-    if(treeValue %in% newvalues) {
-      alreadyThere = c(alreadyThere, treeValue)
-    } else {
-      ## need to delete
-      remove.these = c(remove.these, i)
-    }
-    i = i + 1
-    iter = tag(obj,"store")$GetIterFromString(i)
-  }
-  if(length(remove.these)>0) {
-    for(i in rev(sort(remove.these))) {
-      iter = tag(obj,"store")$GetIterFromString(i)
-      tag(obj,"store")$Remove(iter$iter)
-    }
-  }
-  
-  didThese = newvalues %in% alreadyThere
-  newchildren = newchildren[!didThese, , drop=FALSE] # don't drop dimension
+            while(iter$retval) {
+              treeValue = tag(obj,"store")$GetValue(iter$iter,0+tag(obj,"iconFudge"))$value
+              if(treeValue %in% newvalues) {
+                alreadyThere = c(alreadyThere, treeValue)
+              } else {
+                ## need to delete
+                remove.these = c(remove.these, i)
+              }
+              i = i + 1
+              iter = tag(obj,"store")$GetIterFromString(i)
+            }
+            if(length(remove.these)>0) {
+              for(i in rev(sort(remove.these))) {
+                iter = tag(obj,"store")$GetIterFromString(i)
+                tag(obj,"store")$Remove(iter$iter)
+              }
+            }
+            
+            didThese = newvalues %in% alreadyThere
+            newchildren = newchildren[!didThese, , drop=FALSE] # don't drop dimension
 
-  ## add these to end
-  if(nrow(newchildren) > 0) {
-
-    lst = getOffSpringIcons(newchildren, tag(obj,"hasOffspring"),
-      tag(obj,"icon.FUN"))
-    newchildren = lst$children
-    doExpand = lst$doExpand
-    ## add the children
-    addChildren(tag(obj,"store"), newchildren, doExpand, tag(obj,"iconFudge"))
-  }
+            ## add these to end
+            if(nrow(newchildren) > 0) {
+              
+              lst = getOffSpringIcons(newchildren, tag(obj,"hasOffspring"),
+                tag(obj,"icon.FUN"))
+              newchildren = lst$children
+              doExpand = lst$doExpand
+              ## add the children
+              addChildren(tag(obj,"store"), newchildren, doExpand, tag(obj,"iconFudge"))
+            }
           })
-          
+
 ## use index for the column to override the column returned
-          
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL,...) {

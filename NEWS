@@ -2,6 +2,16 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-53
+--------------------------
+* Fix to gbutton constructor with gaction objects for action argument (Thanks Lisa)
+
+* fix to error message in gtable (Thanks Ronggui)
+
+Changes for version 0.0-52
+--------------------------
+* changed modal dialogs.
+
 Changes for version 0.0-51
 --------------------------
 
@@ -16,6 +26,7 @@ Changes for version 0.0-49
 --------------------------
 
 * fix to gvarbrowser to handle POSIX objects as expected (thanks Albert)
+
 
 Changes for version 0.0-48
 --------------------------

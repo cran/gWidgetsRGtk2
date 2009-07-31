@@ -672,7 +672,8 @@ setReplaceMethod(".leftBracket",
                 if(dv[1] == m) {
                   ## straight replace -- same no. cols, rows
                   store[,3*((1:n)+1)] <- value
-                  store[,3] = rownames(value)
+                  if(!is.null(rownames(value)))
+                    store[,3] <- rownames(value)
                   return(x)
                 } else {
                   ## fewer or more rows
@@ -1185,11 +1186,11 @@ addIcons = function(view) {
 }
   
 ## j is in 1:n *or* 0 for rownames
-addTreeViewColumnNoEdit = function(obj, j,label) {
-  view = tag(obj, "view")
+addTreeViewColumnNoEdit <- function(obj, j,label) {
+  view <- tag(obj, "view")
   
-  cellrenderer = gtkCellRendererTextNew()
-  view.col = gtkTreeViewColumnNew()
+  cellrenderer <- gtkCellRendererTextNew()
+  view.col <- gtkTreeViewColumnNew()
   view.col$PackStart(cellrenderer, TRUE)
 
 

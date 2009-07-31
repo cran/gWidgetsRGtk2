@@ -96,8 +96,8 @@ as.gWidgetsRGtk2.GtkWindow <- function(widget,...) {
   tbl$Attach(getBlock(mbg), 0,1,0,1, yoptions = c("fill"))
   tbl$Attach(getBlock(tbg), 0,1,1,2, yoptions = c("fill"))
   tbl$AttachDefaults(getBlock(cpg), 0,1,2,3)
-#             xoptions = c("expand","fill"), yoptions=c("expand","fill")
-#             )
+#  if(!is.null(tmp <- Sys.info()) && tmp['sysname'] == "Darwin")
+#    getBlock(cbg)['border-width'] = 12
   tbl$Attach(getBlock(sbg), 0,1,3,4, yoptions = c("fill"))
   
   window$Add(tbl)

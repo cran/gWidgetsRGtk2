@@ -1,4 +1,25 @@
+2009-06-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (.inClass): fix typo (thanks Albert)
+
+2009-06-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R (as.gWidgetsRGtk2.GtkButton): Fix to constructor
+	with action argument
+
+2009-06-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fix bug to font with colors
+
+2009-06-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: fixed bug with column types when hasOffpsring given as
+	second column of offspring
+
 2009-06-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (make.row.names): fix to hide error when setting store
+	which doesn't have rownames. (Error in x[[jj]][iseq] <- vjj :)
 
 	* R/gdialogs.R: fixed bug with this under windows/mac that came up
 	for new RGtk2. Also added subtext if length(message) > 1.

@@ -45,7 +45,7 @@ as.gWidgetsRGtk2.GtkTable <- function(widget, ...) {
 ### The add method is a stub so that this works with same
 ## approach as gWidgetstcltk
 setMethod(".add",
-          signature(toolkit="guiWidgetsToolkitRGtk2", obj="gLayoutRGtk"),
+          signature(toolkit="guiWidgetsToolkitRGtk2", obj="gLayoutRGtk", value="gWidgetRGtk"),
           function(obj, toolkit, value, ...) {
             ## stub
           })
