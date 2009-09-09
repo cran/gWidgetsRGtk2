@@ -139,12 +139,13 @@ setMethod(".gfilebrowse",
 
             theArgs = list(...)
             if(!is.null(theArgs$expand) && as.logical(theArgs$expand))
-              group = ggroup(horizontal=TRUE, container=container, expand=TRUE)
+              group = ggroup(horizontal=FALSE, container=container, expand=TRUE)
             else
-              group = ggroup(horizontal=TRUE, container=container)
+              group = ggroup(horizontal=FALSE, container=container)
 
-            theArgs = list(...)
-            entry = gedit(text=text, container=group, ...)
+            g <- ggroup(cont = group, horizontal=TRUE, expand=FALSE)   # stop growth of button
+            gedit.local <- function(...) gedit(..., expand=TRUE)
+            entry = gedit.local(text=text, container=g, ...)
 
             file.cb = function(h,...) {
               ## called when button is clicked
@@ -154,16 +155,19 @@ setMethod(".gfilebrowse",
               val = gfile(text=text,
                 type = type,
                 quote = quote,          
-                filter = theArgs$filter
+                filter = theArgs$filter,
+                action = function(...) invisible(...) # don't print
                 )
-              svalue(entry) <- val
+              if(!is.na(val))           # check return, set if not NA
+                svalue(entry) <- val
             }
 
-            gbutton("browse",handler=file.cb, container=group)
+
+            gbutton("browse", handler=file.cb, container=g, expand=FALSE)
 
             ## put entry as widget to pick up gEdit methods
             obj = new("gFilebrowseRGtk",
-              block=group, widget=entry@widget@widget, toolkit=toolkit)
+              block=group, widget=getWidget(entry), toolkit=toolkit)
 
             invisible(obj)
           })

@@ -4,9 +4,18 @@ Dear Emacs, please make this -*-Text-*- mode!
 
 Changes for version 0.0-53
 --------------------------
+
+* fix to gfilebrowse (thanks to Hana)
+
+* added [<- method for spinbutton, gslider
+
+
+Changes for version 0.0-53
+--------------------------
 * Fix to gbutton constructor with gaction objects for action argument (Thanks Lisa)
 
 * fix to error message in gtable (Thanks Ronggui)
+
 
 Changes for version 0.0-52
 --------------------------

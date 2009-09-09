@@ -385,6 +385,8 @@
 \alias{.leftBracket<-,gMenuRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket<-,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket<-,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gToolbarRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  add --
@@ -1203,6 +1205,8 @@
 \alias{[<-,gMenuRGtk-method}
 \alias{[<-,gNotebookRGtk-method}
 \alias{[<-,gRadioRGtk-method}
+\alias{[<-,gSliderRGtk-method}
+\alias{[<-,gSpinbuttonRGtk-method}
 \alias{[<-,gToolbarRGtk-method}
 %% -- dimnames
 \alias{dimnames,gWidgetRGtk-method}

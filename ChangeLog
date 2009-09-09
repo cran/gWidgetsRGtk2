@@ -1,3 +1,16 @@
+2009-09-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: fix to gfilebrowse on cancel. (Hana S); added
+	expand=TRUE to gedit instance. Set width with width argument
+	passed to gedit, not size. Fixed issue with height of button by
+	nesting ggroup containers (mix horizontal and vertical)
+	
+
+2009-08-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gspinbutton.R (as.gWidgetsRGtk2.GtkSpinButton): added [<-
+	method for this. Need to have regular data
+
 2009-06-30  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R (.inClass): fix typo (thanks Albert)
