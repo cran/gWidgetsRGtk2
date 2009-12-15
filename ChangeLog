@@ -1,3 +1,31 @@
+2009-12-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: fix to selection -- forgot to clear out old indices
+
+2009-12-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fixed passing of action into addHandler after
+	some earlier cleanup
+
+2009-11-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gradio.R (as.gWidgetsRGtk2.GtkRadioButton): fix to visible<- method
+
+2009-11-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added ColumnClicked, ColumnRightClick,
+	ColumnDoubleClick handlers for ggrid
+
+2009-11-05  john verzani  <verzani@client-2-2-194.wireless.drew.lan>
+
+	* R/gnotebook.R: added h$pageno to addHandlerChanged to get the
+	current page number. In a handler, GetCurrentPage() is not correct.
+
+2009-09-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: added check for ctrl-1 when right button
+	expected (for mac use)
+
 2009-09-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gfile.R: fix to gfilebrowse on cancel. (Hana S); added

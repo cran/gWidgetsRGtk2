@@ -2,6 +2,17 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-55
+---------------------------
+
+* fix bug with svalue<- for gtable, wasn't clearing selection
+
+
+Changes for version 0.0-54
+--------------------------
+ 
+* add CTRL-1 for 3rd mouse binding, so that single-button mac users can be happy
+
 Changes for version 0.0-53
 --------------------------
 

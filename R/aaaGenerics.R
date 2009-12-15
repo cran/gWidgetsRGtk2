@@ -998,14 +998,24 @@ setMethod(".addHandler",
             }
 
             theArgs = list(...)
-            
+
+            ## fix value passed into gWidgets handlers
+            h <- list()
+            h$obj <- obj
+            if(!is.null(theArgs$actualobj)) {
+              h$obj <- theArgs$actualobj
+              theArgs$actualobj <- NULL
+            }
+            if(length(theArgs)) 
+              for(i in names(theArgs))
+                h[[i]] <- theArgs[[i]]
+
+            h$action <- action
+
             callbackID <- gtktry(connectSignal(getWidget(obj), ### issue: getWidget(obj),
                                             signal=signal,
                                             f=modifyHandler,
-                                            data=list(obj=if(!is.null(theArgs$actualobj))
-                                              theArgs$actualobj
-                                            else
-                                              obj, action=action,...),
+                                            data=h,
                                             user.data.first = TRUE,
                                             after = FALSE), silent=FALSE)
             if(inherits(callbackID,"try-error")) {
@@ -1035,18 +1045,32 @@ setMethod(".addHandler",
 
             theArgs = list(...)
 
-            ## need to return TRUE
-            modifyHandler = function(...) {
-              handler(...)
-              return(TRUE)
+            ## need to return FALSE to propogate to next handler on events
+            modifyHandler = function(h,...) {
+              handler(h,...)
+              return(FALSE)
             }
-            callbackID <- gtktry(connectSignal(obj,
+
+            ## fix value passed into gWidgets handlers
+            h <- list()
+            h$obj <- obj
+            if(!is.null(theArgs$actualobj)) {
+              h$obj <- theArgs$actualobj
+              theArgs$actualobj <- NULL
+            }
+            ## pass in extra values, eg addHandlerClicked(obj, f=FUN, extra=value) will h$extra key
+
+            if(length(theArgs)) 
+              for(i in names(theArgs))
+                h[[i]] <- theArgs[[i]]
+              
+            h$action <- action
+            
+            
+            callbackID <- gtktry(gSignalConnect(obj,
                                             signal=signal,
                                             f=modifyHandler,
-                                            data=list(obj=if(!is.null(theArgs$actualobj))
-                                              theArgs$actualobj
-                                            else
-                                              obj, action=action, ...),
+                                            data=h,
                                             user.data.first = TRUE,
                                             after = FALSE),
                                  silent=TRUE)
@@ -1359,6 +1383,14 @@ setMethod(".addhandlerclicked",
                         handler=handler, action=action, ...)
           })
 
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
+            .addHandler(obj, toolkit, signal="clicked",
+                        handler=handler, action=action, ...)
+          })
+
 
 ## doubleclick: no default
 setMethod("addhandlerdoubleclick",signature(obj="gWidgetRGtk"),
@@ -1369,6 +1401,16 @@ setMethod("addhandlerdoubleclick",signature(obj="RGtkObject"),
           function(obj, handler=NULL, action=NULL, ...) {
             .addhandlerdoubleclick(obj,guiToolkit("RGtk2"),handler, action, ...)
           })
+## caps
+setMethod("addHandlerDoubleclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerdoubleclick(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addHandlerDoubleclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerdoubleclick(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
 
 setMethod(".addhandlerdoubleclick",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
@@ -1387,32 +1429,131 @@ setMethod("addhandlerrightclick",signature(obj="RGtkObject"),
           function(obj, handler=NULL, action=NULL, ...) {
             .addhandlerrightclick(obj,guiToolkit("RGtk2"),handler, action, ...)
           })
+## caps
+setMethod("addHandlerRightclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerrightclick(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addHandlerRightclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlerrightclick(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
 
 
+            
+## use actualobj=obj to pass in a different obj to h$obj
+         
 ## use actualobj=obj to pass in a different obj to h$obj
 setMethod(".addhandlerrightclick",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit,
                    handler, action=NULL, ...) {
+            .addhandlerrightclick(getWidget(obj), toolkit, handler, action, actualobj=obj,...)
+          })
+
+setMethod(".addhandlerrightclick",
+#          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
+          function(obj, toolkit,
+                   handler, action=NULL, ...) {
             theArgs = list(...)
+
+            ## fix value passed into gWidgets handlers
+            h <- list()
+            h$handler <- handler
+            h$obj <- obj
+            if(!is.null(theArgs$actualobj)) {
+              h$obj <- theArgs$actualobj
+              theArgs$actualobj <- NULL
+            }
+            ## pass in extra values, eg addHandlerClicked(obj, f=FUN, extra=value) will h$extra key
+
+            if(length(theArgs)) 
+              for(i in names(theArgs))
+                h[[i]] <- theArgs[[i]]
+              
+            h$action <- action
             
-            gtktry(connectSignal(obj@widget,
+            gtktry(connectSignal(getWidget(obj),
                               signal = "button-press-event",
-                              f = function(h, eventButton,...) {
-                                if(eventButton$GetButton() == 3) {
+                              f = function(h, w, eventButton,...) {
+                                if(eventButton$GetButton() == 3 ||
+                                   (eventButton$GetState() == GdkModifierType['control-mask'] && eventButton$GetButton() == 1)
+                                   ) {
                                   h$handler(h,...)
                                 }
-                                return(FALSE)         # continue propagation
+                                return(FALSE)         # stop propagation
                               },
-                              data = list(obj=if(is.null(theArgs$actualobj))
-                                obj
-                              else
-                                theArgs$actualobj, action=action, handler=handler),
+                              data = h,
                               user.data.first = TRUE,
                               after = FALSE
                               ),
                 silent=TRUE)
           })
+
+
+### Column click things
+
+## click: no default
+setMethod("addhandlercolumnclicked",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnclicked(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlercolumnclicked",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnclicked(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+setMethod("addHandlerColumnClicked",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnclicked(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addHandlerColumnClicked",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnclicked(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+
+
+## doubleclick: no default
+setMethod("addhandlercolumndoubleclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumndoubleclick(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlercolumndoubleclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumndoubleclick(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+setMethod("addHandlerColumnDoubleclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumndoubleclick(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addHandlerColumnDoubleclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumndoubleclick(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+
+
+## rightclick
+setMethod("addhandlercolumnrightclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnrightclick(obj,obj@toolkit,handler, action, ...)
+          })
+setMethod("addhandlercolumnrightclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnrightclick(obj,guiToolkit("RGtk2"),handler, action, ...)
+          })
+setMethod("addHandlerColumnRightclick",signature(obj="gWidgetRGtk"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnrightclick(obj, obj@toolkit,handler, action, ...)
+          })
+setMethod("addHandlerColumnRightclick",signature(obj="RGtkObject"),
+          function(obj, handler=NULL, action=NULL, ...) {
+            .addhandlercolumnrightclick(obj, guiToolkit("RGtk2"),handler, action, ...)
+          })
+
+
+
 
 ## focus -- on focus call this
 setMethod("addhandlerfocus",signature(obj="gWidgetRGtk"),
@@ -1555,15 +1696,17 @@ addPopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="
 
 add3rdMousePopupMenuWithSignal = function(obj, toolkit,  menulist, action=NULL, signal="button-press-event", ...) {
   f = function(h, widget, event,...) {
-    if(event$GetButton() != 3) {
-#      return(TRUE)                     # propogate signal
-      return(FALSE)                     # propogate signal
-    } else {
+    ## Mac use ctrl - button 1
+    if(event$GetButton() == 3 ||
+       (event$GetState() == GdkModifierType['control-mask'] && event$GetButton() == 1) # for mac, 
+       ) {
       mb = gmenu(h$action$menulist, popup = TRUE, action=h$action$passedaction)
       mb = tag(mb,"mb")                 # actual widget
       gtkMenuPopupHack(mb,button = event$GetButton(),
                        activate.time=event$GetTime()
                        )
+    } else {
+      return(FALSE)
     }
   }
   callbackID = .addHandler(obj,toolkit, signal = "button-press-event",handler=f, action=list(menulist=menulist, passedaction=action))

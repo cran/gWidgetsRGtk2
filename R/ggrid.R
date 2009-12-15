@@ -533,6 +533,7 @@ setReplaceMethod(".svalue",
                    } else {
                      view = tag(obj,"view")
                      selection = view$GetSelection()
+                     selection$unselectAll()
                      values = as.character(as.numeric(value) - 1)
                      for(i in values) {
                        path = gtkTreePathNewFromString(i)
@@ -1031,7 +1032,7 @@ setMethod(".addhandlerdoubleclick",
           function(obj, toolkit, handler, action=NULL, ...) {
             ## need to put onto view -- not group
 ##            id = addhandler(tag(obj,"view"), "row-activated",handler,action)
-            id = addhandler(obj, "row-activated",handler,action)
+            id = addhandler(obj, "row-activated",handler,action,...)
             invisible(id)
           })
 
@@ -1042,7 +1043,7 @@ setMethod(".addhandlerclicked",
           function(obj, toolkit, handler, action=NULL, ...) {
             if(tag(obj,"type") == "gdf") { # hack, should have a class here
               sapply(tag(obj,"view")$GetColumns(), function(object) {
-                addhandlerclicked(tag(object,"widget"), handler, action)
+                addhandlerclicked(tag(object,"widget"), handler, action,...)
               })
             } else {
               ## gtable -- put onto selection
@@ -1071,12 +1072,67 @@ setMethod(".addhandlerchanged",
               if(!missing(handler)) {     # only if handler is not missing
                 view = tag(obj,"view")
                 for(i in view$GetColumns())
-                  addhandlerchanged(i, handler, action)
+                  addhandlerchanged(i, handler, action,...)
               }
             } else {
               ## gtable -- double click
-              addhandler(obj, "row-activated",handler,action)
+              addhandler(obj, "row-activated",handler,action,...)
             }
+          })
+
+
+## Header handlers -- column clicked and columnrightclick
+setMethod(".addhandlercolumnclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            ## apply handler to change of each treeviewcolumn
+            if(!missing(handler)) {     # only if handler is not missing
+              view = tag(obj,"view")
+              viewCols <- view$getColumns()
+              sapply(seq_along(viewCols), function(i) {
+                vc <- viewCols[[i]]
+                widget <- vc$getWidget()
+                widget <- widget$getParent()$getParent()$getParent()
+                addhandlerclicked(widget, handler, action,
+                                  column=i,
+                                  ...)
+              })
+            }
+          })
+setMethod(".addhandlercolumnrightclick",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            ## apply handler to change of each treeviewcolumn
+            if(!missing(handler)) {     # only if handler is not missing
+              view = tag(obj,"view")
+              viewCols <- view$getColumns()
+              sapply(seq_along(viewCols), function(i) {
+                vc <- viewCols[[i]]
+                widget <- vc$getWidget()
+                widget <- widget$getParent()$getParent()$getParent()
+                addhandlerrightclick(widget, handler, action,
+                                     column=i,
+                                     ...)
+                                   })
+            }
+          })
+
+setMethod(".addhandlercolumndoubleclick",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            ## apply handler to change of each treeviewcolumn
+            if(!missing(handler)) {     # only if handler is not missing
+              view = tag(obj,"view")
+              viewCols <- view$getColumns()
+              sapply(seq_along(viewCols), function(i) {
+                vc <- viewCols[[i]]
+                widget <- vc$getWidget()
+                widget <- widget$getParent()$getParent()$getParent()
+                addhandlerdoubleclick(widget, handler, action,
+                                      column=1,
+                                      ...)
+              })
+              }
           })
 
 
@@ -1294,7 +1350,7 @@ addTreeViewColumnWithEdit = function(obj, j,label) {
   gObjectSet(cellrenderer,"editable"=TRUE)
   gObjectSet(cellrenderer,"rise"=-10)
 
-  view.col = gtkTreeViewColumnNew()
+  view.col = gtkTreeViewColumn()
   ## add these for later usage
   tag(view.col,"column.number") <- j
   tag(view.col,"view") <- view
@@ -1421,8 +1477,9 @@ addPopupMenuToViewCol = function(view.col) {
   widget = tag(view.col,"widget")
   gtkbutton = view.col$GetWidget()$GetParent()$GetParent()$GetParent()
   ## was widget
-##  add3rdmousepopupmenu(widget, menulist=lst)
-  add3rdmousepopupmenu(gtkbutton, menulist=lst)
+#  add3rdmousepopupmenu(widget, menulist=lst)
+  add3rdmousepopupmenu(gtkbutton, menulist=lst)  
+#  add3rdmousepopupmenu(tag(view.col,"header"), menulist=lst)
 }
 
 
@@ -1430,7 +1487,7 @@ addPopupMenuToViewCol = function(view.col) {
 addDragAndDropToViewCol = function(view.col) {
   ## the widget is set by the "id<-" method
   ## this attaches an event box to the GetWidget()
-  gtkbutton = view.col$GetWidget()$GetParent()$GetParent()$GetParent()
+#  gtkbutton = view.col$GetWidget()$GetParent()$GetParent()$GetParent()
   force(adddropsource(view.col$GetWidget()$GetParent()$GetParent()$GetParent(),
                       targetType="object",
                       action = view.col))

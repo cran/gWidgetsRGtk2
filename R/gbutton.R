@@ -146,12 +146,12 @@ setReplaceMethod(".svalue",
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"clicked",handler, action)
+            addhandler(obj,"clicked",handler, action,...)
           })
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandlerclicked(obj, handler, action)
+            addhandlerclicked(obj, handler, action,...)
           })
 
 ## for popup menu

@@ -104,5 +104,5 @@ setReplaceMethod(".leftBracket",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gSliderRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj, "value-changed", handler, action)
+            addhandler(obj, "value-changed", handler, action,...)
           })

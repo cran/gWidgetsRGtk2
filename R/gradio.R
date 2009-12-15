@@ -214,6 +214,21 @@ setReplaceMethod(".enabled",
                    return(obj)
                  })
 
+setReplaceMethod(".visible",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gRadioRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   radiogp <- getWidget(obj)
+                   btns <- rev(radiogp$GetGroup())
+                   sapply(btns, function(i) {
+                     if(value)
+                       i$show()
+                     else
+                       i$hide()
+#                     i$SetSensitive(as.logical(value))
+                   })
+                   return(obj)
+                 })
+
 ##################################################
 ## handlers
 setMethod(".addhandlerclicked",

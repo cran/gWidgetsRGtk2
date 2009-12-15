@@ -372,7 +372,7 @@ setMethod(".leftBracket",
 setMethod(".addhandlerdoubleclick",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-             addhandler(obj, "row-activated",handler,action)
+             addhandler(obj, "row-activated",handler,action,...)
            })
 
 ## used internally

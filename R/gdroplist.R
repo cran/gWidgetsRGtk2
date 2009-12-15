@@ -379,7 +379,7 @@ setMethod(".length",
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDroplistRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"changed",handler,action)
+            addhandler(obj,"changed",handler,action,...)
           })
 
 ## want changed by activate -- or arrow for editable -- not keystroke

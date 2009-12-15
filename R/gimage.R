@@ -129,5 +129,5 @@ setMethod(".addHandler",
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gImageRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"button-press-event", handler=handler, action=action)
+            addhandler(obj,"button-press-event", handler=handler, action=action,...)
           })

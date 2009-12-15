@@ -79,7 +79,7 @@ setMethod(".add",
             child <- getBlock(value)
             childWidget <- getWidget(value)
             theArgs <- list(...)
-
+            
             ## anchor is tricky. If block is able do it.
             ## If not, try in the widget
             if(!is.null(theArgs$anchor)) { ## logic thanks to Felix
@@ -89,6 +89,10 @@ setMethod(".add",
               ## in gtkstuff
               setXYalign(child, childWidget, anchor)
             }
+
+            ## paddign
+            if(is.null(theArgs$padding))
+              theArgs$padding=0
             ## names lookup seemed to take a bit of time, is try faster?
 ##             ## can't do this for gtkEntry
 ##             if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
@@ -104,7 +108,7 @@ setMethod(".add",
 
             ## expand
             expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-            parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE
+            parent$packStart(child, expand, TRUE, theArgs$padding) # expand to fill if TRUE
             
 
             

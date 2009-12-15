@@ -193,7 +193,7 @@ setReplaceMethod(".svalue",
 setMethod(".addhandlerexpose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"expose-event",handler,action)
+            addhandler(obj,"expose-event",handler,action,...)
           })
 
 ## applies a handler to the mouse click. The handler gets extra

@@ -33,7 +33,7 @@ setMethod(".addStockIcons",
 addToGtkStockIcons = function(iconNames, iconFiles) {
 
   iconfactory = gtkIconFactoryNew()
-  for(i in 1:length(iconNames)) {
+  for(i in seq_along(iconNames)) {
     iconsource = gtkIconSourceNew()
     iconsource$SetFilename(iconFiles[i])
     

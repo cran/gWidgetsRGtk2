@@ -24,6 +24,10 @@ Port of gWidgets API to RGtk2
   To access the underlying gtk container from a \code{gframe} object
   one uses \code{getToolkitWidget(obj)$getParent()} \cr
 
+  The gnotebook changed handler has component \code{pageno} to
+  indicate the newly selected page number, as the \code{svalue} method
+  returns the page before the change.\cr
+
   \bold{Widgets:}\cr
   
   For the data frame viewer \code{gtable} when no filtering is

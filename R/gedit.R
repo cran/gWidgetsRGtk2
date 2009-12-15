@@ -208,7 +208,7 @@ setMethod(".addhandlerchanged",
                 return(FALSE)
               }
             }
-            id = addhandler(obj,signal="key-release-event",handler=f, action=action)
+            id = addhandler(obj,signal="key-release-event",handler=f, action=action,...)
 
             return(id)
           })

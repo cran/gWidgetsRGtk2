@@ -407,14 +407,29 @@ setReplaceMethod(".leftBracket",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gNotebookRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"switch-page",handler,action)
+            ## put page number into h$pageno
+            widget <- getWidget(obj)
+            ID <-
+              gSignalConnect(widget,signal = "switch-page",
+                             f = function(d,widget,page, pageno,...) {
+                               h <- list(obj=d$obj,action=d$action, pageno=pageno)
+                               if(!is.null(d$handler) &&
+                                  is.function(d$handler))
+                                 d$handler(h,...)
+                               return(FALSE) # propogate
+                             },
+                             user.data.first = TRUE,
+                             data = list(obj=obj,handler=handler, action=action)
+                             )
+            invisible(ID)
+#            addhandler(obj,"switch-page",handler,action)
           })
 
 
 setMethod(".addhandlerexpose",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gNotebookRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandlerchanged(obj,handler, action)
+            addhandlerchanged(obj,handler, action,...)
           })
 
 ### helpers

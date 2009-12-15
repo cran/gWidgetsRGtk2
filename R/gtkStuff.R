@@ -29,7 +29,7 @@ setXYalign <- function(child, childWidget, anchor) {
          
 
 ## return gtk objects from others
-getBlock = function(widget) {
+getBlock <- function(widget) {
   if(inherits(widget,"<invalid>")) return(NULL)
   if(is(widget,"RGtkObject")) return(widget)
   if(is(widget,"gWidgetRGtk")) return(getBlock(widget@block))
@@ -39,7 +39,7 @@ getBlock = function(widget) {
 }
 
 ## return NA or widget
-getWidget = function(widget) {
+getWidget <- function(widget) {
   if(inherits(widget,"<invalid>")) return(NULL)
   while(!is(widget,"RGtkObject")) {
     if(inherits(widget,"<invalid>")) return(NULL)
@@ -122,9 +122,13 @@ setReplaceMethod("id",signature(obj="GtkTreeViewColumn"),
             if(is.null(curname) || length(curname) == 0) {
               ## not there, set it
               label = glabel(value)
-              ## set in view col
-              obj$SetWidget(getBlock(label))
               tag(obj,"widget") <- label
+
+              ## set in view col
+              widget <- getBlock(label)  ## block is event box
+              obj$setWidget(widget)
+#              print(class(widget))
+#              tag(obj,"header") <- widget$getParent()$getParent()$getParent()
             } else {
               ## store in widget
               svalue(tag(obj,"widget"))<-value

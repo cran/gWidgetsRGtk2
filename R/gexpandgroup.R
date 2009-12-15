@@ -147,5 +147,5 @@ setReplaceMethod(".names",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj@block, "activate",handler, action)
+            addhandler(obj@block, "activate",handler, action,...)
           })

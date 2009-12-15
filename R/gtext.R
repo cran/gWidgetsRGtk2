@@ -348,7 +348,7 @@ setMethod(".addhandlerkeystroke",
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTextRGtk"),
           function(obj,toolkit, handler=NULL, action=NULL,...) {
-            .addhandlerkeystroke(obj,toolkit,handler,action)
+            .addhandlerkeystroke(obj,toolkit,handler,action,...)
           })
 
 ##################################################

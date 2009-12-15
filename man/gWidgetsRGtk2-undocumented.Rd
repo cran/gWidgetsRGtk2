@@ -529,6 +529,7 @@
 \alias{.visible<-,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gLayoutRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.visible<-,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  enabled --
@@ -877,6 +878,7 @@
 %% --  .addhandlerclicked --
 %%
 \alias{.addhandlerclicked-methods}
+\alias{.addhandlerclicked,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
@@ -911,6 +913,7 @@
 %% --  .addhandlerrightclick --
 %%
 \alias{.addhandlerrightclick-methods}
+\alias{.addhandlerrightclick,RGtkObject,guiWidgetsToolkitRGtk2-method} 
 \alias{.addhandlerrightclick,gWidgetRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerdestroy --
