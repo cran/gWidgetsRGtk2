@@ -2,6 +2,12 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-56
+---------------------------
+ * another fix to svalue for ggrid. Wasn't working with 
+   svalue(obj, index=FALSE) <- values (setting by value). Must match
+   through %in%
+
 Changes for version 0.0-55
 ---------------------------
 

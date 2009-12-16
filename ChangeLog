@@ -1,3 +1,7 @@
+2009-12-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: fix to selection -- wasn't working with index=FALSE.
+
 2009-12-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggrid.R: fix to selection -- forgot to clear out old indices

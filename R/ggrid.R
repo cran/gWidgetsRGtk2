@@ -500,22 +500,22 @@ setMethod(".svalue",
           
 ## return indices for the original store, not filtered or sorted
 .getSelectedIndices = function(obj, view, ...) {
-  selection = view$GetSelection()$GetSelectedRows()$retval
+  selection <- view$GetSelection()$GetSelectedRows()$retval
 
   if(length(selection) == 0)
     return(NULL)
 
-  store = view$GetModel()
+  store <- view$GetModel()
 
   if(is.null(tag(obj,"type")) || tag(obj,"type") == "gdf") {
   
-    indices = sapply(selection,function(i) {
-      ind = store$ConvertPathToChildPath(i)$ToString()
+    indices <- sapply(selection,function(i) {
+      ind <- store$ConvertPathToChildPath(i)$ToString()
       as.numeric(ind) + 1                 # shift to 1:m base
     })
   } else {
-    indices = sapply(selection,function(i) {
-      ind = as.numeric(i$ToString())
+    indices <- sapply(selection,function(i) {
+      ind <- as.numeric(i$ToString())
       as.numeric(ind) + 1                 # shift to 1:m base
     })
   }
@@ -528,18 +528,23 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
+                   ## get indices, then select
                    if(!is.null(index) && index == FALSE) {
-                     ## notthing to do
+                     ## set by value -- not by index
+                     curVals <- obj[,tag(obj,"chosencol")]
+                     ind <- which(curVals %in% value) - 1L
                    } else {
-                     view = tag(obj,"view")
-                     selection = view$GetSelection()
-                     selection$unselectAll()
-                     values = as.character(as.numeric(value) - 1)
-                     for(i in values) {
-                       path = gtkTreePathNewFromString(i)
-                       selection$SelectPath(path)
-                     }
+                     ind <-  as.character(as.integer(value) - 1L)
                    }
+                   view <- tag(obj,"view")
+                   selection <- view$GetSelection()
+                   selection$unselectAll()
+
+                   sapply(ind, function(i) {
+                       path <- gtkTreePathNewFromString(i)
+                       selection$SelectPath(path)
+                     })
+
                    return(obj)
                  })
 
