@@ -276,7 +276,7 @@ setReplaceMethod(".svalue",
                    } else {
                      combobox = obj@widget
                      items = obj[]         # drops icons
-                     if(!is.null(index)) { # either value or index is non-null
+                     if(!is.null(index) && as.logical(index)) { # either value or index is non-null
                        combobox$SetActive(value-1)
                      } else {
                        if(any(value == items)) {

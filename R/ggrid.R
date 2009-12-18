@@ -529,13 +529,21 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
                    ## get indices, then select
-                   if(!is.null(index) && index == FALSE) {
+                   if((!is.null(index) &&index == TRUE) ||
+                      (is.null(index) && is.integer(value))) {
+                     ind <-  as.character(as.integer(value) - 1L)
+                   } else {
                      ## set by value -- not by index
                      curVals <- obj[,tag(obj,"chosencol")]
                      ind <- which(curVals %in% value) - 1L
-                   } else {
-                     ind <-  as.character(as.integer(value) - 1L)
                    }
+##                    if((!is.null(index) && index == FALSE) || !is.integer(value)) {
+##                      ## get indices, then select
+##                      (is.null(index) && is.integer(value))) {
+##                      ind <-  as.character(as.integer(value) - 1L)
+##                    } else {
+##                      ind <-  as.character(as.integer(value) - 1L)
+##                    }
                    view <- tag(obj,"view")
                    selection <- view$GetSelection()
                    selection$unselectAll()

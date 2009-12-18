@@ -2,11 +2,15 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-57
+---------------------------
+* fix to svalue<- for gcombobox to handle index=FALSE properly
+
 Changes for version 0.0-56
 ---------------------------
- * another fix to svalue for ggrid. Wasn't working with 
+* another fix to svalue for ggrid. Wasn't working with 
    svalue(obj, index=FALSE) <- values (setting by value). Must match
-   through %in%
+   through %in% (so best that chosencol is a character.
 
 Changes for version 0.0-55
 ---------------------------

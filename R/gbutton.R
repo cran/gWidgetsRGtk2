@@ -142,6 +142,24 @@ setReplaceMethod(".svalue",
                    return(obj)
                  })
 
+
+## font -- push down to label
+setReplaceMethod("font",signature(obj="gButtonRGtk"),
+          function(obj, ..., value) {
+            .font(obj, obj@toolkit,...) <- .fixFontMessUp(value)
+            return(obj)
+          })
+
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
+                 function(obj, toolkit, ..., value) {
+                   widget <- getWidget(obj)[[1]] # label is first child or something
+                   if(is(widget, "GtkAlignment"))
+                     widget <- widget[[1]][[2]] # a real hacke
+                   print(widget)
+                   .font(widget, toolkit, ...) <- value
+                   invisible(obj)
+                 })
 ### handlers
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),

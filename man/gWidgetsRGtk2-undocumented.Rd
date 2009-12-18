@@ -638,12 +638,14 @@
 \alias{font<--methods}
 \alias{font<-,guiWidget-method}
 \alias{font<-,gWidgetRGtk-method} 
+\alias{font<-,gButtonRGtk-method} 
 %%
 %% --  .font<- --
 %%
 \alias{.font<--methods}
 \alias{.font<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.font<-,RGtkObject,guiWidgetsToolkitRGtk2-method}
+\alias{.font<-,gButtonRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.font<-,gTextRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  tag --

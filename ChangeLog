@@ -1,4 +1,18 @@
+2009-12-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R (as.gWidgetsRGtk2.GtkButton): fix to font<- method
+	for buttons.
+
+2009-12-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: yet one more change to svalue<-. This time be
+	intelligent when setting by value, not index by ensuring index is
+	only if an integer is passed in unless explicit index=TRUE
+
 2009-12-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R (.as.gWidgetsRGtk2.gdroplist): not handling
+	svalue(.,index=FALSE) <- value properly.
 
 	* R/ggrid.R: fix to selection -- wasn't working with index=FALSE.
 
