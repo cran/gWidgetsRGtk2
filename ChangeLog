@@ -1,3 +1,24 @@
+2010-01-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (addTreeViewColumnNoEdit): Put in hidden argument diy
+	with values in c("suppress.key", "suppress.popup") to suppress
+	adding motion handlers or popup on column header click. This
+	allows user to define their own.
+
+2010-01-03  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gnotebook.R: fix to h$pageno -- added 1. Thanks to Y.N.
+
+2010-01-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R: change addHandlerChanged signal to "activate". This
+	way when svalue<- is called, the activate signal can be emitted.
+
+2009-12-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: fix to handler.id to store handlers so that we
+	can block/unblock when using svalue<- for gtable
+
 2009-12-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gbutton.R (as.gWidgetsRGtk2.GtkButton): fix to font<- method

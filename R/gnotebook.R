@@ -412,7 +412,7 @@ setMethod(".addhandlerchanged",
             ID <-
               gSignalConnect(widget,signal = "switch-page",
                              f = function(d,widget,page, pageno,...) {
-                               h <- list(obj=d$obj,action=d$action, pageno=pageno)
+                               h <- list(obj=d$obj,action=d$action, pageno=pageno+1)
                                if(!is.null(d$handler) &&
                                   is.function(d$handler))
                                  d$handler(h,...)

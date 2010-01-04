@@ -120,7 +120,9 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
-                   obj@widget$SetText(value)
+                   widget <- getWidget(obj)
+                   widget$SetText(value)
+                   widget$activate()
                    tag(obj, "value") <- value
                    return(obj)
           })
@@ -129,6 +131,8 @@ setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkEntry"),
                  function(obj, toolkit, index=NULL, ..., value) {
                    obj$SetText(value)
+                   obj$activate()
+                   
                    return(obj)
           })
 
@@ -208,8 +212,8 @@ setMethod(".addhandlerchanged",
                 return(FALSE)
               }
             }
-            id = addhandler(obj,signal="key-release-event",handler=f, action=action,...)
-
+#            id = addhandler(obj,signal="key-release-event",handler=f, action=action,...)
+            id <- addhandler(obj, signal="activate", handler=handler, action=action)
             return(id)
           })
 

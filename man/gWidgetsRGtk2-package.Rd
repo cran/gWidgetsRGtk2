@@ -34,8 +34,8 @@ Port of gWidgets API to RGtk2
   requested, the default, the column headers can be clicked to sort the values.
 
 
-  In the data frame editor \code{gdf} the \code{subset} option only works if the
-  column names have not been changed.
+  In the data frame editor \code{gdf} the \code{subset} option only
+  works if the column names have not been changed. One can suppress the creation of keyboard navigation and the right click popup on the column headers. The hiddern argument \code{diy} (for do it yourself) if left empty will place in both. A value of \code{"suppress.key"} or \code{"suppress.popup"} (or both) will suppress the respective handler.
   \cr
 
   The \code{gaction} constructor produces action objects. The

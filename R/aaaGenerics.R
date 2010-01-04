@@ -165,7 +165,10 @@ c(
   "PangoGlyphString",
   "PangoItem",
   "GObject",
-  "RGtkDataFrame")
+  "RGtkDataFrame",
+  ## add in others that come up
+  "GtkTreeSelection"
+  )
 
 
 setOldClass("RGtkObject")
@@ -1080,6 +1083,12 @@ setMethod(".addHandler",
                     signal, class(obj)[1]))
               return(NA)
             } else {
+              ## store ID into list
+              lst <- obj$getData("handler.id")
+              if(is.null(lst)) lst <- list()
+              lst <- c(lst,callbackID)
+              obj$setData("handler.id", lst)
+              
               invisible(callbackID)
             }
           })
@@ -1200,6 +1209,18 @@ setMethod("blockhandler", signature("RGtkObject"),
             .blockhandler(obj, guiToolkit("RGtk2"), ID, ...)
           })
 
+## caps
+setMethod("blockHandler", signature("gWidgetRGtk"),
+          function(obj, ID=NULL, ...) {
+            .blockhandler(obj, obj@toolkit, ID, ...)
+          })
+setMethod("blockHandler", signature("RGtkObject"),
+          function(obj, ID=NULL, ...) {
+            .blockhandler(obj, guiToolkit("RGtk2"), ID, ...)
+          })
+
+
+
 setMethod(".blockhandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, ID=NULL, ...) {
@@ -1209,8 +1230,9 @@ setMethod(".blockhandler",
 setMethod(".blockhandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit, ID=NULL, ...) {
-            if(!is.null(ID))
-              sapply(ID, function(i)
+            if(is.null(ID))
+              ID <- tag(obj,"handler.id")
+            sapply(ID, function(i)
                      gSignalHandlerBlock(obj,i))
             return()
           })
@@ -1224,6 +1246,15 @@ setMethod("unblockhandler", signature("RGtkObject"),
           function(obj, ID=NULL, ...) {
             .unblockhandler(obj, guiToolkit("RGtk2"), ID, ...)
           })
+## camelcase
+setMethod("unblockHandler", signature("gWidgetRGtk"),
+          function(obj, ID=NULL, ...) {
+            .unblockhandler(obj, obj@toolkit, ID, ...)
+          })
+setMethod("unblockHandler", signature("RGtkObject"),
+          function(obj, ID=NULL, ...) {
+            .unblockhandler(obj, guiToolkit("RGtk2"), ID, ...)
+          })
 
 setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
@@ -1234,9 +1265,11 @@ setMethod(".unblockhandler",
 setMethod(".unblockhandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit, ID=NULL, ...) {
-            if(!is.null(ID))
-              sapply(ID, function(i)
-                     gSignalHandlerUnblock(obj,i))
+            if(is.null(ID))
+              ID <- tag(obj,"handler.id")
+
+            sapply(ID, function(i)
+                   gSignalHandlerUnblock(obj,i))
             return()
           })
 

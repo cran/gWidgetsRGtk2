@@ -110,8 +110,10 @@ setMethod(".gdf",
                          action=NULL,
                          container=container,
                          colors=.colors,
+                          diy = theArgs$diy, # suppress ke or popup
                          ...)
             tag(obj,"type") <- "gdf" ## should be a class -- ughh
+
             
 ##             ## add 3rd mouse handler for the view
 ##             lst = list()
@@ -305,7 +307,9 @@ setMethod(".ggrid",
             tag(obj,"chosencol") <- chosencol
             tag(obj,"filter.column") <- filter.column # 1:n based
             tag(obj,"theColors") <- theColors
-            
+            tag(obj,"do.it.yourself") <- theArgs$diy # c("suppress.key","suppress.popup") || NULL
+
+
             ## what are we doing?
             iconFudge = ifelse(as.logical(doIcons), 1, 0)
             tag(obj,"doIcons") <- doIcons
@@ -426,10 +430,6 @@ setMethod(".ggrid",
                 view.col = addTreeViewColumnNoEdit(obj, j, colnames(items)[j])
               }
             }
-            if(tag(obj,"editable")) {
-              ## handler for moving around
-              addKeyMotionHandler(obj)
-            }
             
             if(tag(obj,"doRownames")) {
               view.col = addTreeViewColumnWithEdit(obj, 0,"Row.names")
@@ -457,7 +457,16 @@ setMethod(".ggrid",
               
               add(group, subsetByGroup)
             }
+
+            if(tag(obj,"editable") &&
+               ((is.null(tag(obj,"do.it.yourself")) ||
+                !("suppress.key" %in% tag(obj,"do.it.yourself"))))
+               ) {
+              ## handler for moving around
+              addKeyMotionHandler(obj)
+            }
             
+
             ## add handler for double click
             if(!is.null(handler)) {
               id = addhandlerdoubleclick(obj, handler, action)
@@ -546,13 +555,17 @@ setReplaceMethod(".svalue",
 ##                    }
                    view <- tag(obj,"view")
                    selection <- view$GetSelection()
+
+                   ## block handlers to quiet down change signal
+
+                   blockhandler(selection)
                    selection$unselectAll()
+                   unblockhandler(selection)
 
                    sapply(ind, function(i) {
-                       path <- gtkTreePathNewFromString(i)
-                       selection$SelectPath(path)
-                     })
-
+                     path <- gtkTreePathNewFromString(i)
+                     selection$SelectPath(path)
+                   })
                    return(obj)
                  })
 
@@ -855,7 +868,7 @@ setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
                  function(obj, toolkit, ..., value) {
                    if(tag(obj, "doSort")) {
-                     cat(gettext("Can use visible<- method unless filtering is being used\n"))
+                     #gwcat(gettext("Can't use visible<- method unless filtering is being used\n"))
                      return(obj)        # no means to set
                    }
                    
@@ -1060,8 +1073,8 @@ setMethod(".addhandlerclicked",
               })
             } else {
               ## gtable -- put onto selection
-              theSelection = obj@widget$GetSelection()
-              ID = gtktry(connectSignal(theSelection,
+              sel <-  obj@widget$GetSelection()
+              ID <- gtktry(connectSignal(sel,
                 signal = "changed",
                 f = function(h,...) {
                   h$handler(h,...)
@@ -1071,7 +1084,15 @@ setMethod(".addhandlerclicked",
                 after = FALSE
                 ),
                 silent=TRUE)
-                invisible(ID)
+
+              ## add to selection
+              l <- tag(sel,"handler.id")
+              if(is.null(l))
+                l <- list()
+              l <- c(l, ID)
+              tag(sel,"handler.id", replace=TRUE) <- l
+              
+              invisible(ID)
             }
           })
 
@@ -1102,7 +1123,7 @@ setMethod(".addhandlercolumnclicked",
             if(!missing(handler)) {     # only if handler is not missing
               view = tag(obj,"view")
               viewCols <- view$getColumns()
-              sapply(seq_along(viewCols), function(i) {
+              IDs <- sapply(seq_along(viewCols), function(i) {
                 vc <- viewCols[[i]]
                 widget <- vc$getWidget()
                 widget <- widget$getParent()$getParent()$getParent()
@@ -1110,6 +1131,7 @@ setMethod(".addhandlercolumnclicked",
                                   column=i,
                                   ...)
               })
+              invisible(IDs)
             }
           })
 setMethod(".addhandlercolumnrightclick",
@@ -1119,14 +1141,15 @@ setMethod(".addhandlercolumnrightclick",
             if(!missing(handler)) {     # only if handler is not missing
               view = tag(obj,"view")
               viewCols <- view$getColumns()
-              sapply(seq_along(viewCols), function(i) {
+              IDs <- sapply(seq_along(viewCols), function(i) {
                 vc <- viewCols[[i]]
                 widget <- vc$getWidget()
                 widget <- widget$getParent()$getParent()$getParent()
                 addhandlerrightclick(widget, handler, action,
                                      column=i,
                                      ...)
-                                   })
+              })
+              invisible(IDs)
             }
           })
 
@@ -1137,7 +1160,7 @@ setMethod(".addhandlercolumndoubleclick",
             if(!missing(handler)) {     # only if handler is not missing
               view = tag(obj,"view")
               viewCols <- view$getColumns()
-              sapply(seq_along(viewCols), function(i) {
+              IDs <- sapply(seq_along(viewCols), function(i) {
                 vc <- viewCols[[i]]
                 widget <- vc$getWidget()
                 widget <- widget$getParent()$getParent()$getParent()
@@ -1145,6 +1168,7 @@ setMethod(".addhandlercolumndoubleclick",
                                       column=1,
                                       ...)
               })
+              invisible(IDs)
               }
           })
 
@@ -1395,7 +1419,10 @@ addTreeViewColumnWithEdit = function(obj, j,label) {
 
   ## fix up a bit
   addDragAndDropToViewCol(view.col)
-  addPopupMenuToViewCol(view.col)
+
+  ## add popup unless asked not to. (YN suggestion)
+  if(is.null(tag(obj,"do.it.yourself")) || !("suppress.popup" %in% tag(obj,"do.it.yourself")))
+    addPopupMenuToViewCol(view.col)
 
 
   ## return the column
