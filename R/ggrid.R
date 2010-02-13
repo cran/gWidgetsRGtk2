@@ -1286,9 +1286,8 @@ addTreeViewColumnNoEdit <- function(obj, j,label) {
   view.col <- gtkTreeViewColumnNew()
   view.col$PackStart(cellrenderer, TRUE)
 
-
-  id(view.col) <- label
   
+  id(view.col) <- label
   ## store these
   tag(view.col,"column.number") <- j# add this for later usage
   tag(view.col,"view") <- view
@@ -1300,12 +1299,33 @@ addTreeViewColumnNoEdit <- function(obj, j,label) {
   if(tag(obj,"doSort")) {
     view.col$SetSortColumnId(3*(j+1) - 1)
   }
+  ##
+
+  ## TOO SLOW and does'
+##   view.col$SetCellDataFunc(cellrenderer, func=
+##                            function(vc, cr, model, iter, data) {
+##                              curVal <- model$getValue(iter, data)$value
+##                              cr['text'] <- if(is.na(curVal)) {
+##                                "NA"
+##                              } else if(is.nan(curVal)) {
+##                                "NaN"
+##                              } else if(is.null(curVal)) {
+##                                "NULL"
+##                              } else {
+##                                curVal
+##                              }
+##                              cr['foreground'] <- model$getValue(iter, data + 1)$value
+##                              cr['background'] <- model$getValue(iter, data + 2)$value
+##                            },
+##                            func.data = 3*(j+1) - 1 + tag(obj,"doIcons") + tag(obj,"doRownames"))
+
+
+   view.col$AddAttribute(cellrenderer, "text", 3*(j+1) - 1)
+   if(!is.null(tag(obj,"type")) && tag(obj,"type") == "gdf") {
+     view.col$AddAttribute(cellrenderer,"foreground",3 *(j+1) + 1 - 1)
+     view.col$AddAttribute(cellrenderer,"background",3 *(j+1) + 2 - 1)
+   }
   
-  view.col$AddAttribute(cellrenderer, "text", 3*(j+1) - 1)
-  if(!is.null(tag(obj,"type")) && tag(obj,"type") == "gdf") {
-    view.col$AddAttribute(cellrenderer,"foreground",3 *(j+1) + 1 - 1)
-    view.col$AddAttribute(cellrenderer,"background",3 *(j+1) + 2 - 1)
-  }
   view$InsertColumn(view.col,
                     j - 1 + tag(obj,"doIcons") + tag(obj,"doRownames"))
   

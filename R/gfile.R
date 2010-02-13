@@ -76,7 +76,7 @@ setMethod(".gfile",
               filechooser$AddButton(buttonWithId[[i]][1],buttonWithId[[i]][2])
             
             ## add a filter
-            if(!is.null(filter) && type == "open") {
+            if(!is.null(filter) && type %in% c("open","save")) {
               for(i in names(filter)) {
                 filefilter = gtkFileFilterNew()
                 filefilter$SetName(i)
@@ -95,7 +95,12 @@ setMethod(".gfile",
             
             ## initialize
             if(!is.null(initialfilename)) {
-              filechooser$SetFilename(Paste(getwd(),"/",initialfilename))
+              if(type == "open") {
+                filechooser$SetFilename(Paste(getwd(),"/",initialfilename))
+              } else if(type == "save") {
+                filechooser$setCurrentFolder(getwd())
+                filechooser$setCurrentName(initialfilename)
+              }
             }
             
             ## this makes it modal

@@ -1,3 +1,18 @@
+2010-02-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdfedit.R (gdfedit): put in [<- method -- should check for
+	match in column class, rather than wrap in try.
+
+2010-02-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdfedit.R (gdfedit): new function for RGtk2DfEdit
+
+	* R/aaaGenerics.R: fixed remove handler for timeout ids.
+
+2010-01-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: Fix to filter and intialfilename (Thanks Felix)
+
 2010-01-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggrid.R (addTreeViewColumnNoEdit): Put in hidden argument diy

@@ -173,6 +173,9 @@ exportMethods(
 #              "as.gWidgetsRGtk2.GtkButton"
 #)
 
+
+export("gdfedit",".gdfedit")
+
 exportClasses(
 "AtkNoOpObjectFactory", "AtkObjectFactory", "AtkRelationSet", 
 "AtkStateSet", "GBoxed", "GObject", "GScanner", "GdkDragContext", 

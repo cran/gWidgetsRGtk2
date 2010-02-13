@@ -1127,7 +1127,10 @@ setMethod(".removehandler",
 
             ## timeout handler?
             if(class(callbackIDs) == "GTimeoutId") {
-              out <- sapply(callbackIDs, gSourceRemove)
+              out <- sapply(callbackIDs, function(i) {
+                class(i) <- "GTimeoutId" # sapply strips attributes!
+                gSourceRemove(i)
+              })
               return(out)
             }
 

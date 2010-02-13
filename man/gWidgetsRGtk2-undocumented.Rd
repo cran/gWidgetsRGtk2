@@ -9,6 +9,7 @@
 \alias{[,gCheckboxRGtk-method}
 \alias{[,gCheckboxgroupRGtk-method}
 \alias{[,gCommandlineRGtk-method}
+\alias{[,gDfEditRGtk-method}
 \alias{[,gDroplistRGtk-method}
 \alias{[,gEditRGtk-method}
 \alias{[,GtkTreeView-method}
@@ -116,6 +117,11 @@
 %%
 \alias{.gdf-methods}
 \alias{.gdf,guiWidgetsToolkitRGtk2-method} 
+%%
+%% --  .gdfedit --
+%%
+\alias{.gdfedit-methods}
+\alias{.gdfedit,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .gdfnotebook --
 %%
@@ -259,6 +265,8 @@
 \alias{.svalue,gCheckboxRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxgroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCommandlineRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gDfEditRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gDroplistRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gEditRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,GtkEntry,ANY,ANY,guiWidgetsToolkitRGtk2-method}
@@ -360,6 +368,7 @@
 \alias{.leftBracket,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gCommandlineRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,GtkTreeView,guiWidgetsToolkitRGtk2-method}
@@ -377,6 +386,7 @@
 \alias{.leftBracket<--methods}
 \alias{.leftBracket<-,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket<-,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,GtkTreeView,guiWidgetsToolkitRGtk2-method}
@@ -1134,6 +1144,7 @@
 \alias{.length-methods}
 \alias{.length,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.length,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
@@ -1150,6 +1161,7 @@
 %% --  .dim --
 %%
 \alias{.dim-methods}
+\alias{.dim,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.dim,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.dim,gLayoutRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
@@ -1157,11 +1169,14 @@
 %%
 \alias{.dimnames-methods}
 \alias{.dimnames,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.dimnames,gDfEditRGtk,guiWidgetsToolkitRGtk2-method} 
+
 %%
 %% --  .dimnames<- --
 %%
 \alias{.dimnames<--methods}
 \alias{.dimnames<-,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.dimnames<-,gDfEditRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  names --
 %%
@@ -1175,10 +1190,11 @@
 %% --  .names --
 %%
 \alias{.names-methods}
+\alias{.names,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.names,gFrameRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.names,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.names,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.names,gFrameRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.names,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  names<- --
 %%
@@ -1190,10 +1206,11 @@
 %% --  .names<- --
 %%
 \alias{.names<--methods}
-\alias{.names<-,gGridRGtk,guiWidgetsToolkitRGtk2-method}
-\alias{.names<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names<-,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.names<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.names<-,gFrameRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.names<-,gGridRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.names<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 %%
 %% -- .getToolkitWidget --
 \alias{.getToolkitWidget,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
@@ -1202,6 +1219,7 @@
 \alias{[<-,gWidgetRGtk-method}
 \alias{[<-,gCheckboxRGtk-method}
 \alias{[<-,gCheckboxgroupRGtk-method}
+\alias{[<-,gDfEditRGtk-method}
 \alias{[<-,gDroplistRGtk-method}
 \alias{[<-,gEditRGtk-method}
 \alias{[<-,GtkTreeView-method}
