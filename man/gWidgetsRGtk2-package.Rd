@@ -52,6 +52,12 @@ Port of gWidgets API to RGtk2
   the toolbar. The latter is not portable to other gWidgets
   implementations.\cr
   
+  The \code{gvarbrowser} constructor depends on a variable \code{knowTypes}. A default is provided in the package, but this can be overridden by a) providing a hidden argument \code{knownTypes} to the constructor or b) setting an option \code{knownTypes}. In each case this is a named list whose components are character vectors listing classes of a similar nature. For example, the default value for \code{knownTypes} included \code{"data sets"= c("numeric","logical","factor","character","integer",
+  "data.frame","matrix","list",
+  "table","xtabs",
+  "nfnGroupedData","nffGroupedData","nmGroupedData",
+  "POSIXct","POSIXlt","POSIXt"
+  )}. 
 
   \bold{Methods:}\cr
   

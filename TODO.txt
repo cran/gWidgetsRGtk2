@@ -1,5 +1,5 @@
 * gWidgets with mac os x GUI
-* Yvonnick and addHandlerRightClick
+DONE * Yvonnick and addHandlerRightClick
 * no tag<- methods for gaction?
 * svalue<- for gtable calls changed twice
 * fix to dnd and gedit
@@ -10,6 +10,7 @@ gSignalConnect(getToolkitWidget(ed), "drag-data-received", f=function(w,...) {
   svalue(ed) <- val
   })
 
+DONE (TOM did all the work) 
 * Dear John,
 
 I have to thank you again for paying attention to my query. I realize you're busy; this email is nothing more than a wish list.

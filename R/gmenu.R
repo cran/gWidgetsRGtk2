@@ -300,6 +300,7 @@ setReplaceMethod(".leftBracket",
       else
         theName = i
       ## make a menuitem
+      item = gtkImageMenuItemNewWithLabel(theName)
       if(!is.null(data$icon)) {
         icon = data$icon
         if(file.exists(icon)) {
@@ -308,7 +309,6 @@ setReplaceMethod(".leftBracket",
         } else {
           ## assume a stock icon file
           icon = getstockiconname(icon)
-          item = gtkImageMenuItemNewWithLabel(theName)
           image = gtkImageNew()
           image$SetFromStock(icon,size=GtkIconSize["menu"])
         }

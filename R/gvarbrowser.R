@@ -131,6 +131,15 @@ setMethod(".gvarbrowser",
             if(!is.null(theArgs$inteval)) theArgs$interval <- theArgs$interval ## typo fix. Remove later
             interval <- ifelse(is.null(theArgs$interval), 2000, theArgs$interval)
 
+            ## fix up known types
+            if(!is.null(theArgs$knownTypes))
+              knownTypes <- theArgs$knownTypes
+            else if(!is.null(getOption("knownTypes"))) {
+              knownTypes <- getOption("knownTypes")
+            }
+
+
+            
             ## fix handler if action is non-null
             if(is.null(handler) && !is.null(action)) {
               handler = function(h, ...) {

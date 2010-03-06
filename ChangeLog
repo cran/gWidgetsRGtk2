@@ -1,3 +1,14 @@
+2010-03-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: fix to SetImage that was not working as advertised
+
+2010-02-17  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R: Make "knownTypes" variable, a list with
+	components specifying similar classes, editable by the
+	user. Either pass in argument "knownTypes" to constructor, or set
+	as option.
+
 2010-02-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdfedit.R (gdfedit): put in [<- method -- should check for

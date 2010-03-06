@@ -2,6 +2,19 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-61
+--------------------------- 
+
+* namespace mistake
+
+Changes for version 0.0-60
+---------------------------
+
+* bug fix to gmenu which was preventing pmg from loading
+
+* in gvarbrowser added means for user to specify knownTypes. This variable
+  holds specification of similar classes.
+
 Changes for version 0.0-59
 ---------------------------
 
