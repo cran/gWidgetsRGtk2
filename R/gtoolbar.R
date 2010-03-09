@@ -68,7 +68,6 @@ setMethod(".gtoolbar",
     itemData <- lst[[i]]
     if(.isgSeparator(itemData))
       itemData <- list(separator = TRUE)
-    item <- gtkToolButtonNew()
     if(.isgAction(itemData)) {
       action <- getToolkitWidget(itemData)
       item <- action$createToolItem()
@@ -80,8 +79,8 @@ setMethod(".gtoolbar",
         toolbar$insert(item,pos = -1)
       } else if(!is.null(itemData$handler)) {
         ## XXX put in value from itemData (label handler, ...)
-        item <- gtkToolButtonNew()
-        item$setLabel(itemData$icon)
+        ## JV: need to call this constructor with label, otherwise gtk error pops up
+        item <- gtkToolButtonNew(label=itemData$icon)
         if(!is.null(itemData$icon))
           item$setStockId(getstockiconname(itemData$icon))
         

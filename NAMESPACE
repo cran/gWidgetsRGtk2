@@ -109,7 +109,7 @@ exportMethods(
 ".ggraphicsnotebook", ".gimage", ".gstatusbar", ".gseparator",
 ".gcommandline", ".ghelp", ".ghelpbrowser", 
 ".gvarbrowser",
-              #".gdynamicselect",
+#              ".gdynamicselect",
               ".gwindow", ".ggroup", ".gframe", ".gexpandgroup",
 ".gnotebook", ".glayout", ".gpanedgroup", 
 "svalue", "svalue<-", "add", "addSpace", "addSpring", "insert","delete",

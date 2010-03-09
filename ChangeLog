@@ -1,3 +1,18 @@
+2010-03-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdfnotebook.R: fix to saving empty variable, fix to adding new
+	data frame by variable	
+
+	* R/gedit.R (adddroptarget): Fix to make dnd work as expected when
+	overriding default GTK dnd for gedit widget.
+
+2010-03-08  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gmenu.R: fix to get images to display for new gtk versions
+
+	* R/gtoolbar.R: minor fix to avoid gtk error when gtkToolButton
+	called with label=NULL
+
 2010-03-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gmenu.R: fix to SetImage that was not working as advertised

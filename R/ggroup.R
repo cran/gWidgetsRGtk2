@@ -38,7 +38,7 @@ setMethod(".ggroup",
             
             if(!is.null(container)) {
               if(is.logical(container) && container == TRUE)
-                container = gwindow(visible=TRUE, toolkit=toolkit)
+                container <- gwindow(visible=TRUE, toolkit=toolkit)
               add(container, obj, ...)
             }
 

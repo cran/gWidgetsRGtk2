@@ -2,6 +2,16 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-62
+--------------------------- 
+
+* bug fixes for gdfnotebook. (Thanks Rune)
+
+* fix to make dnd work as expected with gedit.
+
+* bug fixes for gtoolbar, gmenu when icons were involved. Issue arose
+with newer GTK versions. (Thanks Rune)
+
 Changes for version 0.0-61
 --------------------------- 
 

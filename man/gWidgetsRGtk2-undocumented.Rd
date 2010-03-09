@@ -1062,6 +1062,7 @@
 \alias{.adddropsource,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.adddropsource,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.adddropsource,gLabelRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.adddropsource,gEditRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  adddropmotion --
 %%

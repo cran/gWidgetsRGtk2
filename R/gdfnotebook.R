@@ -178,7 +178,9 @@ openPageDfNotebookDialog = function(nb, ...) {
     tmp = cbind(do.call(paste("as.",svalue(theType),sep=""),
       list(rep(NA, length=svalue(theNoCols)))))
     colnames(tmp)[1] = svalue(theName)
-    add(nb,gdf(tmp,do.subset=TRUE)@widget,label=.getScratchName(nb)) # widget to get add working better
+    add(nb, tmp, label=.getScratchName(nb))
+#    out <- gdf(tmp, do.subset=TRUE, container=nb, label=.getScratchName(nb))
+#    add(nb,gdf(tmp,do.subset=TRUE)@widget,label=.getScratchName(nb)) # widget to get add working better
     dispose(win)
   })
   
@@ -296,15 +298,24 @@ savePageDfNotebook = function(nb, ...) {
   ## save it
   gridObj = nb[curPage]                   # widget store
   dfName = names(nb)[curPage]             # for tab label
+
+
   df = gridObj[,, drop=FALSE]
   names(df) <- names(gridObj)           # fix names
 
   
   ## if name match *scratch:no* then we save variables, not as data frame
   if(length(grep("^\\*scratch:[[:digit:]]+\\*$", dfName)) > 0) {
+
     for(i in names(df)) {
       val = df[,i]
-      val = val[1:max(which(val != ""))]
+
+      ind <- which(val != "")
+      if(length(ind)) 
+        val <- val[1:max(ind)]
+      else
+        val <- val
+
       if(is.character(val)) {
         tmpfile = tempfile()
         sink(tmpfile)
@@ -313,7 +324,7 @@ savePageDfNotebook = function(nb, ...) {
           val = tmp
         sink(NULL)
         unlink(tmpfile)
-        }
+      }
       assign(i, val, envir=.GlobalEnv)
     }
   } else {

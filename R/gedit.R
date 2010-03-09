@@ -54,18 +54,18 @@ as.gWidgetsRGtk2.GtkEntry <- function(widget, ...) {
   obj = new("gEditRGtk",block=widget, widget=widget,
     toolkit=guiToolkit("RGtk2"))
 
-  ## Drag and drop
-  dropHandler =   function(h,...) {
-    theName = id(h$dropdata)
-    if(is.null(theName)) theName == ""
-    svalue(h$obj) <- ""                 # funny, why isn't this svalue(h$obj)<-theName?
-    ## override value -- in case it is a widget
-    tag(h$obj, "value") <- h$dropdata
-    return(TRUE)
-  }
-  handler.ids = list()
-  id = adddroptarget(obj, targetType="object",handler=dropHandler)
-  handler.ids[['dnd']] = id
+ ##  ## Drag and drop
+##   dropHandler =   function(h,...) {
+##     theName = id(h$dropdata)
+##     if(is.null(theName)) theName == ""
+##     svalue(h$obj) <- ""                 # funny, why isn't this svalue(h$obj)<-theName?
+##     ## override value -- in case it is a widget
+##     tag(h$obj, "value") <- h$dropdata
+##     return(TRUE)
+##   }
+##   handler.ids = list()
+##   id = adddroptarget(obj, targetType="object",handler=dropHandler)
+##   handler.ids[['dnd']] = id
   
 
   return(obj)
@@ -193,11 +193,45 @@ setReplaceMethod("[",
 ## handlers
 
 ### doesn't work -- double writes
+setMethod(".adddropsource",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
+          function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
+            ## do nothing, alrady in gedit widget
+          })
 setMethod(".adddroptarget",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gEditRGtk"),
           function(obj, toolkit, targetType="text", handler=NULL, action=NULL, ...) {
-            gwCat("drop target for gedit uses default only")
+            ##            gwCat("drop target for gedit uses default only")
+
+            ## issue is if using after=FALSE, the default drophandler is called. (Can't stop signal emission)
+            ## if using after=TRUE, the dropped value is put into widget's value in similar way, a
+            ## again we don't want this
+            ## so we store the pre-value then set after as a hack
+            predrophandler <- function(h,...) {
+              tag(h$obj,"predropvalue") <- svalue(h$obj)
+            }
+            gSignalConnect(getWidget(obj), "drag-data-received", f= predrophandler,
+                           data=list(obj=obj), user.data.first=TRUE,
+                           after=FALSE)
+            
+            postdropHandler <- function(h,w, ctxt, x, y, selection, ...) {
+              svalue(h$obj) <- tag(h$obj,"predropvalue") # complete the hack
+              tag(h$obj, "predropvalue") <- NULL
+              
+              dropdata <- selection$GetText()
+              if(is.integer(dropdata)) 
+                dropdata <- Paste(intToChar(dropdata))
+              else
+                dropdata <- rawToChar(dropdata)
+              dropdata <- gsub(Paste("^",.gWidgetDropTargetListKey),"", dropdata)
+              h$dropdata <- dropdata
+              handler(h, widget=w, context=ctxt, x=x, y=y, selection=selection, ...)
+            }
+            id <- gSignalConnect(getWidget(obj), "drag-data-received", f=postdropHandler,
+                           data=list(obj=obj, action=action),
+                                 after=TRUE, user.data.first=TRUE)
           })
+                               
 
 
 setMethod(".addhandlerchanged",

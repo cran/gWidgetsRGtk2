@@ -280,6 +280,8 @@ setReplaceMethod(".leftBracket",
     if(.isgAction(data)) {
       action <- getWidget(data)
       item <- gtkImageMenuItem("")
+      if("always-show-image" %in% names(item))
+        item['always-show-image'] <- TRUE
       subMenu$Append(item)
       action$connectProxy(item)
     }  else if(!.isLeaf(data)) {
@@ -300,7 +302,7 @@ setReplaceMethod(".leftBracket",
       else
         theName = i
       ## make a menuitem
-      item = gtkImageMenuItemNewWithLabel(theName)
+      item <- gtkImageMenuItemNewWithLabel(theName)
       if(!is.null(data$icon)) {
         icon = data$icon
         if(file.exists(icon)) {
@@ -313,6 +315,8 @@ setReplaceMethod(".leftBracket",
           image$SetFromStock(icon,size=GtkIconSize["menu"])
         }
         item$SetImage(image)
+        if("always-show-image" %in% names(item)) # newer GTK
+          item['always-show-image'] <- TRUE
       }  else {
         item = gtkMenuItem(theName)
       }
