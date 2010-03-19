@@ -2,6 +2,12 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-63
+--------------------------
+
+
+* bug fixes to ggrid to make gtable work better.
+
 Changes for version 0.0-62
 --------------------------- 
 

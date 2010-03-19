@@ -32,6 +32,7 @@ Port of gWidgets API to RGtk2
   
   For the data frame viewer \code{gtable} when no filtering is
   requested, the default, the column headers can be clicked to sort the values.
+  Setting the index to 0 will clear the selection.
 
 
   In the data frame editor \code{gdf} the \code{subset} option only

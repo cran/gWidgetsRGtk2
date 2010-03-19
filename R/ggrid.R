@@ -546,6 +546,7 @@ setReplaceMethod(".svalue",
                      curVals <- obj[,tag(obj,"chosencol")]
                      ind <- which(curVals %in% value) - 1L
                    }
+                   ind <- ind[ind >= 0] # only non-negative indices
 ##                    if((!is.null(index) && index == FALSE) || !is.integer(value)) {
 ##                      ## get indices, then select
 ##                      (is.null(index) && is.integer(value))) {
@@ -557,11 +558,15 @@ setReplaceMethod(".svalue",
                    selection <- view$GetSelection()
 
                    ## block handlers to quiet down change signal
-
-                   blockhandler(selection)
-                   selection$unselectAll()
-                   unblockhandler(selection)
-
+                   if(length(ind)) {
+                     blockhandler(selection)
+                     selection$unselectAll()
+                     unblockhandler(selection)
+                   } else {
+                     ## we want to call handler when 0 or negative index
+                     selection$unselectAll()
+                   }
+                   
                    sapply(ind, function(i) {
                      path <- gtkTreePathNewFromString(i)
                      selection$SelectPath(path)
@@ -687,7 +692,7 @@ setReplaceMethod(".leftBracket",
             
 
             ## we have to be careful if we are *replacing*. If the size isn't
-            ## the same, then we need to make a new store.
+            ## the same, then we make a new store.
             if(missing(i)  && missing(j)) {
               if(dv[2] == 0) dv[2] <- 1
               if(dv[2] < n) {
@@ -697,11 +702,13 @@ setReplaceMethod(".leftBracket",
                 ## same number of columns. Now rows?
                 ## what size is dv[1]?
                 if(dv[1] == m) {
-                  ## straight replace -- same no. cols, rows
-                  store[,3*((1:n)+1)] <- value
-                  if(!is.null(rownames(value)))
-                    store[,3] <- rownames(value)
-                  return(x)
+                  if(m > 0) {
+                    ## straight replace -- same no. cols, rows
+                    store[,3*((1:n)+1)] <- value
+                    if(!is.null(rownames(value)))
+                      store[,3] <- rownames(value)
+                    return(x)
+                  }
                 } else {
                   ## fewer or more rows
                   ## make a new padded rGtkDataFrame, then replace model
@@ -801,7 +808,7 @@ setReplaceMethod(".leftBracket",
               }
               ## fix up the rownames
               store = .getRGtkDataFrame(x)
-              if(dv[2] > 1)
+              if(dv[2] > 1 && dv[1] > 0)
                 store[,3] <- rownames(value)
             } else {
               if(missing(i)) {
@@ -828,14 +835,16 @@ setReplaceMethod(".leftBracket",
               store[i, 3*(j+1) ] <- value
             }
             
-            
             ## fix icons if there`
-            if(tag(x,"doIcons")) {
-              store = .getRGtkDataFrame(x)
-              n = (dim(store)[2]-2)/3 - 1
-              frame = store[,3*((1:n)+1)]
-              store[,2] = getstockiconname(tag(x,"icon.FUN")(frame))
-            }
+             if(tag(x,"doIcons")) {
+               store = .getRGtkDataFrame(x)
+               d <- dim(store)
+               if(d[1] > 0) {
+                 n = (d[2]-2)/3 - 1
+                 frame = store[,3*((1:n)+1)]
+                 store[,2] = getstockiconname(tag(x,"icon.FUN")(frame))
+               }
+             }
 
             ## update filter
             if(tag(x,"doFilter") && !is.null(tag(x,"filter.column"))) {
@@ -1187,6 +1196,7 @@ setMethod(".addhandlercolumndoubleclick",
 }
 
 
+## XXX This is a mess -- replace me one day XXX
 ## the data frame has columns
 ## 1 -- visibilit
 ## 2 -- either rownames or icon names
@@ -1219,7 +1229,8 @@ makePaddedDataFrame <- function(obj,
   
   ## go get em -- ugly code, how to make data frame *without* factor class?
   lst = list()
-  lst[[1]] = firstCol; lst[[2]] = secondCol
+  lst[[1]] = firstCol;
+  lst[[2]] = secondCol
   lst[[3]] = rownames(items)
   theColors = tag(obj,"theColors")
   lst[[4]] = rep(theColors['rfg'], length=m)
@@ -1229,20 +1240,22 @@ makePaddedDataFrame <- function(obj,
   fgColors = rep(theColors["fg"], length=m)
   sapply(1:n, function(j) lst[[3*(j+1)]] <<- items[,j])
   sapply(1:n, function(j) lst[[3*(j+1) + 1]] <<- fgColors) # foreground first
-  sapply(1:n, function(j) lst[[3*(j+1) +2 ]] <<- bgColors)
+  sapply(1:n, function(j) lst[[3*(j+1) + 2 ]] <<- bgColors)
 
-  frame = do.call("data.frame", lst)
+#  frame = do.call("data.frame", lst)
+  frame <- data.frame(lst, stringsAsFactors=FALSE)
+  
   ## coerce to proper class
-  frame[,1] = as.logical(frame[,1])       # visible
-  for(i in 2:5) frame[,i] = as.character(frame[,i])
+  frame[,1] <- as.logical(frame[,1])       # visible
+##   for(i in 2:5) frame[,i] = as.character(frame[,i])
 
-  for(j in 1:n) {
-    if(theClass[j] != "AsIs")
-      frame[,3*(j+1)] = do.call(Paste("as.",theClass[j]),
-             list(x=frame[,3*(j+1)]))
-    frame[,3*(j+1) + 1] = as.character(frame[,(3*(j+1)+1)])
-    frame[,3*(j+1) + 2] = as.character(frame[,(3*(j+1)+2)])
-  }
+##   for(j in seq_along(n)) {
+##     if(theClass[j] != "AsIs")
+##       frame[,3*(j+1)] = do.call(Paste("as.",theClass[j]),
+##              list(x=frame[,3*(j+1)]))
+##     frame[,3*(j+1) + 1] = as.character(frame[,(3*(j+1)+1)])
+##     frame[,3*(j+1) + 2] = as.character(frame[,(3*(j+1)+2)])
+##   }
 
   ## if we want to trap NA values, this works 
 #  ## for NA values, we change colors
@@ -1264,7 +1277,8 @@ makePaddedDataFrame <- function(obj,
   colNames[3*((1:n)+1)] = cnames
   colNames[3*((1:n)+1) + 1]  = paste("fgCol",1:n, sep="")
   colNames[3*((1:n)+1) + 2]  = paste("bgCol",1:n, sep="")
-  colnames(frame) = colNames
+
+  colnames(frame) <- colNames
   
   
   return(frame)

@@ -1,3 +1,14 @@
+2010-03-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (makePaddedDataFrame): minor fixes to handle 0-length
+	icon specification
+	(make.row.names): fix to setReplaceMethod to work when 0ing out
+	data store
+
+2010-03-13  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: allow svalue(obj, index=TRUE) <- 0 to clear selection
+
 2010-03-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gdfnotebook.R: fix to saving empty variable, fix to adding new

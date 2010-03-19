@@ -72,12 +72,14 @@ setMethod(".getStockIcons",
 
 ## name can be a vector
 ## return NA, if not there
-getstockiconname = function(name=NULL) {
+getstockiconname <- function(name=NULL) {
   .stockicons = getStockIcons(toolkit=guiToolkit("RGtk2"))         # cache?
 
   if(is.null(name))
     return(unlist(.stockicons))
-  
+
+  if(length(name) == 0)
+    return(character(0))
 
   tmpfun = function(names) {
     sapply(names, function(name) {
