@@ -1,3 +1,18 @@
+2010-03-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R (addTreeViewColumnNoEdit): fix edit.handler to work
+	with visible rows
+
+	* R/gtext.R (font<-): made change to font<- when no text is
+	selected. Rather than do nothing, it now changes font for entire
+	buffer.
+
+2010-03-22  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R: Made font.attr argument to constructor apply to
+	entire buffer. To specify font.attr for pieces of text, the add
+	method or the font<- method can be used.
+
 2010-03-16  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggrid.R (makePaddedDataFrame): minor fixes to handle 0-length

@@ -147,7 +147,7 @@ setMethod(".gcommandline",
                 handler = function(h,...) {
                   newcommand = svalue(h$obj)
                   icl = h$action
-                  svalue(tag(icl,"editText"), font.attr = "monospace") <- newcommand
+                  svalue(tag(icl,"editText"), font.attr = c(style="monospace")) <- newcommand
                   ## set focus on editText?
                   dispose(win)
                 })
@@ -239,7 +239,7 @@ setReplaceMethod(".svalue",
                      command = addAssignto(command, assignto)
                    }
                    if(obj@useGUI)
-                     svalue(obj@editText,font.attr = "monospace") <-  command 
+                     svalue(obj@editText,font.attr = c(style="monospace")) <-  command 
 
                    ## add to history
                    tag(obj, "history", replace=FALSE) <- command
@@ -308,7 +308,7 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
   chunkexps <- gtktry(parse(text=chunk), silent=TRUE)
   if(inherits(chunkexps,"try-error")) {
     if(useGUI)
-      add(widget, chunkexps, font.attr = c("monospace"))
+      add(widget, chunkexps, font.attr = c(style="monospace"))
 #    addTextWidget(widget, chunkexps)
     cat(sprintf("Houston, we have a problem with: %s\n",chunk))
     return(c())
@@ -324,7 +324,7 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
       paste(dce,collapse=paste("\n", getOption("continue"), sep=""))
       )
     if(useGUI)
-      add(widget, command, font.attr = c("monospace","red","italic"))
+      add(widget, command, font.attr = c(style="monospace",color="red",weight="italic"))
 
     if(useConsole)
       cat(command,"\n")
@@ -341,13 +341,13 @@ evalChunk = function(chunk, widget, prompt = getOption("prompt"),
     
     if(inherits(err, "try-error")) {
       if(useGUI)
-        add(widget, err, font.attr=c("monospace","red","bold"))
+        add(widget, err, font.attr=c(style="monospace",color="red",weight="bold"))
       if(useConsole)
         cat(err,"\n")
     } else {
       if(!is.null(theOutput)) {
         if(useGUI)
-          add(widget, theOutput, font.attr = c("monospace"))
+          add(widget, theOutput, font.attr = c(style="monospace"))
         if(useConsole) 
           cat(paste(theOutput,sep="",collapse="\n"),"\n")
       }

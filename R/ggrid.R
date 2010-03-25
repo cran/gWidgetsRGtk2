@@ -1362,8 +1362,12 @@ edit.handler = function(h,cell,path,newtext) {
   store = .getRGtkDataFrame(obj)
   
   i = as.numeric(path) + 1           # row
+  ## if visible, we need to adjust i to point to right row
+  if(colnames(store)[1] == "visible")
+    i <- which(store[,"visible", drop=TRUE])[i]
   j = column.number
 
+  
   ## coerce newtext from text to proper class
   theColData = obj[,j]
 

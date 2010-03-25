@@ -109,9 +109,9 @@ makeHelpPage = function(topic, pkg) {
     helpFile = zip.file.extract(as.character(helpFile),"Rhelp.zip")
     text = readLines(helpFile)
     text = sapply(text, function(i) gsub("\\_\\\b","",i))
-    helpPage = gtext(text[1],font.attr=c("bold"))
+    helpPage = gtext(text[1],font.attr=c(weight="bold"))
     add(helpPage, text[2])
-    add(helpPage, text[3], font.attr=c("bold","big","blue"))
+    add(helpPage, text[3], font.attr=c(weight="bold",size="big",color="blue"))
     add(helpPage, text[-(1:3)])
     ## This gave troubles when there were more than a few pages open!
 ##     sapply(text[-(1:3)], function(x) {
@@ -137,7 +137,8 @@ getPossiblePackages = function(topic) {
   for (lib in lib.loc) {
     for (pkg in packages) {
       dir <- system.file(package = pkg, lib.loc = lib)
-      path = index.search(topic, dir, "AnIndex", "help")
+      ## XXX This needs to be rewritten for R version 2.11.0 or later
+      path <- index.search(topic, dir, "AnIndex", "help")
       if(path != "")
         possiblePackages = c(possiblePackages, pkg)
     }
@@ -209,15 +210,15 @@ showHelpAtArgument = function(argument, topic, package=NULL,
         visible(win) <- TRUE            # show window
       }
 
-      add(textwindow,Paste("From package:",pkg), font.attr="bold")
+      add(textwindow,Paste("From package:",pkg), font.attr=c(weight="bold"))
       ## add first line (it has a :)
-      add(textwindow,text[argPosition+1],font.attr=c("bold","blue"))
+      add(textwindow,text[argPosition+1],font.attr=c(weight="bold",color="blue"))
       ## add until a :
       i = 2; n = length(text)
       while(length(grep(":",text[argPosition+i])) == 0 &&
             (argPosition + i) <= n
             ) {
-        add(textwindow,text[argPosition+i],font.attr=c("bold","blue"))
+        add(textwindow,text[argPosition+i],font.attr=c(weight="bold",color="blue"))
         i = i + 1
       }
       add(textwindow,"\n")

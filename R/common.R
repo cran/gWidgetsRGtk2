@@ -19,7 +19,16 @@ stripWhiteSpace = function(str) {
   return(str)
 }
 
-
+toupperFirst <- function(str="") {
+  if(nchar(str) == 0)
+    return(str)
+  out <- toupper(substr(str, 0, 1))
+  if(nchar(str) > 1) {
+    out <- paste(out, substr(str,2, nchar(str)), sep="")
+  }
+  return(out)
+}
+           
 quoteIfNeeded = function(str) {
   if(length(grep('^\\".*\\"$', str, perl=TRUE)) > 0 ||
      length(grep("^\\'.*\\'$", str, perl=TRUE)) > 0 )

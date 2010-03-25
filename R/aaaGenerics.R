@@ -567,13 +567,23 @@ setReplaceMethod(".defaultWidget",
           })
 
 
-## font
+## fonts
 .font.styles = list(
-  families = c("normal","sans","serif","monospace"),
-  weights = c("normal","oblique","italic"),
-  styles = c("ultra-light","light","normal","bold","ultra-bold","heavy"),
+  family = c("normal","sans","serif","monospace"),
+  style = c("normal","oblique","italic"),
+  weight = c("ultra-light","light","normal","bold","ultra-bold","heavy"),
   colors = c("black","blue","red","green","brown","yellow","pink")
 )  
+## font sizes ## old defs for .PangoScale are no longer valid as of 10.4
+fontSizes <- c(
+               "xx-large"= PANGO_SCALE_XX_LARGE,
+               "x-large" = PANGO_SCALE_X_LARGE,
+               "large"   = PANGO_SCALE_LARGE,
+               "medium"  = PANGO_SCALE_MEDIUM,
+               "small"   = PANGO_SCALE_SMALL,
+               "x-small" = PANGO_SCALE_X_SMALL,
+               "xx-small" = PANGO_SCALE_XX_SMALL
+               )
 
 setMethod("font",signature(obj="gWidgetRGtk"),
           function(obj, ...) {
@@ -602,22 +612,53 @@ setReplaceMethod(".font",
 setReplaceMethod(".font",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
                  function(obj, toolkit, ..., value) {
-                   string = ""
-                   if(!is.null(value$family) && value$family %in% .font.styles$families)
-                     string = Paste(string," ",value$family)
-                   if(!is.null(value$weight) && value$weight %in% .font.styles$weights)
-                     string = Paste(string," ",value$weight)
-                   if(!is.null(value$style) && value$style %in% .font.styles$styles)
-                     string = Paste(string," ",value$style)
-                   if(!is.null(value$size))
-                     string = Paste(string," ",as.integer(value$size))
+
+                   ## value might be a vector, we use a list -- from .fixFontMessUp
+                   if(!is.list(value)) {
+                     tmp = value
+                     value = list()
+                     for(i in names(tmp)) value[[i]] = tmp[i]
+                   }
                    
-                   fontDescr = pangoFontDescriptionFromString(string)
-                   obj$ModifyFont(fontDescr)
+                   
+                   string = ""
+
+                   
+                   ## do family, weight, style
+                   for(i in c("family", "weight", "style")) {
+                     if(!is.null(value[[i]])) {
+                       x <- .font.styles[[i]]
+                       ind <- charmatch(value[[i]], x)
+                       if(!is.na(ind)) {
+                         string <- paste(string, x[ind[1]], sep=" ")
+                         if(i == "family")
+                           string <- paste(string,",", sep="")
+                       }
+                     }
+                   }
+                   
+                   ## size can be integer or name -- relative to 12pt
+                   
+                   if(!is.null(value$size)) {
+                     ## is it numeric or character?
+                     warn <- getOption("warn"); options(warn=2) # hack to avoid warning -- we want an error here
+                     out <- try(as.integer(value[['size']]), silent=TRUE)
+                     options(warn=warn)
+                     if(!inherits(out, "try-error"))
+                       string <- Paste(string," ",out)
+                     else if (!is.na(ind <- charmatch(value[['size']], names(fontSizes)))) # fuzzy match?
+                       string <- Paste(string, " ", paste(ceiling(12*fontSizes[ind[1]]),"px", sep=""))
+                   }
+                   string <- gsub(",$","",string) # strip , if present
+                   
+                   if(string != "") {
+                     fontDescr = pangoFontDescriptionFromString(string)
+                     obj$ModifyFont(fontDescr)
+                   }
 
                    ## colors
-                   if(!is.null(value$color) && value$color %in% .font.styles$colors)
-                     obj$modifyFg(GtkStateType[0], value$color)
+                   if(!is.null(value$color))
+                     obj$modifyText(GtkStateType[1], value[['color']])
 
                    
                    return(obj)

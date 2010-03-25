@@ -1,3 +1,6 @@
+* index.search in ghelp needs to be replaced to use dynamic search (is
+  ghelp even necessary anymore?)
+DONE * gtext -- API to set font properties for entire buffer?
 * gWidgets with mac os x GUI
 DONE * Yvonnick and addHandlerRightClick
 * no tag<- methods for gaction?

@@ -1,3 +1,31 @@
+## Constants
+setBufferFonts <- function(textview, font.attr) {
+  font.attr <- unlist(font.attr)
+  nms <- names(font.attr)   # a vector -- not alist
+  out <- ""
+  if("style" %in% nms)
+    out <- paste(out, toupperFirst(font.attr['style']))
+  if("weight" %in% nms)
+    out <- paste(out, toupperFirst(font.attr['weight']), sep=" ")
+  if("size" %in% nms) {
+    sz <- fontSizes[font.attr['size']]
+    sz <- ceiling(12*sz)    # to font size
+  } else {
+    sz <- 12
+  }
+  out <- paste(out, sz, sep=" ")
+  font <- pangoFontDescriptionFromString(out)
+  textview$modifyFont(font)
+  ## now for color
+  if("color" %in% nms) {
+    color <- font.attr['color']
+    print(color)
+    textview$modifyText(GtkStateType['normal'], color)
+  }
+}
+
+
+
 setClass("gTextRGtk",
 #         representation(tags="list"),
          contains="gComponentRGtk",
@@ -46,9 +74,16 @@ setMethod(".gtext",
             ##   ## Handle attributes
             ##   if(!is.null(font.attr))
             ##     font(obj) <- font.attr
+
+
+            ## font.attr specifies text properties for the entire buffer (gWidgets 0.0-39)
+            if(!is.null(font.attr)) {
+              .font(textview, toolkit) <- font.attr
+#              setBufferFonts(textview, font.attr)
+            }
             
             if(!is.null(text)) {
-              add(obj, text, font.attr=font.attr)
+              add(obj, text)
             }
             
   
@@ -102,17 +137,7 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
     buffer$createTag(i, style = PangoStyle[i])
   ## family
   buffer$createTag("monospace",family = "monospace")
-  ## sizes ## old defs for .PangoScale are no longer valid as of 10.4
-  fontSizes = c(
-    "xx-large"= PANGO_SCALE_XX_LARGE,
-    "x-large" = PANGO_SCALE_X_LARGE,
-    "large"   = PANGO_SCALE_LARGE,
-    "medium"  = PANGO_SCALE_MEDIUM,
-    "small"   = PANGO_SCALE_SMALL,
-    "x-small" = PANGO_SCALE_X_SMALL,
-    "xx-small" = PANGO_SCALE_XX_SMALL
-    )
-  
+
   for(i in names(fontSizes)) 
     buffer$createTag(i, scale = fontSizes[i])
   
@@ -156,6 +181,7 @@ setMethod(".svalue",
               end = buffer$GetEndIter()$iter
             } else {
               ## return only **selected** text
+              ## if drop==TRUE
               bounds = buffer$GetSelectionBounds()
               if(bounds$retval == FALSE) return("")
               start = bounds$start
@@ -290,30 +316,42 @@ setMethod(".add",
 setReplaceMethod(".font",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTextRGtk"),
                  function(obj, toolkit, ..., value) {
-                   ## get tags that are known
-                   tags = value
-                   tags = tags[tags %in% unlist(tag(obj,"tags"))]
-                   if(length(tags) == 0) {
-                     cat(gettext("Invalid font specification\n"))
-                     return(obj)
-                   }
-                   
                    ## get start, end iters
                    buffer <- getWidget(obj)$GetBuffer()
-                   bounds = buffer$GetSelectionBounds()
+                   bounds <- buffer$GetSelectionBounds()
                    if(bounds$retval == FALSE) {
-                     cat(gettext("No text selected for changing a font\n"))
+                     ## if no text selected, we set for entire buffer
+                     ## change entire buffer -- new as of 0.64
+                     textview <- getWidget(obj)
+                     buffer <- textview$getBuffer()
+                     start = buffer$GetStartIter()$iter
+                     end = buffer$GetEndIter()$iter
+                     buffer$removeAllTags(start, end)
+                     ## now set font
+                     .font(textview, toolkit) <- value
+#                     setBufferFonts(textview, value)
+                     
+                     ##                     cat(gettext("No text selected for changing a font\n"))
                      return(obj)
-                   }
-                   
-                   for(i in tags) {
-                     ## color is special
-                     if(names(i)[1] == "color") {
-                       sapply(colors(), function(j)
-                              buffer$RemoveTagByName(j, bounds$start, bounds$end))
+                   } else {
+                     ## get tags that are known
+                     tags = value
+                     tags = tags[tags %in% unlist(tag(obj,"tags"))]
+                     if(length(tags) == 0) {
+                       cat(gettext("Invalid font specification\n"))
+                       return(obj)
                      }
+                   
+
+                     for(i in tags) {
+                       ## color is special
+                       if(length(names(i)) && names(i)[1] == "color") {
+                         sapply(colors(), function(j)
+                                buffer$RemoveTagByName(j, bounds$start, bounds$end))
+                       }
                        
                      buffer$ApplyTagByName(i, bounds$start, bounds$end)
+                     }
                    }
                    
                    return(obj)
