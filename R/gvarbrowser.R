@@ -222,6 +222,7 @@ setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gVarbrowserRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             values = obj@widget[]       # from tree
+            
             value = paste(values, collapse = "$")
 
             return(value)

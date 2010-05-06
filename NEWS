@@ -2,6 +2,15 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-65
+--------------------------
+* implemented new option use.table for gcheckboxgroup. Places widgets
+into table so one can scroll.
+
+* fixed bug in gcommandline that was breaking ggenericwidget
+
+* fix to glabel when editable=TRUE
+
 Changes for version 0.0-64
 --------------------------
 

@@ -424,3 +424,10 @@ stockIconFromClass = function(theClass=NULL) {
 stockIconFromObject = function(obj)
   stockIconFromClass(class(obj)[1])
 
+## get with default
+getWithDefault <- function(x, default) {
+  if(is.null(x) || is.na(x))
+    default
+  else
+    x
+}

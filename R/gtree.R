@@ -346,7 +346,12 @@ setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gTreeRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
             obj = x
-            iter = obj@widget$GetSelection()$GetSelected()$iter
+            sel <- obj@widget$GetSelection()$GetSelected()
+            if(!sel$retval) {
+              ## no selection
+              return(character(0))
+            }
+            iter <- sel$iter
             ## need to convert to unsorted
             iter = tag(obj,"SortedStore")$ConvertIterToChildIter(iter)$child.iter
             

@@ -8,6 +8,7 @@
 \alias{[,gWidgetRGtk-method}
 \alias{[,gCheckboxRGtk-method}
 \alias{[,gCheckboxgroupRGtk-method}
+\alias{[,gCheckboxgroupTableRGtk-method}
 \alias{[,gCommandlineRGtk-method}
 \alias{[,gDfEditRGtk-method}
 \alias{[,gDroplistRGtk-method}
@@ -26,6 +27,7 @@
 
 \alias{.svalue<-,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gPanedgroupRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
+\alias{.svalue<-,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gRadioRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gSliderRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
 \alias{.svalue<-,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2,ANY,ANY-method}
@@ -264,6 +266,8 @@
 \alias{.svalue,gCalendarRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCheckboxgroupRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gCheckboxgroupTableRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
+\alias{.svalue,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gCommandlineRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gDfEditRGtk,ANY,ANY,guiWidgetsToolkitRGtk2-method}
 \alias{.svalue,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
@@ -367,6 +371,7 @@
 \alias{.leftBracket-methods}
 \alias{.leftBracket,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gCommandlineRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
@@ -386,6 +391,7 @@
 \alias{.leftBracket<--methods}
 \alias{.leftBracket<-,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket<-,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gEditRGtk,guiWidgetsToolkitRGtk2-method}
@@ -772,6 +778,7 @@
 \alias{.blockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.blockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.blockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.blockhandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
 
 %%
 %% --  unblockhandler --
@@ -788,6 +795,7 @@
 \alias{.unblockhandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.unblockhandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.unblockhandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.unblockhandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.unblockhandler,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 
 
@@ -806,6 +814,7 @@
 \alias{.removehandler,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.removehandler,RGtkObject,guiWidgetsToolkitRGtk2-method}
 \alias{.removehandler,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.removehandler,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 
 
@@ -852,6 +861,7 @@
 \alias{.addhandlerchanged,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
@@ -894,6 +904,7 @@
 \alias{.addhandlerclicked,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gCheckboxRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerclicked,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gGridRGtk,guiWidgetsToolkitRGtk2-method}
@@ -1145,6 +1156,7 @@
 \alias{.length-methods}
 \alias{.length,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gCheckboxgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.length,gCheckboxgroupTableRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gDfEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.length,gGridRGtk,guiWidgetsToolkitRGtk2-method}
@@ -1220,6 +1232,7 @@
 \alias{[<-,gWidgetRGtk-method}
 \alias{[<-,gCheckboxRGtk-method}
 \alias{[<-,gCheckboxgroupRGtk-method}
+\alias{[<-,gCheckboxgroupTableRGtk-method}
 \alias{[<-,gDfEditRGtk-method}
 \alias{[<-,gDroplistRGtk-method}
 \alias{[<-,gEditRGtk-method}
@@ -1402,3 +1415,4 @@
 	functions here.
 }
 \keyword{interface}% at least one, from doc/KEYWORDS
+\keyword{internal}

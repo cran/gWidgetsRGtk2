@@ -129,12 +129,13 @@ setReplaceMethod(".leftBracket",
 ## inherits delete method for containers
 
 ## replaced
-setReplaceMethod(".visible",
-                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLayoutRGtk"),
-                 function(obj, toolkit, ..., value) {
-                   gwCat(gettext("visible<- is now redundant for glayout in RGtk2"))
-                   return(obj)
-                 })
+## We like visible, return it. Unlike delete it only hides the widget
+## setReplaceMethod(".visible",
+##                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLayoutRGtk"),
+##                  function(obj, toolkit, ..., value) {
+##                    gwCat(gettext("visible<- is now redundant for glayout in RGtk2"))
+##                    return(obj)
+##                  })
 
 ## get number of rows and columns
 setMethod(".dim", 

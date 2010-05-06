@@ -11,6 +11,14 @@ setMethod(".ghelp",
                    container = NULL,
                    ...) {                                # passed to gnotebook
             force(toolkit)
+
+            ## check if newversion of R, if so, we con't do a thing but return a label
+            if(getRversion() >= "2.10.0" && getRversion() < "2.11.0") {
+              l <- .glabel(toolkit, "ghelp needs to be updated for your version of R. Sorry.", cont=container)
+              return(l)
+            }
+
+
             
             group = ggroup(horizontal=FALSE, container = container, ...)
             notebook = gnotebook(...)
@@ -54,25 +62,47 @@ setMethod(".add",
               return()
             }
 
-            ## if package is NULL, we find them
-            if(is.null(package)) {
-              possiblePackages = getPossiblePackages(topic)
-              if(length(possiblePackages) > 0) {
-                package = possiblePackages
-              } else {
-                warning(Paste("Can't find a package containing ", topic,"\n"))
-                return()
+            if(getRversion() < "2.10.0") {            
+              ## if package is NULL, we find them
+              if(is.null(package)) {
+                possiblePackages = getPossiblePackages(topic)
+                if(length(possiblePackages) > 0) {
+                  package = possiblePackages
+                } else {
+                  warning(Paste("Can't find a package containing ", topic,"\n"))
+                  return()
+                }
+              }
+              ## add a page for each package
+              for(pkg in package) {
+                helpPage = makeHelpPage(topic, pkg)
+                tag(helpPage,"topic") <- topic
+                tag(helpPage,"package") <- pkg
+              add(obj@widget, helpPage, label = Paste("Help on ",pkg,"::",topic))
+              }
+              return()
+            } else if(getRversion() >= "2.11.0") {
+              ## add a page for each package
+              l <- list(topic=topic)
+              if(!is.null(package))
+                l$package <- package
+              out <- do.call("help", l)
+              pkgname <-  basename(dirname(dirname(out)))
+              temp <- tools::Rd2txt(utils:::.getHelpFile(out), out = tempfile("Rtxt"), package=pkgname)
+              x <- readLines(temp)
+              unlink(temp)
+              helpPage <- gtext(cont=obj@widget, label=topic)
+              ## add text to gtext widget
+              for(i in x) {
+                if(grepl("^_\b",i)) {
+                  insert(helpPage, gsub("_\b","",i), font.attr=c(weight="bold"))
+                } else {
+                  insert(helpPage, i)
+                }
               }
             }
-            ## add a page for each package
-            for(pkg in package) {
-              helpPage = makeHelpPage(topic, pkg)
-              tag(helpPage,"topic") <- topic
-              tag(helpPage,"package") <- pkg
-              add(obj@widget, helpPage, label = Paste("Help on ",pkg,"::",topic))
-            }
             return()
-          })
+            })
 
 ## value returns the topic of the current page or the one give by index
 setMethod(".svalue",
@@ -138,7 +168,8 @@ getPossiblePackages = function(topic) {
     for (pkg in packages) {
       dir <- system.file(package = pkg, lib.loc = lib)
       ## XXX This needs to be rewritten for R version 2.11.0 or later
-      path <- index.search(topic, dir, "AnIndex", "help")
+      l <- list(topic, dir, "AnIndex", "help")
+      path <- do.call("index.search",l)
       if(path != "")
         possiblePackages = c(possiblePackages, pkg)
     }
@@ -325,7 +356,10 @@ setMethod(".ghelpbrowser",
               page = ggroup(horizontal=FALSE)
               
               ## objectList
-              objectList = gtable(contents, filter.column=2)
+              if(ncol(contents) >=2)
+                objectList <- gtable(contents, filter.column=2)
+              else
+                objectList <- gtable(contents)
               add(page, objectList, expand=TRUE)
               ## add to packageNotebook
               add(packageNotebook,page, label=Paste("Objects in ",package))
@@ -433,9 +467,23 @@ getContentsOfPackage = function(package=NULL) {
     warning("Empty package name")
     return(NA)
   }
-  contents = read.dcf(system.file("CONTENTS",package=package))
-  
-  return(data.frame(Entry=I(contents[,1]),Keywords=I(contents[,3]),
-                    Description=I(contents[,4])))
+
+  if(getRversion() < "2.10.0") {
+    contents = read.dcf(system.file("CONTENTS",package=package))
+    
+    return(data.frame(Entry=I(contents[,1]),Keywords=I(contents[,3]),
+                      Description=I(contents[,4])))
+  } else if(getRversion() >= "2.11.0") {
+    l <- list(package=package)
+    tmp <- do.call("help", l)
+    contents <- tmp$info[[2]]
+    ## need to strip of white space
+    contents <- contents[grepl("^[a-zA-Z]", contents)]
+    contents <- sapply(strsplit(contents,"\\s+"), function(i) i[1])
+    contents <- contents[!grepl("^==",contents)]
+    contents <- contents[!contents == ""]
+    
+    return(data.frame(Entry=contents,  stringsAsFactors=FALSE))
+  }
 }
 

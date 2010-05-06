@@ -201,7 +201,8 @@ setMethod(".gcommandline",
             if(command == "") {
               enabled(editButton) <- TRUE
             } else {
-              svalue(editText) <- command
+              #svalue(editText) <- command
+              svalue(obj) <- command
             }
             
             return(obj)

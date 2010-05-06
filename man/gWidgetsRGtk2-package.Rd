@@ -30,14 +30,26 @@ Port of gWidgets API to RGtk2
 
   \bold{Widgets:}\cr
   
+  The \code{gbutton} constructor can not be called before
+  \pkg{gWidgetsRGtk2} is loaded. This means that an initial call like
+  \code{gbutton("label", cont=gwindow())} won't work. Instead, either
+  load directly \pkg{gWidgetsRGtk2} (not just \pkg{gWidgets}) or
+  create another widget, like a top-level window. Something similar is the case
+  for the \code{gdfedit} widget.
+  \cr
+
   For the data frame viewer \code{gtable} when no filtering is
-  requested, the default, the column headers can be clicked to sort the values.
-  Setting the index to 0 will clear the selection.
+  requested, the default, the column headers can be clicked to sort
+  the values. Setting the index to 0 will clear the selection.
 
 
   In the data frame editor \code{gdf} the \code{subset} option only
-  works if the column names have not been changed. One can suppress the creation of keyboard navigation and the right click popup on the column headers. The hiddern argument \code{diy} (for do it yourself) if left empty will place in both. A value of \code{"suppress.key"} or \code{"suppress.popup"} (or both) will suppress the respective handler.
-  \cr
+  works if the column names have not been changed. One can suppress
+  the creation of keyboard navigation and the right click popup on the
+  column headers. The hiddern argument \code{diy} (for do it yourself)
+  if left empty will place in both. A value of \code{"suppress.key"}
+  or \code{"suppress.popup"} (or both) will suppress the respective
+  handler.  \cr
 
   The \code{gaction} constructor produces action objects. The
   \code{enabled<-} method can be used to set their sensitivity. The
@@ -45,7 +57,7 @@ Port of gWidgets API to RGtk2
   argument, and in the lists defining menubars and toolbars. The
   \code{key.accel} argument of the constructor is ignored for now. The
   \code{tooltip} is OS sensitive, as it depends on the event loop
-  implementation.\cr
+  implementation. \cr
 
   The \code{gtoolbar} list can have components that are a) lists with
   a handler componented, b) lists with a separator component, c)

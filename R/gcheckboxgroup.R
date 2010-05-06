@@ -8,11 +8,20 @@ setMethod(".gcheckboxgroup",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    items, checked = FALSE,
-                   horizontal=FALSE, 
+                   horizontal=FALSE, use.table=FALSE,
                    handler = NULL, action = NULL, container = NULL, ...) {
 
             force(toolkit)
 
+            if(as.logical(use.table)) {
+              obj <- .gcheckboxgrouptable(toolkit,
+                                          items, checked=checked,
+                                          handler=handler, action=action,
+                                          container=container, ...)
+              return(obj)
+            }
+
+            
             if(missing(items))
               stop(gettext("Need items to be defined"))
 
@@ -236,3 +245,296 @@ setMethod(".unblockhandler",
             )
           })
 
+
+
+##################################################
+##################################################
+
+### Checkbox group in a table
+setClass("gCheckboxgroupTableRGtk",
+         contains="gComponentRGtk",
+         prototype=prototype(new("gComponentRGtk"))
+         )
+
+setGeneric(".gcheckboxgrouptable", function(toolkit, items, checked=FALSE,
+                                            handler=NULL, action=NULL,
+                                            container=NULL, ...)
+           standardGeneric(".gcheckboxgrouptable"))
+
+setMethod(".gcheckboxgrouptable",
+          signature(toolkit="guiWidgetsToolkitRGtk2"),
+          function(toolkit,
+                   items, checked = FALSE,
+                   handler = NULL, action = NULL, container = NULL, ...) {
+
+
+            force(toolkit)
+
+            
+            tbl <- gtkTreeViewNew(TRUE)
+            store <- rGtkDataFrame(.makeItems())
+            tbl$setModel(store)
+            tbl$setHeadersVisible(FALSE)
+
+            sw <- gtkScrolledWindowNew()
+            sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
+            sw$Add(tbl)
+
+
+            ## set up the view columns
+            vc <- gtkTreeViewColumnNew()
+            tbl$insertColumn(vc, 0)
+            cr <- gtkCellRendererToggle()
+            vc$PackStart(cr, TRUE)
+            cr['activatable'] <- TRUE                  # needed
+            vc$addAttribute(cr, "active", 1)            
+            item.toggled <- function(tbl, cell, path, data) {
+              store <- tbl$getModel()
+              row <- as.numeric(path) + 1
+              store[row,2] <- !store[row, 2]
+            }
+            gSignalConnect(cr, "toggled", item.toggled, data=tbl, user.data.first=TRUE)
+
+            
+            
+            cr <- gtkCellRendererTextNew()
+            vc <- gtkTreeViewColumnNew()
+            vc$PackStart(cr, TRUE)
+            vc$addAttribute(cr, "text", 0)            
+            tbl$insertColumn(vc, 1)
+
+            ## how to add icons, tooltips!
+            
+            ## make combination widget with all the values
+            obj = new("gCheckboxgroupTableRGtk", block=sw, widget=tbl,
+              toolkit=toolkit)
+
+            obj[] <- items       
+            svalue(obj) <- checked
+            
+            
+            if(!is.null(handler))
+              tag(obj, "handler.id") <- addhandlerchanged(obj,handler,action)
+
+            if(!is.null(container)) {
+              if(is.logical(container)) {
+                if(container) {
+                  container <- gwindow()
+                } else {
+                  return(obj)
+                }
+              }
+              add(container, obj, ...)
+            }
+            
+            return(obj)
+          })
+
+## helper
+.makeItems <- function(items, icons, tooltips, checked=rep(FALSE, length(items))) {
+  if(missing(items) ||
+     (is.data.frame(items) && nrow(items) == 0) ||
+     (length(items) == 0)
+     ) {
+    out <- data.frame(items=character(0),
+                      checked=logical(0),
+                      icons=character(0),
+                      tooltips=character(0),
+                      stringsAsFactors=FALSE)
+  } else if(is.data.frame(items)) {
+    ## check
+    out <- items
+    if(ncol(out) == 1) 
+      out$checked <- as.logical(rep(checked, length=nrow(items)))
+    if(ncol(out) == 2)
+      out$icons <- rep("", nrow(items))
+    if(ncol(out) == 3)
+      out$tooltip <- rep("", nrow(items))
+  } else {
+    ## piece together
+    items <- as.character(items)
+    
+    if(missing(icons))
+      icons <- ""
+    icons <- rep(icons, length=length(items))
+
+    if(missing(tooltips))
+      tooltips <- ""
+    icons <- rep(tooltips, length=length(items))
+
+    checked <- rep(checked, length=length(items))
+
+    out <- data.frame(items=items, checked=checked, icons=icons, tooltips=tooltips,
+                      stringsAsFactors=FALSE)
+  }
+  return(out)
+}
+    
+
+
+### methods
+setMethod(".svalue",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+          function(obj, toolkit, index=NULL, drop=NULL, ...) {
+            n <- length(obj)
+            if(n == 0)
+              return(logical(0))
+
+            tbl <- getWidget(obj)
+            store <- tbl$getModel()
+            vals <- store[,2, drop=TRUE]
+            index <- getWithDefault(index, FALSE)
+
+            if(index) {
+              return(which(vals))       # return indices
+            } else {
+              vals
+            }
+          })
+
+## toggles state to be T or F
+setReplaceMethod(".svalue",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+                 function(obj, toolkit, index=NULL, ..., value) {
+                   
+                   n <- length(obj)
+                   if(n == 0)
+                     return(obj)
+
+                   tbl <- getWidget(obj)
+                   store <- tbl$getModel()
+                   
+                   index <- getWithDefault(index, is.numeric(value))
+                   if(index) {
+                     tmp <- rep(FALSE, n)
+                     tmp[value] <- TRUE
+                     value <- tmp
+                   }
+                   ## recycle
+                   value <- as.logical(rep(value, length=n))
+                   store[,2] <- value
+                   
+                   return(obj)
+                 })
+
+## [ and [<- refer to the names -- not the TF values
+## Here we can have a vector of names -- or a data frame
+## 1st column names, 2nd icon, third tooltip -- like gcombobox
+setMethod("[",
+          signature(x="gCheckboxgroupTableRGtk"),
+          function(x, i, j, ..., drop=TRUE) {
+            .leftBracket(x, x@toolkit, i, j, ..., drop=drop)
+          })
+setMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gCheckboxgroupTableRGtk"),
+          function(x, toolkit, i, j, ..., drop=TRUE) {
+            if(length(x) == 0)
+              return(character(0))
+
+            tbl <- getWidget(x)
+            store <- tbl$getModel()
+            
+            items <- store[,1, drop=TRUE]
+            
+            if(missing(i))
+              return(items)
+            else
+              return(items[i])
+          })
+
+## assigns names
+setReplaceMethod("[",
+                 signature(x="gCheckboxgroupTableRGtk"),
+                 function(x, i, j,..., value) {
+                   .leftBracket(x, x@toolkit, i, j, ...) <- value
+                   return(x)
+                 })
+
+setReplaceMethod(".leftBracket",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",x="gCheckboxgroupTableRGtk"),
+                 function(x, toolkit, i, j, ..., value) {
+                   ## value can be a vector or data frame
+                   ## if a data.frame we have
+                   ## text, stockicon, tooltip
+                   items <- .makeItems(value)
+                   
+                   tbl <- getWidget(x)
+                   store <- tbl$getModel()
+                   
+                   if(missing(i)) {
+                     ## replace the store
+                     newStore <- rGtkDataFrame(items)
+                     tbl$setModel(newStore)
+                   } else {
+                     if(is.logical(i))
+                       i = which(i)
+                     
+                     ## set items
+                     m <- nrow(items)
+                     if(m == 0)
+                       return(x)
+                     
+                     store[i,] <- items
+                   }
+                 
+                   return(x)
+                 })
+
+
+setMethod(".length",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gCheckboxgroupTableRGtk"),
+          function(x,toolkit) {
+            tbl <- getWidget(x)
+            store <- tbl$getModel()
+            dim(store)[1]
+          })
+
+
+
+## Handlers must just pass down to each item in the list.
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerclicked(obj, toolkit, handler=handler,action=action,...)
+          })
+
+## clicked is changed
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            ## push down to cr
+            tbl <- getWidget(obj)
+            vc <- tbl$getColumn(0)
+            cr <- vc$getCellRenderers()[[1]]
+            ID <- gSignalConnect(cr, "toggled", function(h,...) handler(h),
+                                 user.data.first=TRUE,
+                                 data=list(obj=obj, action=action))
+            invisible(ID)
+          })
+
+setMethod(".removehandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            tbl <- getWidget(obj)
+            vc <- tbl$getColumn(0)
+            cr <- vc$getCellRenderers()[[1]]
+            gSignalHandlerDisconnect(cr, ID)
+          })
+
+setMethod(".blockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            tbl <- getWidget(obj)
+            vc <- tbl$getColumn(0)
+            cr <- vc$getCellRenderers()[[1]]
+            gSignalHandlerBlock(cr, ID)
+          })
+
+setMethod(".unblockhandler",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxgroupTableRGtk"),
+          function(obj, toolkit, ID=NULL, ...) {
+            tbl <- getWidget(obj)
+            vc <- tbl$getColumn(0)
+            cr <- vc$getCellRenderers()[[1]]
+            gSignalHandlerUnblock(cr, ID)
+          })

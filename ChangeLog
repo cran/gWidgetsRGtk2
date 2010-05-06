@@ -1,3 +1,19 @@
+2010-05-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R: fix to this when editable=TRUE (was throwing error)
+
+2010-04-20  verzani  <verzani@verzani-desktop>
+
+	* R/gdialogs.R: issue with gbasicdialog with parent object when using as container
+
+2010-04-18  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckboxgroup.R: new option use.table implemented
+
+2010-04-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: fixed obj[] error if no selection (Thanks Tom)
+
 2010-03-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/ggrid.R (addTreeViewColumnNoEdit): fix edit.handler to work

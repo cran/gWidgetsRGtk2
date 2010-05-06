@@ -27,37 +27,39 @@ setMethod(".glabel",
             else
               tag(obj, "markup") <- FALSE
 
-            if(nchar(text)>0)
+            if(nchar(text) > 0)
               svalue(obj) <- text
 
             if(editable) {
               tag(obj,"editable") <- TRUE
-              edit = gedit()
+              edit <- gedit()
               tag(obj, "edit") <- edit
-              handler = NULL                      # override handler
-              addhandlerchanged(edit, action=obj,handler =
+
+              editWidget <- getWidget(edit)
+              evb <- getBlock(obj)
+              
+              ## this are almost identical, as we just swap edit and label
+              addHandlerChanged(edit,  handler =
                                 function(h,...) {
-                                  evb <- getBlock(h$action)
-                                  ## copy edit value into label, put back
                                   svalue(obj) <- svalue(edit)
-                                  evb$Remove(edit@widget@widget) # get GTK object from gedit()
+                                  evb$Remove(evb[[1]])
                                   evb$Add(label)
                                 })
               ##This is for connecting to the third mosue
-              
-              id = addhandlerclicked(obj,
-                handler=function(h,...) {
-                  evb <- getBlock(h$obj)
-                  svalue(edit) <- svalue(obj)
-                  evb$Remove(label)                 # swap out
-                  evb$Add(getBlock(edit))
-                  getWidget(edit)$GrabFocus()
-              })
+              id <- addHandlerClicked(obj,
+                                      handler=function(h,...) {
+                                        svalue(edit) <- svalue(obj)
+                                        evb$Remove(evb[[1]])                                        
+                                        evb$Add(editWidget)
+                                        editWidget$GrabFocus()
+                                      })
               tag(obj, "handler.id") <- id
+
+              handler <- NULL           # no editable with handler
             }
             
             if(!is.null(handler)) {
-              id = addhandlerclicked(obj, handler=handler,action=action)
+              tag(obj,"handler.id") <- addHandlerClicked(obj, handler=handler,action=action)
             }
             
             ## attach?

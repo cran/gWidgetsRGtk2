@@ -9,9 +9,10 @@ setMethod(".gbutton",
           function(toolkit,
                    text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
                    ) {
+
             force(toolkit)
             
-            iconname = getstockiconname(tolower(text))
+            iconname <- getstockiconname(tolower(text))
             if(!is.na(iconname)) {
               button <- gtkButtonNewFromStock(iconname)
               button$Show()
@@ -25,20 +26,20 @@ setMethod(".gbutton",
             }
 
 
-            obj = as.gWidgetsRGtk2(button)
-#            obj = new("gButtonRGtk",
+            obj <- as.gWidgetsRGtk2(button)
+#            obj <- new("gButtonRGtk",
 #              block=button, widget=button, toolkit=toolkit)
 
             ## add to container
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
-                container = gwindow(visible=TRUE, toolkit=toolkit)
+                container <- gwindow(visible=TRUE, toolkit=toolkit)
               add(container, obj,...)
             }
 
             ## add handler
             if (!is.null(handler)) {
-              id = addhandlerclicked(obj,handler,action)
+              tag(obj,"handler.id") <-  addhandlerclicked(obj,handler,action)
             }
             
             invisible(obj)
@@ -46,23 +47,14 @@ setMethod(".gbutton",
 
 ## coerce gtk object
 as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
-  button = widget
-  obj = new("gButtonRGtk",
+  button <- widget
+  obj <- new("gButtonRGtk",
     block=button, widget=button, toolkit=guiToolkit("RGtk2"))
   return(obj)
 }
 
 ## constructor for actions
 ## proper call is gbutton(action = gaction_instnace, cont = ...)
-## setMethod(".gbutton",
-##           signature(toolkit="guiWidgetsToolkitRGtk2",
-##                     text = "guiComponent"),
-##           function(toolkit,
-##                    text="", border=TRUE, handler=NULL, action=NULL, container=NULL,...
-##                    ) {
-##             .gbutton(toolkit, "", border, handler, text@widget, container, ...)
-##           })
-
 setMethod(".gbutton",
           signature(toolkit="guiWidgetsToolkitRGtk2",
                     action = "guiComponent"),
@@ -113,13 +105,16 @@ setMethod(".gbutton",
             
             return(obj)
           })
+
 ### methods
+##' return button text
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             return(obj@widget$GetLabel())
           })
 
+##' set button text
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {
@@ -161,15 +156,16 @@ setReplaceMethod(".font",
                    invisible(obj)
                  })
 ### handlers
-setMethod(".addhandlerclicked",
-          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
-          function(obj, toolkit, handler, action=NULL, ...) {
-            addhandler(obj,"clicked",handler, action,...)
-          })
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             addhandlerclicked(obj, handler, action,...)
+          })
+
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            addhandler(obj,"clicked",handler, action,...)
           })
 
 ## for popup menu

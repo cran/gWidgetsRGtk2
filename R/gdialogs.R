@@ -313,6 +313,17 @@ setMethod(".gbasicdialognoparent",
                    ...
                    ) {
 
+            ## parent
+            if(!is.null(parent)) {
+              parent <- getBlock(parent)
+              if(!is(parent,"GtkWindow"))
+                parent <- parent$GetWindow()
+              if(!is(parent,"GtkWindow"))
+                parent <- NULL          # give up
+            } else {
+              parent <- gtkWindowNew(show=FALSE)
+            }
+            
                         
             dlg = gtkDialog(title,
               parent=parent,
@@ -381,7 +392,6 @@ setMethod(".visible",
                        dlg$Destroy()
                        return(FALSE)
                      } else if(response == GtkResponseType["ok"]) {
-                       print("call handler")
                        if(!is.null(handler))
                          handler(h)
                        dlg$Destroy()
