@@ -71,6 +71,15 @@ Port of gWidgets API to RGtk2
   "nfnGroupedData","nffGroupedData","nmGroupedData",
   "POSIXct","POSIXlt","POSIXt"
   )}. 
+  \cr
+
+  The \code{gfile} constructor has the argument \code{multiple}, which if
+  TRUE will allow for multiple selections of files. This feature
+  should be merged into the gWidgetsAPI, but for now is just here.
+
+
+
+
 
   \bold{Methods:}\cr
   

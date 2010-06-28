@@ -1,3 +1,26 @@
+2010-06-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R: bug fix for gtree when icons not set
+
+2010-06-20  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/aaaGenerics.R: put in check for delete method
+
+2010-05-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gedit.R (.setCompletion): visible(obj)<-FALSE for
+	password entry
+
+2010-05-19  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R (as.gWidgetsRGtk2.GtkLabel): fix to svalue<-() method
+	when text is character vector with length > 1.
+
+2010-05-11  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gfile.R: add multi=TRUE option to constructor for multiple
+	selection of files
+
 2010-05-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/glabel.R: fix to this when editable=TRUE (was throwing error)

@@ -189,6 +189,15 @@ setReplaceMethod("[",
                    return(x)
                  })
 
+##' visible<- if FALSE, for password usage
+setReplaceMethod("visible",signature(obj="gEditRGtk"),
+          function(obj, ..., value) {
+            widget <- getWidget(obj)
+            widget$setVisibility(as.logical(value))
+            return(obj)
+          })
+
+
 ##################################################
 ## handlers
 

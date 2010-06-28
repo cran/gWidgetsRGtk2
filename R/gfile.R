@@ -26,6 +26,7 @@ setMethod(".gfile",
             args = list(...)
             
             type = match.arg(type)
+
             availTypes = c(
               "open"="open",
               "save"="save",
@@ -34,7 +35,8 @@ setMethod(".gfile",
               )
             
             actiontype = GtkFileChooserAction[availTypes[type]]
-            
+
+            multi <- as.logical(getWithDefault(args$multiple, FALSE))
             
             buttonWithId = list(
               "ok"= c("gtk-ok",GtkResponseType["ok"]),
@@ -69,9 +71,12 @@ setMethod(".gfile",
               dispose(h$obj)
               return(NA)
             }
+
+
             
             filechooser = gtkFileChooserDialogNew(title=text, action=actiontype)
-
+            filechooser$setSelectMultiple(multi)
+            
             for(i in whichButtons) 
               filechooser$AddButton(buttonWithId[[i]][1],buttonWithId[[i]][2])
             
@@ -105,7 +110,12 @@ setMethod(".gfile",
             
             ## this makes it modal
             response = filechooser$Run()
-            file=filechooser$GetFilename()
+            
+#            file=filechooser$GetFilename()
+            
+            ## return a vector of chars for multi select - TT
+            file=unlist(filechooser$GetFilenames())
+            
             h = list(obj=filechooser,action=action,file=file)
             if(response == GtkResponseType["cancel"]) {
               ## just close

@@ -27,8 +27,7 @@ setMethod(".glabel",
             else
               tag(obj, "markup") <- FALSE
 
-            if(nchar(text) > 0)
-              svalue(obj) <- text
+            svalue(obj) <- text
 
             if(editable) {
               tag(obj,"editable") <- TRUE
@@ -120,17 +119,19 @@ setMethod(".svalue",
 setReplaceMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gLabelRGtk"),
           function(obj, toolkit, index=NULL, ..., value) {
+            widget <- getWidget(obj)
             ## set the text
-            markup = tag(obj, "markup")
-            if(is.null(markup)) markup = FALSE
+            markup <- tag(obj, "markup")
+            if(is.null(markup))
+              markup = FALSE
 
-            ## if multiline, paste with \n
+            ## if multiline, collapse with \n
             value <- paste(value, collapse="\n")
             
             if(as.logical(markup)==TRUE)
-              obj@widget$SetMarkup(value)
+              widget$SetMarkup(value)
             else
-              obj@widget$SetText(value)
+              widget$SetText(value)
 
             return(obj)
           })
