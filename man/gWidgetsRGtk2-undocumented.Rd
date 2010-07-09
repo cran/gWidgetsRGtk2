@@ -866,6 +866,7 @@
 \alias{.addhandlerchanged,gDroplistRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gEditRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.addhandlerchanged,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gGridRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gSubsetbyRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
@@ -874,6 +875,7 @@
 \alias{.addhandlerchanged,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerchanged,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.addhandlerchanged,gTextRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlerchanged,gTreeRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerkeystroke --
 %%
@@ -912,6 +914,7 @@
 \alias{.addhandlerclicked,gImageRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gLabelRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.addhandlerclicked,gRadioRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.addhandlerclicked,gTreeRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  addhandlerdoubleclick --
 %%

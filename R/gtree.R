@@ -390,6 +390,22 @@ setMethod(".addhandlerdoubleclick",
              addhandler(obj, "row-activated",handler,action,...)
            })
 
+setMethod(".addhandlerchanged",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            .addhandlerdoubleclick(obj, toolkit, handler, action, ...)
+          })
+
+
+## clicked is on selection
+setMethod(".addhandlerclicked",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
+          function(obj, toolkit, handler, action=NULL, ...) {
+            widget <- getWidget(obj)
+            widget <- widget$getSelection()
+             addhandler(widget, "changed",handler,action,actualobj=obj,...)
+           })
+
 ## used internally
 .getValuesFromIter = function(obj, iter) {
   string = tag(obj,"store")$GetPath(iter)$ToString()
