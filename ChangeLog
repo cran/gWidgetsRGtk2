@@ -1,3 +1,34 @@
+2010-09-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R: Fixed bug in isStillThere, added summary
+	column (Thanks to Tom T. and wxffxw);
+
+2010-08-28  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdialogs.R: Try to make OK button default button. Doesn't
+	work, need to use gtkDialog, not gtkMessageDialog it seems
+
+	* R/aaaGenerics.R: in 3rd mous popup propogate signal to next
+	handler. (So 3rd mouse will still do selection)
+
+2010-08-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (tag(tree, "isStillThere")): check if there are
+	empty values to avoid crash
+
+2010-08-24  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R: fixed tooltip issue
+	when adding gaction backend for button
+
+2010-08-21  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggraphics.R: cleaned up code. Issue with size can be avoided
+	by suppressing drawing of window until after this widget is added.
+
+	* R/gradio.R (as.gWidgetsRGtk2.GtkRadioButton): fix to allow [<-
+	to shorten length
+
 2010-07-27  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gtext.R: fix insert method and scroll to end
