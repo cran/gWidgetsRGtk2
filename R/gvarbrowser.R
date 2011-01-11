@@ -121,14 +121,6 @@ hasSubTree = function(x) {
     return(FALSE)
 }
 
-## in common.R
-## getObjectFromString = function(string, envir=.GlobalEnv) {
-##   out = try(eval(parse(text=string), envir=envir), silent=TRUE)
-##   if(inherits(out, "try-error"))
-##     return(NA)
-##   return(out)
-## }
-
 
 setClass("gVarbrowserRGtk",
          representation(filter="guiComponent"),
@@ -136,7 +128,51 @@ setClass("gVarbrowserRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
 
-## THe main object
+##' Toolkit constructor for gvarbrowser widget
+##'
+##' Call the update method to update the object
+##' 
+##' 
+##' @example
+##' Make a popup menu for actions. Issue: works with selection, but selection updated first by left click
+##' is needed.
+##' library(gWidgets)
+##' options(guiToolkit="RGtk2")
+##' v <- gvarbrowser(cont=gwindow("Object broser"), handler=function(h,...) {
+##' varname <- h$obj[]
+##' if(length(varname) == 1) {
+##' do.call("fix", list(varname))
+##' }
+##' })
+##' Helper function to get object from argument h passed in to menulist
+## getObjectFrom_h <- function(h) {
+##   varname <- h$action[]                 # note action, not obj
+##   obj <- get(varname[1], envir=.GlobalEnv)
+##   if(length(varname) > 1)
+##     obj <- obj[[varname[-1]]]
+##   obj
+## }
+
+## ##' a list of gaction items or separators
+## ml <- list(
+##            summary=gaction("summary...", action=v, handler=function(h,...) {
+##              obj <- getObjectFrom_h(h)
+##              print(summary(obj))
+##            }),
+##            plot=gaction("plot...", action=v, handler=function(h,...) {
+##              obj <- getObjectFrom_h(h)
+##              try(plot(obj), silent=TRUE)
+##            }),
+##            sep=gseparator(),
+##            remove=gaction("remove", action=v, handler=function(h,...) {
+##              varname <- h$action[]
+##              print(varname)
+##              if(gconfirm(sprintf("Really delete %s?", varname[1])))
+##                rm(list=varname[1], envir=.GlobalEnv)
+##            })
+##            )
+## add3rdMousePopupmenu(v, menulist=ml)
+
 setMethod(".gvarbrowser",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
@@ -177,6 +213,7 @@ setMethod(".gvarbrowser",
             filterPopup <- gdroplist(names(knownTypes), container=filterGroup)
             val <- ifelse("data sets" %in% names(knownTypes), "data sets", names(knownTypes)[1])
             svalue(filterPopup) <- val
+
             
             ## main tree
             tree = gtree(offspring=offspring,
@@ -190,6 +227,20 @@ setMethod(".gvarbrowser",
               multiple=multiple,
               container = group, expand=TRUE
               )
+
+            updateGroup <- ggroup(cont=group)
+            autoUpdate <- gcheckbox("Auto update", checked=TRUE, use.togglebutton=TRUE, cont=updateGroup,
+                                    handler=function(h,...) {
+                                      enabled(refreshButton) <- !svalue(h$obj)
+                                    })
+            refreshButton <- gimage("refresh", dir="stock", cont=updateGroup, handler=function(h,...) {
+              key <- svalue(filterPopup)
+              offspring.data <- knownTypes[[key]]
+              update(obj, offspring.data)
+            })
+            enabled(refreshButton) <- FALSE
+            tooltip(refreshButton) <- "Click to refresh display"
+            visible(updateGroup) <- FALSE
             
             ## update the tree this way
             addhandlerclicked(filterPopup,
@@ -200,15 +251,6 @@ setMethod(".gvarbrowser",
                               },
                               action=tree)
             
-            ## add an idle handler for updating tree every  second (or interval)
-            idleid = addhandleridle(tree, interval=interval, handler = function(h,...) {
-              key = svalue(filterPopup)
-              offspring.data = knownTypes[[key]]
-              update(h$obj, offspring.data)
-            })
-            addhandlerunrealize(tree, handler = function(h,...) {
-              gSourceRemove(h$action)},
-                                action=idleid)
             
             
             
@@ -225,13 +267,64 @@ setMethod(".gvarbrowser",
 
             obj <- new("gVarbrowserRGtk",block=group, widget=tree, filter=filterPopup, toolkit=toolkit)
 
+            ### In place of an idleHandler, we use a taskCallback
+            ### This is a little fragile, as remove taskCallback can remove
+            updateCallback <- function(x) {
+              function(expr, value, ...) {
+                
+                if(!isExtant(x)) return(FALSE)      # need widget to be available, otherwise shut off
+                
+                if(is.call(expr)) {
+                  FUN <- deparse(expr[[1]])
+                  if(FUN %in% c("=","<-", "assign", "rm"))
+                    update(x)
+                }
+                return(TRUE)
+              }
+            }
+            addTaskCallback(updateCallback(obj), name="gvarbrowser")
 
+            
+            ## ## add an idle handler for updating tree every  second (or interval)
+            ## idleHandler <- function(h,...) {
+
+            ##   visible(updateGroup) <- tag(h$action, "logsize") > 2 #  50 or more
+
+            ##   if(!svalue(autoUpdate))
+            ##     return()
+
+
+            ##   key = svalue(filterPopup)
+            ##   offspring.data = knownTypes[[key]]
+            ##   update(h$obj, offspring.data)
+
+            ##   ## do we make timeframe longer bigger?
+            ##   n <- ceiling(log(1+ length(.GlobalEnv), 7)) 
+            ##   if(n != tag(h$action, "logsize")) {
+            ##     tag(h$action, "logsize") <- n
+            ##     idleid <- tag(h$action, "idleid")
+            ##     gSourceRemove(idleid)
+            ##     tag(h$action, "idleid") <-
+            ##       addhandleridle(tree, interval=2^n*1000, handler = idleHandler, action=h$action)
+            ##   }
+            ## } 
+            ## idleid <- addhandleridle(tree, interval=interval, handler = idleHandler, action=obj)
+            ## tag(obj, "idleid") <- idleid
+            ## tag(obj, "logsize") <- 1    # ceiling(log(1+ length(.GlobalEnv), 10))
+            ## addhandlerunrealize(tree, handler = function(h,...) {
+            ##   idleid <- tag(h$action, "idleid")
+            ##   gSourceRemove(idleid)
+            ## },
+            ##                     action=obj)
+
+            
             ## override how we compare items. Default is just by name, here we want
-            ## to include class
+            ## to include class and summary
             tag(tree, "isStillThere") <- function(old, new) {
               if(length(old) && length(new)) {
                 identical(any(ind <- (old[1] == new[,1, drop=TRUE])) &&
-                          (old[2] %in% new[which(ind),3, drop=TRUE]),
+                          (old[2] %in% new[which(ind),3, drop=TRUE]) &&
+                          (old[3] %in% new[which(ind),4, drop=TRUE]), # for wxf
                           TRUE)         # Tom Taverner change
               } else {
                 FALSE

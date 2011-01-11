@@ -3,6 +3,11 @@ setClass("gDroplistRGtk",
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
+
+##' Combobox widget
+##' @param items vector of names; 1-column data.frame of names; 2-column names, icons; 3-column names, icons, tooltip
+##' @param selected index of initial, 0 if blank
+##' @param editible -- are we editable?
 setMethod(".gdroplist",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
@@ -28,10 +33,13 @@ setMethod(".gdroplist",
             }
             
             doIcons = ifelse(ncol(items) >= 2, TRUE, FALSE)
-            if(doIcons)
-              types = c(data="gchararray",icons="gchararray")
-            else
-              types = c(dataonly="gchararray")
+            if(ncol(items) == 3) {
+              types <- c(data="gchararray",icons="gchararray", tooltip="gchararray")
+            } else if(ncol(items) == 2) {
+              types <- c(data="gchararray",icons="gchararray")
+            } else {
+              types <- c(dataonly="gchararray")
+            }
             
             theArgs = list(...)
             
@@ -47,8 +55,10 @@ setMethod(".gdroplist",
             if(editable) {
               store = gtkListStoreNew(types)
               combo <- gtkComboBoxEntryNewWithModel(store, 0)
+             
+              
               ## now add icon if there
-              if(doIcons) {
+              if(ncol(items)  >= 2) {
                 ## icon renderer
                 cellrenderer = gtkCellRendererPixbufNew()
                 combo$PackStart(cellrenderer, expand=FALSE)
@@ -84,6 +94,19 @@ setMethod(".gdroplist",
               combo$AddAttribute(cellrenderer,"text", 0)
             }
 
+            ## add tooltip if there
+            if(ncol(items) >= 3) {
+              ## no easy way. Thought that we could do the following, but
+              ## it doesn't work. Tooltip is on combobox when not expanded for searching
+              ## combo['has-tooltip'] <-TRUE
+              ## gSignalConnect(combo, "query-tooltip", function(w, x, y, bool, tool, ...) {
+              ##   ## look up text from w, x, y
+              ##   tool$setText("text")
+              ##   TRUE
+              ## })
+            }
+
+            
             obj <- as.gWidgetsRGtk2(combo)
             
 ##             obj = new("gDroplistRGtk",block=combo,widget=combo, toolkit=toolkit)
@@ -92,10 +115,10 @@ setMethod(".gdroplist",
 ##             tag(obj,"combo") <- combo
 ##             tag(obj,"editable") <- editable
 
-            tag(obj,"items") <- items
-            tag(obj,"doIcons") <- doIcons
+            tag(obj, "items") <- items
+            tag(obj, "doIcons") <- doIcons
             tag(obj, "coerce.with") = coerce.with
-
+            tag(obj, "default_fill") <- "x"
             
             ## load up the store
             if(length(items) > 0) {
@@ -110,7 +133,7 @@ setMethod(".gdroplist",
               if(dim(items)[1] > 0) {
                 colChars <- max(sapply(items[,1,drop=TRUE],nchar))
                 if(colChars < 3)
-                  combo['width-request'] <- 15*(1 + colChars)
+                  combo['width-request'] <- 15*(4 + colChars)
               }
             }
             
@@ -157,7 +180,13 @@ as.gWidgetsRGtk2.GtkComboBox <- function(widget,...) {
 }
 
 .as.gWidgetsRGtk2.gdroplist <- function(widget) {
-  obj = new("gDroplistRGtk",block=widget,widget=widget,
+  parent <- widget$parent
+  if(is.null(parent)) {
+    parent <- gtkAlignmentNew(xscale=1, yscale=0)
+    parent$add(widget)
+  }
+  
+  obj <- new("gDroplistRGtk",block=parent,widget=widget,
     toolkit=guiToolkit("RGtk2"))
 
   store <- widget$GetModel()
@@ -326,6 +355,9 @@ setReplaceMethod(".leftBracket",
             ## ncol=2 if doIcons, else 1
             olditems = tag(x,"items")
 
+            old_value <- svalue(x)
+
+            
             ## coerce value to a data frame, if not one
             if(!inherits(value,"data.frame"))
               value = as.data.frame(value, stringsAsFactors=FALSE)
@@ -356,8 +388,16 @@ setReplaceMethod(".leftBracket",
                 if(doIcons)
                   store$SetValue(iter$iter, column = 1,
                                  allIcons[[as.character(items[j,2])]]) # convert to name
+                if(ncol(items) >= 3) {
+                  store$setValue(iter$iter, column =2, items[j,3])
+                }
               }
             }
+
+            ## set value if we can
+            if(!is.null(old_value) &&
+               old_value %in% items[,1, drop=TRUE])
+              svalue(x) <- old_value
             
             return(x)
           })

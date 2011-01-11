@@ -1,3 +1,87 @@
+2011-01-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R (.as.gWidgetsRGtk2.gdroplist): [<- remembers where
+	it is (if possible) when we replace objects
+
+2011-01-05  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggrid.R: added columnWidths option to size<- method. Pass in
+	size value as list with this component
+
+2011-01-04  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gaction.R: put in key.accel bit. Needs parent to be passed in.
+
+	* R/aaaGenerics.R: update tooltip<- to newer GTK style
+
+2010-12-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gdroplist.R: fix minimum column width under windows (15 was
+	too narrow a minimum)
+
+2010-12-02  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtext.R (.addTags): put in check that we aren't redoing a text tag
+
+2010-11-23  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (updateCallback): replace idle handler with
+	taskCallback for update. Seems much nicer, although possibly
+	fragile as a  user can remove the callback too easily.
+
+2010-11-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glayout.R (as.gWidgetsRGtk2.GtkTable): New logic to handle
+	expand, fill, anchor arguments when widget packed into
+	gtkAlignment container
+
+2010-11-09  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gbutton.R (as.gWidgetsRGtk2.GtkButton): put in
+	gtkAlignmentWidget, along with combobox. Changes behaviour of
+	layout, but implements fill= argument to add method of ggroup
+
+2010-11-07  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R: packed in alignment widget
+
+	* R/ggroup.R (as.gWidgetsRGtk2.GtkVBox <-
+	as.gWidgetsRGtk2.GtkHBox): fixes to ".add" method and fill argument
+
+2010-11-01  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gslider.R (gsliderindex): changed so that one can use vector of
+	orderable values. Pass to from argument initially.
+	
+
+2010-10-26  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/glabel.R (addHandler): for glabel and gimage -- both use event
+	boxes -- put in check to see if widget is sensitive to events when
+	calling a handler.
+
+2010-10-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gvarbrowser.R (idleHandler): hacks to add in auto update
+	option. Really should rewrite this to be faster thoough.
+
+2010-10-15  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gcheckbox.R: add option use.togglebutton=TRUE to use toggle
+	button in place of checkbox.
+
+2010-10-14  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gtree.R (isStillThere): fixes to this -- again.
+
+2010-10-10  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/ggroup.R: fill argument added. Before was simply taken as "both".
+
+2010-09-29  john verzani  <verzani@john-verzanis-macbook-pro.local>
+
+	* R/gwindow.R (as.gWidgetsRGtk2.GtkWindow): adjustments to border-width
+
 2010-09-25  john verzani  <verzani@john-verzanis-macbook-pro.local>
 
 	* R/gvarbrowser.R: Fixed bug in isStillThere, added summary

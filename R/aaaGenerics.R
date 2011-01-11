@@ -411,6 +411,17 @@ setMethod("enabled",signature(obj="gWidgetRGtk"),
             return(NA)
             .enabled(obj, obj@toolkit,...)
           })
+
+setMethod(".enabled",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
+          function(obj, toolkit, ...) {
+            widget <- getWidget(obj)
+            if("sensitive" %in% names(widget))
+              widget['sensitive']
+            else
+              TRUE
+          })
+
 setMethod(".enabled",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkWindow"),
           function(obj, toolkit, ...) {
@@ -512,12 +523,14 @@ setReplaceMethod(".tooltip",
 setReplaceMethod("tooltip",signature(obj="RGtkObject"),
           function(obj, ..., value) {
             ## set the tip.
-            tooltipGroup <- try(gtkTooltips(), silent = TRUE)
-            if(inherits(tooltipGroup, "try-error"))
-              return(obj)
-            ## some widgets don't allow a tooltip (glabel, ...)
-            ## right check is widget.flags()&gtk.NO_WINDOW
-            try(tooltipGroup$setTip(obj, tip.text = value), silent=TRUE)
+            obj$setTooltipText(paste(value, collapse="\n"))
+            ## deprecated
+            ## tooltipGroup <- try(gtkTooltips(), silent = TRUE)
+            ## if(inherits(tooltipGroup, "try-error"))
+            ##   return(obj)
+            ## ## some widgets don't allow a tooltip (glabel, ...)
+            ## ## right check is widget.flags()&gtk.NO_WINDOW
+            ## try(tooltipGroup$setTip(obj, tip.text = value), silent=TRUE)
             return(obj)
           })
 

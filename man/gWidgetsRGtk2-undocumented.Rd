@@ -385,6 +385,8 @@
 \alias{.leftBracket,gNotebookRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,RGtkDataFrame,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket,gToggleButtonRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gToolbarRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gTreeRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket,gVarbrowserRGtk,guiWidgetsToolkitRGtk2-method} 
@@ -406,6 +408,7 @@
 \alias{.leftBracket<-,gRadioRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gSliderRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.leftBracket<-,gSpinbuttonRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.leftBracket<-,gToggleButtonRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.leftBracket<-,gToolbarRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  add --
@@ -568,6 +571,7 @@
 %%
 \alias{.enabled-methods}
 \alias{.enabled,GtkWindow,guiWidgetsToolkitRGtk2-method} 
+\alias{.enabled,gWidgetRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  enabled<- --
 %%
@@ -609,6 +613,7 @@
 \alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.size<-,gGroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.size<-,gGridRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.size<-,gNotebookRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
 \alias{.size<-,gWidgetRGtk,guiWidgetsToolkitRGtk2,ANY-method} 
@@ -690,6 +695,8 @@
 \alias{.tag,guiWidget,guiWidgetsToolkitRGtk2-method}
 \alias{.tag,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.tag,RGtkObject,guiWidgetsToolkitRGtk2-method} 
+\alias{.tag,GtkDfEdit,guiWidgetsToolkitRGtk2-method}
+
 %%
 %% --  tag<- --
 %%
@@ -1169,6 +1176,7 @@
 \alias{.update,gComponentRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.update,gVarbrowserRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.update,gTreeRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.update,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  .length --
 %%

@@ -8,10 +8,18 @@ setMethod(".gcheckbox",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
                    text, checked=FALSE,
+                   use.togglebutton=FALSE,
                    handler=NULL, action=NULL,
                    container=NULL,...) {
 
             force(toolkit)
+
+            if(missing(text))
+              text <- ""
+
+            if(use.togglebutton)
+              return(gtogglebutton(text, checked, handler, action, container, ...))
+            
             
             check <- gtkCheckButtonNewWithLabel(text)
             check$SetActive(checked)
@@ -33,7 +41,12 @@ setMethod(".gcheckbox",
           })
 
 as.gWidgetsRGtk2.GtkCheckButton <- function(widget,...) {
-  obj = new("gCheckboxRGtk",block=widget, widget=widget,
+  parent <- widget$parent
+  if(is.null(parent)) {
+    parent <- gtkAlignmentNew(0,0,0,0)
+    parent$add(widget)
+  }
+  obj = new("gCheckboxRGtk",block=parent, widget=widget,
     toolkit=guiToolkit("RGtk2"))
 
   return(obj)
@@ -90,4 +103,61 @@ setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gCheckboxRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
             .addhandlerclicked(obj, toolkit, handler, action=action,...)
+          })
+
+
+##################################################
+##' class to provide a toggle button alternative to a checkbox. The toggle button
+##' is very similar
+setClass("gToggleButtonRGtk",
+         contains="gCheckboxRGtk"
+         )
+
+##' Provides a toggle button alternative to a check box.
+##' 
+##' constructor, not a method as called internally
+gtogglebutton <- function(text, checked=FALSE, handler=NULL, action=NULL,
+                          container=NULL, ...) {
+
+  widget <- gtkToggleButton()
+  
+  obj <- new("gToggleButtonRGtk", 
+             block=widget, widget=widget,
+             toolkit=guiToolkit("RGtk2"))
+
+  if(!missing(text))
+    obj[] <- text
+
+  svalue(obj) <- checked
+  
+  if(!is.null(handler))
+    addHandlerChanged(obj, handler=handler, action=action)
+
+  if(!is.null(container)) {
+    if(is.logical(container) && container)
+      container <- gwindow()
+
+    add(container, obj, ...)
+
+  }
+
+  return(obj)
+}
+
+## method to set text
+setReplaceMethod(".leftBracket",
+          signature(toolkit="guiWidgetsToolkitRGtk2",x="gToggleButtonRGtk"),
+          function(x, toolkit, i, j, ..., value) {
+            tb <- getWidget(x)
+            
+            icons <- getStockIcons()
+            if(value %in% names(icons)) {
+              tb['use-stock'] <- TRUE
+              tb['label'] <- icons[[value]]
+            } else {
+              tb['use-stock'] <- FALSE
+              tb['label'] <- value
+            }
+
+            return(x)
           })

@@ -99,8 +99,9 @@ as.gWidgetsRGtk2.GtkWindow <- function(widget,...) {
   tbl$Attach(getBlock(mbg), 0,1,0,1, yoptions = c("fill"))
   tbl$Attach(getBlock(tbg), 0,1,1,2, yoptions = c("fill"))
   tbl$AttachDefaults(getBlock(cpg), 0,1,2,3)
-#  if(!is.null(tmp <- Sys.info()) && tmp['sysname'] == "Darwin")
-#    getBlock(cbg)['border-width'] = 12
+  ## size grip issue if no statusbar
+  tmp <- getBlock(cpg);  tmp['border-width'] = 13
+
   tbl$Attach(getBlock(sbg), 0,1,3,4, yoptions = c("fill"))
   
   window$Add(tbl)
@@ -159,6 +160,13 @@ setMethod(".size",
             return(unlist(theSize[2:3]))
           })
 
+setMethod(".update",
+          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
+          function(object, toolkit, ...) {
+            w <- getWidget(object)
+            w$setSizeRequest(-1, -1)
+            invisible()
+          })
 
 ## Add and delete. Special methods for [menu|tool|status]bars
 ##  add
@@ -167,7 +175,7 @@ setMethod(".add",
           function(obj, toolkit, value, ...) {
             ## should fix expand=TRUE here
 #            .add(obj, toolkit, getBlock(value),...)
-            add(tag(obj,"contentPane"), value, expand=TRUE) # no ...
+            add(tag(obj,"contentPane"), value, expand=TRUE, fill="both") # no ...
           })
 
 setMethod(".add",
@@ -198,6 +206,8 @@ setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", value="gStatusbarRGtk"),
           function(obj, toolkit, value, ...) {
             add(tag(obj,"statusbargroup"), value, expand=TRUE)
+            tmp <- getBlock(tag(obj, "contentPane"))
+            tmp['border-width'] <- 0
           })
 
 ## delete
@@ -223,6 +233,9 @@ setMethod(".delete",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk", widget="gStatusbarRGtk"),
           function(obj, toolkit, widget, ...) {
             delete(tag(obj,"statusbargroup"), widget, ...)
+            widget <- getWidget(obj)
+            tmp <- getBlock(tag(obj, "contentPane"))
+            tmp['border-width'] <- 13
           })
 
 

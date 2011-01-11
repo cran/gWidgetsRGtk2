@@ -403,7 +403,7 @@ setMethod(".ggrid",
             sw <- gtkScrolledWindowNew()
             sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
             sw$Add(view)
-            add(group,sw, expand=TRUE)
+            add(group,sw, expand=TRUE, fill="both")
 
             ## properties
             if(multiple) {
@@ -631,12 +631,12 @@ setMethod(".leftBracket",
             
             ## handle missing values
             if(missing(i) && missing(j)) {
-              i = if(showVisible) which(visible(x)) else 1:nrow(x)
-              j = 1:n
+              i = if(showVisible) which(visible(x)) else seq_len(nrow(x))
+              j = seq_len(n)
             } else if (missing(i)) {
-              i = if(showVisible) which(visible(x)) else 1:nrow(x)
+              i = if(showVisible) which(visible(x)) else seq_len(nrow(x))
             } else if (missing(j)) {
-              j = 1:n
+              j = seq_len(n)
             }
             if(showVisible) 
               i = intersect(i,which(visible(x)))
@@ -655,8 +655,6 @@ setReplaceMethod("[",
 setReplaceMethod(".leftBracket",
                  signature(toolkit="guiWidgetsToolkitRGtk2",x="GtkTreeView"),
                  function(x, toolkit, i, j, ..., value) {
-                   gwCat("DEBUG: call leftBracket<- on gtkTreeView: deprecate?\n")
-                   
                    gridObj = tag(x,"gridObj")
                    if(missing(i) && missing(j))
                      gridObj[,,...] <- value
@@ -953,6 +951,43 @@ setMethod(".names",
             return(theNames)
           })
 
+setReplaceMethod(".size", 
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
+                 function(obj, toolkit, ..., value) {
+
+                   w <- getWidget(obj)
+
+                   if(is.list(value) && !is.null(value$columnWidths)) {
+                     colWidths <- value$columnWidths
+                     colWidths <- rep(colWidths, length.out=dim(obj)[2])
+                     sapply(seq_len(colWidths), function(i) {
+                       col <- w$getColumn(i-1)
+                       col$setMinWidth(colWidths[i])
+                     })
+                   }
+
+                   if(is.list(value) && !is.null(value$rowHeights)){
+                     ## no height method
+                   }
+
+                   ## width/height now
+                   if(is.list(value)) {
+                     width <- value$width # possibly NULL
+                     height <- value$height
+                   } else {
+                     width <- value[1]
+                     height <- ifelse(length(value) > 1, value[2], -1)
+                   }
+                   if(is.null(width))
+                     width <- -1
+                   if(is.null(height))
+                     height <- -1
+
+                   if(!is.null(width))
+                     w$SetSizeRequest(width,height)
+
+                  return(obj)
+                })
 
 setReplaceMethod(".names",
                  signature(toolkit="guiWidgetsToolkitRGtk2",x="gGridRGtk"),
@@ -1737,8 +1772,8 @@ setMethod("gsubsetby",
             
             vars = names(gridObj)
             group = ggroup(container = container, ...)
-            subsetVar = gdroplist(c("NA",vars),selected=1,container = group)
-            subsetHow = gdroplist(c(""), editable=TRUE, selected=1, container=group)
+            subsetVar = gdroplist(c("NA",vars), width=25*8, selected=1,container = group)
+            subsetHow = gdroplist(c(""), width=25*8, editable=TRUE, selected=1, container=group)
             leftArrow = gimage("larrow",dirname="stock",container = group)
             rightArrow = gimage("rarrow",dirname="stock",container = group)
 

@@ -272,6 +272,8 @@ setMethod(".gcheckboxgrouptable",
 
             
             tbl <- gtkTreeViewNew(TRUE)
+            tbl$SetRulesHint(TRUE)      # shade
+            
             store <- rGtkDataFrame(.makeItems())
             tbl$setModel(store)
             tbl$setHeadersVisible(FALSE)
@@ -388,7 +390,7 @@ setMethod(".svalue",
             if(index) {
               return(which(vals))       # return indices
             } else {
-              vals
+              obj[vals]                 # vals is logical
             }
           })
 

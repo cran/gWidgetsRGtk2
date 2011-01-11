@@ -30,6 +30,7 @@ setMethod(".gbutton",
 #            obj <- new("gButtonRGtk",
 #              block=button, widget=button, toolkit=toolkit)
 
+            tag(obj, "default_fill") <- "x"
             ## add to container
             if (!is.null(container)) {
               if(is.logical(container) && container == TRUE)
@@ -47,9 +48,13 @@ setMethod(".gbutton",
 
 ## coerce gtk object
 as.gWidgetsRGtk2.GtkButton <- function(widget,...) {
-  button <- widget
+  parent <- widget$parent
+  if(is.null(parent)) {
+    parent <- gtkAlignmentNew(xscale=1, yscale=0)
+    parent$add(widget)
+  }
   obj <- new("gButtonRGtk",
-    block=button, widget=button, toolkit=guiToolkit("RGtk2"))
+    block=parent, widget=widget, toolkit=guiToolkit("RGtk2"))
   return(obj)
 }
 
@@ -85,7 +90,8 @@ setMethod(".gbutton",
 
             action@e$buttons <- c(action@e$buttons, obj)
             
-            gtkaction$connectProxy(button)
+            #gtkaction$connectProxy(button)
+            button$setRelatedAction(gtkaction)
             ## icon
             icon <- gtkaction['stock-id']
             if(!is.null(icon)) {

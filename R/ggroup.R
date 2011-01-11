@@ -20,8 +20,9 @@ setMethod(".ggroup",
               group <- gtkVBoxNew(homogeneous=FALSE, spacing=spacing)
             
             ## let breath a little
-            group$SetBorderWidth(2)
+            group$SetBorderWidth(0L)
 
+            
             ## do we pack into a scroll window?
             theArgs = list(...)
             if(use.scrollwindow == TRUE) {
@@ -29,7 +30,6 @@ setMethod(".ggroup",
               sw = gtkScrolledWindowNew()
               sw$SetPolicy("GTK_POLICY_AUTOMATIC","GTK_POLICY_AUTOMATIC")
               sw$AddWithViewport(group)
-              
               obj = new("gGroupRGtk", block=sw, widget=group, toolkit=toolkit)
             } else {
               obj = new("gGroupRGtk", block=group, widget=group, toolkit=toolkit)
@@ -71,57 +71,87 @@ as.gWidgetsRGtk2.GtkVBox <- as.gWidgetsRGtk2.GtkHBox <-
 
 ## for gGroup
 ## methods of expand, anchor
+## ... arguments: expand, fill, anchor, padding
 setMethod(".add",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGroupRGtk", value="gWidgetRGtk"),
           function(obj, toolkit, value, ...) {
-
             parent <- getWidget(obj)
             child <- getBlock(value)
             childWidget <- getWidget(value)
-            theArgs <- list(...)
             
-            ## anchor is tricky. If block is able do it.
-            ## If not, try in the widget
-            if(!is.null(theArgs$anchor)) { ## logic thanks to Felix
-              anchor <- theArgs$anchor ## anchor is in [-1,1]^2
+            theArgs <- list(...)
+
+
+            ## get expand, anchor, fill
+            expand <- getWithDefault(theArgs$expand, FALSE)
+            if(!is.null(theArgs$align))
+              theArgs$anchor <- theArgs$align
+            anchor <- getWithDefault(theArgs$anchor, NULL)
+            if(!is.null(anchor)) {       # put in [0,1]^2
               anchor <- (anchor+1)/2      # [0,1]
               anchor[2] <- 1 - anchor[2]     # flip yalign
-              ## in gtkstuff
-              setXYalign(child, childWidget, anchor)
             }
+            default_fill <- getWithDefault(tag(value, "default_fill"), "both")
+            fill <- getWithDefault(theArgs$fill, default_fill) # x, y or both
 
-            ## paddign
-            if(is.null(theArgs$padding))
-              theArgs$padding=0
-            ## names lookup seemed to take a bit of time, is try faster?
-##             ## can't do this for gtkEntry
-##             if('xalign' %in% names(child) && class(child)[1] != "GtkEntry") 
-##               child['xalign'] <- anchor[1]
-##             else if('xalign' %in% names(childWidget)
-##                     && class(childWidget)[1] != "GtkEntry")
-##               childWidget['xalign'] <- anchor[1]
+            ## we do things differently if there is a gtkAlignment for a block
+            if(is(child, "GtkAlignment")) {
+              if(expand && (fill =="both" || fill == "x")) {
+                child['xscale'] <- 1
+              }
 
-##             if('yalign' %in% names(child)) 
-##               child['yalign'] <- anchor[2]
-##             else if('yalign' %in% names(childWidget))
-##               childWidget['yalign'] <- anchor[2]
+              if(expand && (fill == "both" || fill == "y")) {
+                child['yscale'] <- 1
+              }
 
-            ## expand
-            expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-            parent$packStart(child, expand, TRUE, theArgs$padding) # expand to fill if TRUE
+              
+              if(expand && fill == "") {
+                child['xscale'] <- child['yscale'] <- 1
+              }
+              
+
+              if(!is.null(anchor)) {
+                child['xalign'] <- anchor[1]
+                child['yalign'] <- anchor[2]
+              }
+              parent$packStart(child, expand=expand, fill=TRUE, padding=0)
+            } else {
+              ## anchor argument
+              if(!is.null(anchor))
+                setXYalign(child, childWidget, anchor)
+
+
+              ## padding
+              if(is.null(theArgs$padding))
+                theArgs$padding=0
+              
+              fill <- expand
+              if(!is.null(theArgs$fill)) {
+                if(theArgs$fill == "both") {
+                  fill <- TRUE
+                } else {
+                  horizontal <- is(obj@widget, "GtkHBox")
+                  if(theArgs$fill == "x" && horizontal)
+                    fill <- TRUE
+                  else if(theArgs$fill == "y" && !horizontal)
+                    fill <- TRUE
+                }
+              }
+              
+              parent$packStart(child, expand, fill, theArgs$padding) 
+            }
+              
+              
+            ## This is an example of the pack_start() method.
             
-
+            ##   box.pack_start(child, expand, fill, padding)
             
-## This is an example of the pack_start() method.
-
-##   box.pack_start(child, expand, fill, padding)
-
-## box is the box you are packing the object into; the first argument is the child object to be packed. The objects will all be buttons for now, so we'll be packing buttons into boxes.
-
-## The expand argument to pack_start() and pack_end() controls whether the widgets are laid out in the box to fill in all the extra space in the box so the box is expanded to fill the area allotted to it (True); or the box is shrunk to just fit the widgets (False). Setting expand to False will allow you to do right and left justification of your widgets. Otherwise, they will all expand to fit into the box, and the same effect could be achieved by using only one of pack_start() or pack_end().
-
-## The fill argument to the pack methods control whether the extra space is allocated to the objects themselves (True), or as extra padding in the box around these objects (False). It only has an effect if the expand argument is also True.
-
+            ## box is the box you are packing the object into; the first argument is the child object to be packed. The objects will all be buttons for now, so we'll be packing buttons into boxes.
+            
+            ## The expand argument to pack_start() and pack_end() controls whether the widgets are laid out in the box to fill in all the extra space in the box so the box is expanded to fill the area allotted to it (True); or the box is shrunk to just fit the widgets (False). Setting expand to False will allow you to do right and left justification of your widgets. Otherwise, they will all expand to fit into the box, and the same effect could be achieved by using only one of pack_start() or pack_end().
+            
+            ## The fill argument to the pack methods control whether the extra space is allocated to the objects themselves (True), or as extra padding in the box around these objects (False). It only has an effect if the expand argument is also True.
+            
             
           })
 
@@ -135,20 +165,63 @@ setMethod(".add",
             childWidget <- getWidget(value)
             theArgs <- list(...)
 
-            if(!is.null(theArgs$anchor)) {
-              anchor <- theArgs$anchor ## anchor is in [-1,1]^2
+            ## get expand, anchor, fill
+            expand <- getWithDefault(theArgs$expand, FALSE)
+            if(!is.null(theArgs$align))
+              theArgs$anchor <- theArgs$align
+            anchor <- getWithDefault(theArgs$anchor, NULL)
+            if(!is.null(anchor)) {       # put in [0,1]^2
               anchor <- (anchor+1)/2      # [0,1]
               anchor[2] <- 1 - anchor[2]     # flip yalign
-              ## property
-              
-              ## in gtkstuff
-              setXYalign(child, childWidget, anchor)
             }
+            fill <- getWithDefault(theArgs$fill, "") # "", x, y or both
+
+            ## we do things differently if there is a gtkAlignment for a block
+            childBlock <- getBlock(value)
+            if(is(childBlock, "GtkAlignment")) {
+              if(expand && (fill =="both" || fill == "x")) {
+                childBlock['xscale'] <- 1
+              }
+              if(expand && (fill == "both" || fill == "y")) {
+                childBlock['yscale'] <- 1
+              }
+
+              if(expand && fill == "") {
+                child['xscale'] <- child['yscale'] <- 1
+              }
+              
+
+              if(!is.null(anchor)) {
+                childBlock['xalign'] <- anchor[1]
+                childBlock['yalign'] <- anchor[2]
+              }
+              parent$packStart(child, expand=expand, fill=TRUE, padding=0)
+            } else {
             
-            expand <- if(is.null(theArgs$expand)) FALSE else theArgs$expand
-            parent$packStart(child, expand, TRUE, 0) # expand to fill if TRUE
-            
-            
+              if(!is.null(anchor))
+                setXYalign(child, childWidget, anchor)
+              
+              ## fill only valid when expand is TRUE.
+              ## when horizontal=TRUE (left to right, we always fill top top bottom ("y") so only x counts
+              ## if horizontal=FALSE, only "y" counts
+              
+              fill <- expand
+              if(!is.null(theArgs$fill)) {
+                if(theArgs$fill == "both") {
+                  fill <- TRUE
+                } else {
+                  horizontal <- is(obj@widget, "GtkHBox")
+                  if(theArgs$fill == "x" && horizontal)
+                    fill <- TRUE
+                  else if(theArgs$fill == "y" && !horizontal)
+                    fill <- TRUE
+                }
+              }
+              
+              ## pack it in
+              parent$packStart(child, expand=expand, fill=fill, padding=0) # expand to fill if TRUE
+              
+            }
           })
 
 
