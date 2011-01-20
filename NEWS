@@ -2,9 +2,20 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
-Changes for version 0.0-70
+Changes for version 0.0-72
 --------------------------
 
+* removed example code -- for some reason CRAN was choking on it. 
+
+Changes for version 0.0-71
+--------------------------
+
+* bug fix to get traitr vignette to work cleanly
+ 
+
+Changes for version 0.0-70
+--------------------------
+* fix to gcombobox's [<- method
 
 Changes for version 0.0-69
 --------------------------
