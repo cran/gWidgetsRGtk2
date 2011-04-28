@@ -2,6 +2,21 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-73
+--------------------------
+
+* fix gstatusbar. OVerride default label, as it truncated the bottom
+  of the message with a recent GTK. However, removed support for
+  popping stack of messages. Likely not an issue, but can be put back
+  if requested.
+
+* fix to gradio to avoid premature garbage collection leading to crash
+  under tctorture. There may still be an issue with gbutton. (If so,
+  pass in a parent container to the constructor.) 
+
+* Reworked gradio and gcheckboxgroup to use a backend reference
+  class. Cleans up the code considerably.
+
 Changes for version 0.0-72
 --------------------------
 
