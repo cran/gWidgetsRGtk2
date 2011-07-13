@@ -167,6 +167,11 @@
 \alias{.gimage-methods}
 \alias{.gimage,guiWidgetsToolkitRGtk2-method} 
 %%
+%% --  .ghtml --
+%%
+\alias{.ghtml-methods}
+\alias{.ghtml,guiWidgetsToolkitRGtk2-method} 
+%%
 %% --  .gstatusbar --
 %%
 \alias{.gstatusbar-methods}
@@ -535,6 +540,7 @@
 \alias{.visible-methods}
 \alias{.visible,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible,gBasicDialogNoParentRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible,gGridRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  visible<- --
@@ -542,13 +548,14 @@
 \alias{visible<--methods}
 \alias{visible<-,guiWidget-method}
 \alias{visible<-,gWidgetRGtk-method} 
-\alias{visible<-,gEditRGtk-method} 
 %%
 %% --  .visible<- --
 %%
 \alias{.visible<--methods}
 \alias{.visible<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gComponentWithRefClassWithItemsRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+\alias{.visible<-,gEditRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.visible<-,gEditRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gGraphicsRGtk,guiWidgetsToolkitRGtk2-method}
@@ -561,6 +568,31 @@
 \alias{.visible<-,gWidgetRGtk,guiWidgetsToolkitRGtk2,ANY-method}
 \alias{.visible<-,gWindowRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.visible<-,gWindowRGtk,guiWidgetsToolkitRGtk2,ANY-method}
+
+%%
+%% --  editable --
+%%
+\alias{editable-methods}
+\alias{editable,guiWidget-method}
+%%
+%% --  .editable --
+%%
+\alias{.editable-methods}
+\alias{.editable,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+%%
+%% --  editable<- --
+%%
+\alias{editable<--methods}
+\alias{editable<-,guiWidget-method}
+\alias{editable<-,gWidgetRGtk-method} 
+%%
+%% --  .editable<- --
+%%
+\alias{.editable<--methods}
+\alias{.editable<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+
+
+
 %%
 %% --  enabled --
 %%
@@ -630,6 +662,7 @@
 %%
 \alias{.focus-methods}
 \alias{.focus,gWidgetRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.focus,gWindowRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  focus<- --
 %%
@@ -642,6 +675,7 @@
 %%
 \alias{.focus<--methods}
 \alias{.focus<-,gWidgetRGtk,guiWidgetsToolkitRGtk2-method}
+\alias{.focus<-,gWindowRGtk,guiWidgetsToolkitRGtk2-method}
 \alias{.focus<-,GtkWindow,guiWidgetsToolkitRGtk2-method}
 \alias{.focus<-,RGtkObject,guiWidgetsToolkitRGtk2-method} 
 %%
