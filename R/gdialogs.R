@@ -340,6 +340,7 @@ setMethod(".gbasicdialognoparent",
                    parent=NULL,                   
                    handler = NULL,
                    action = NULL,
+                   ## do.buttons=TRUE
                    ...
                    ) {
 
@@ -354,10 +355,12 @@ setMethod(".gbasicdialognoparent",
               parent <- gtkWindowNew(show=FALSE)
             }
             
-              ## button order
+
+
+
             theArgs <- list(...)
             buttons <- getWithDefault(theArgs$buttons, c("ok","cancel"))
-
+            
             buttonMap <- function(name) {
               if(name == "ok")
                 list("gtk-ok", GtkResponseType["ok"])
@@ -373,14 +376,23 @@ setMethod(".gbasicdialognoparent",
                 list("gtk-yes", GtkResponseType["ok"])
             }
 
-            l <- list(title=title, parent=parent, flags=c("modal"))
+            l <- list(title=title, parent=parent, flags=c("modal"), show=FALSE)
             for(i in buttons) {
               m <- buttonMap(i)
               l[[length(l) + 1]] <- m[[1]]
               l[[length(l) + 1]] <- m[[2]]
             }
 
-            dlg <- do.call("gtkDialog", l)
+            ## do buttons?
+            do.buttons <- getWithDefault(theArgs$do.buttons, TRUE)
+            if(do.buttons) {
+              dlg <- do.call("gtkDialog", l)
+            } else {
+              dlg <- gtkDialogNew(show=FALSE)
+              dlg$setTransientFor(parent)
+              ## hide separator and button box. Uses internals -- bad idea if widget changes
+              sapply(dlg$getChildren()[[1]]$getChildren(), gtkWidgetHide)
+            }
             ## dlg = gtkDialog(title,
             ##   parent=parent,
             ##   flags = 0,
@@ -424,6 +436,15 @@ setMethod(".add",
             
           })
 
+##' dispose of dialog
+setMethod(".dispose", signature(toolkit="guiWidgetsToolkitRGtk2",
+                                obj="gBasicDialogNoParentRGtk"),
+          function(obj, toolkit,...) {
+            dlg <- getWidget(obj)
+            dlg$Destroy()
+            return(TRUE) 
+          })
+
 setMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",
                            obj="gBasicDialogNoParentRGtk"),
@@ -437,6 +458,7 @@ setMethod(".visible",
                      widget <- tag(obj,"widget")
                      
                      ## run in modal mode
+                     dlg$show()
                      response = dlg$Run()
 
 
@@ -453,10 +475,15 @@ setMethod(".visible",
                          handler(h)
                        dlg$Destroy()
                        return(TRUE)              # was widget, but TRUE now
+                     } else if(response == GtkResponseType["delete-event"]) {
+                       ## window manager close
+                       return(invisible(FAKSE))
+                     } else if(response == GtkResponseType["none"]) {
+                       ## dispose() call
+                       return(invisible(FALSE))
                      } else {
                        ## default action
-                       gwCat("Don't know this response")
-                       print(response)
+                       message("Don't know this response: ", response)
                        dlg$Destroy()
                        return(invisible(NA))
                      }
@@ -479,16 +506,43 @@ setMethod(".galert",
                    ) {
             force(toolkit)
 
-            w <- gwindow(title, width=250, height=100, parent = parent)
-            g <- ggroup(container =w)
-            l <- gbutton("  ", container =g)
-            getToolkitWidget(l)$modifyBg(GtkStateType['normal'], color="red")
-            label <- glabel(message, container =g, expand=TRUE)
-            font(label) <- c("weight"="bold")
-            gimage(file="close",dir="stock", container =g, handler = function(h,...) dispose(w))
-            
-            addHandlerIdle(w, handler = function(h,...) dispose(w),
-                           interval = as.numeric(delay)*1000)
+            ## insert an info bar here?
+            if(is(parent, "gWindow")) {
+              ib <- gtkInfoBar(show=FALSE)
+              ib$setNoShowAll(TRUE)
+              ib$setMessageType("warning")
+              ca <- ib$getContentArea()
+              ca$packStart(gtkLabel(message))
+              b <- gtkButton(stock.id="cancel")
+              ca$packEnd(b, FALSE)
+
+              ## add to ibg
+              ibg <- tag(parent, "infobargroup")
+              ourgroup <- ggroup(cont=ibg, expand=TRUE, horizontal=FALSE)
+              add(ourgroup, ib, expand=TRUE)
+              visible(ibg) <- TRUE
+              ib$show()
+
+              closeBar <- function(...) {
+                ib$hide()
+                visible(ibg) <- FALSE
+                delete(ibg, ourgroup)
+                FALSE
+              }
+              gSignalConnect(b, "clicked", closeBar)
+              gTimeoutAdd(delay*1000, closeBar)
+            } else {
+              w <- gwindow(title, width=250, height=100, parent = parent)
+              g <- ggroup(container =w)
+              l <- gbutton("  ", container =g)
+              getToolkitWidget(l)$modifyBg(GtkStateType['normal'], color="red")
+              label <- glabel(message, container =g, expand=TRUE)
+              font(label) <- c("weight"="bold")
+              gimage(file="close",dir="stock", container =g, handler = function(h,...) dispose(w))
+              
+              addHandlerIdle(w, handler = function(h,...) dispose(w),
+                             interval = as.numeric(delay)*1000)
+            }
 
             invisible(w)
           })

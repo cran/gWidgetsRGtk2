@@ -82,7 +82,7 @@ setMethod(".gtext",
             }
             
             if(!is.null(text)) {
-              add(obj, text)
+              add(obj, text, do.newline=FALSE)
             }
             
   
@@ -195,7 +195,8 @@ setMethod(".svalue",
               start = bounds$start
               end = bounds$end
             }
-            return(buffer$GetText(start,end))
+            val <- buffer$GetText(start,end)
+            return(val)
             })
           
 ##  svalue<-() replaces text
@@ -365,7 +366,7 @@ setReplaceMethod(".font",
                    styles <- RGtk2:::PangoStyle
                    if(!is.null(style <- tags$style) && style %in% names(styles)) {
                      if(is.null(tagtbl$lookup(style)))
-                       buffer$createTag(style, style=sytles[style])
+                       buffer$createTag(style, style=styles[style])
                      buffer$ApplyTagByName(style, start, end)
                    }
                    
