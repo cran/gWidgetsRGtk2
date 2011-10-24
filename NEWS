@@ -2,6 +2,18 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-77
+--------------------------
+ 
+* change in dnd, icons to avoid using "Namespce" functions
+
+* put back tag code into gtext
+
+* fix to gdf and do.subset=TRUE. (Thanks Stephanie)
+
+* fix to font.attr argument of insert method for gtext. (Had commented
+  out for speed, but forgot to fix ...) THanks Yvonnick.
+
 Changes for version 0.0-76
 --------------------------
 * requires gWidgets 0.0-46
