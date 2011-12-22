@@ -1,8 +1,8 @@
-5178c34d1dd2e8bfbbfb74bd6e2a1148 *ChangeLog
-3277f6e17730e21ced57b98b9b470bd5 *DESCRIPTION
+c8d9fdf67d5ec4f946d8912645194c1c *ChangeLog
+cce37d6ff13fda189b69ce64322de21d *DESCRIPTION
 8a46f997ef4bf98c17aa43f46d239809 *NAMESPACE
-0744aa58fa71c7d0a44de7c275314725 *NEWS
-100b9505290ed97ebdfb98f124229f58 *R/aaaGenerics.R
+04faf8f41afde540ac0c461c0f52c101 *NEWS
+550892fc632fc1ba48ae15bfaece00db *R/aaaGenerics.R
 de4286e642f90463d6bce19d5b8afa8b *R/aabClasses.R
 feecddcff4566de31e56825797765976 *R/aacR5Classes.R
 1398351123167e493e46d9863a781e3a *R/common.R
@@ -21,7 +21,7 @@ db71ca7964cd89b98b40e448426fe0c7 *R/gdroplist.R
 049298a664f097aef7eaa8cba4e43005 *R/gexpandgroup.R
 8b29812978bcf9a40b3012ac86b0ba73 *R/gfile.R
 a4cf578410a74481538095fb77dc3452 *R/gframe.R
-835e5424bd9c4026d53e9833d5c550ea *R/ggraphics.R
+8ece6f964da926effb5ccd99e6cf9a62 *R/ggraphics.R
 ddb47df522fc4f532095645db2684523 *R/ggraphicsnotebook.R
 70dc5353a9a8eae3105141b45fbf1627 *R/ggrid.R
 957bebe2bbb316da6304b3840a9bd150 *R/ggroup.R
@@ -42,11 +42,11 @@ f79130410cc5c99d6c98a5b8b573051a *R/gtext.R
 358ae8b9da77b9c31c7c07309285dfac *R/gtkStuff.R
 e4e741c284485a1e913afbaa07f1dded *R/gtoolbar.R
 1ccd212560af8ac3b01b016a30c6a3b9 *R/gtree.R
-0b1dfe8c140ba58222cb2a65960a0e55 *R/gvarbrowser.R
+4bb94a98d3eb818dd39575e8c7e7e3bf *R/gvarbrowser.R
 77deb5477837b92308b9e7db71f4226c *R/gwindow.R
 22141f3574edab7c171b918eeb104734 *R/icons.R
 83016f23fbd74dc68e6544260d10decc *R/zzz.R
-05f2d1277421a783535c08a28cf085ab *TODO.txt
+c138e56c2ad4c2ff90655930b752bb8e *TODO.txt
 da46dd635971ef83d7e6fad8fdc3a582 *inst/examples/t.test.glade
 2a0a77b75c7566f417f75fdd8c4c3576 *inst/images/2dlayer.xpm
 9216797db68dde4806b2741e2b9f0c7f *inst/images/3dcontour.xpm
