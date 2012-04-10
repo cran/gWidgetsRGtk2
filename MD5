@@ -1,7 +1,7 @@
 58f96287c3ab4779b7766eecc467dbd0 *ChangeLog
-c52b8d01a5654187ce8e8fae46298e83 *DESCRIPTION
+b3a50af0e44fefc7cc268486070c1388 *DESCRIPTION
 8a46f997ef4bf98c17aa43f46d239809 *NAMESPACE
-3dc928835e62cd73e762a3aac0f5a508 *NEWS
+06de45e18d8e1765650c69b53440caf8 *NEWS
 550892fc632fc1ba48ae15bfaece00db *R/aaaGenerics.R
 de4286e642f90463d6bce19d5b8afa8b *R/aabClasses.R
 feecddcff4566de31e56825797765976 *R/aacR5Classes.R
@@ -116,5 +116,5 @@ f900afb8c7485e59265e9e27b5da5549 *man/as.gWidgetsRGtk2.Rd
 90722b1a2edff3dfb0b4ed1376a43d0b *man/gWidgetsRGtk2-package.Rd
 e41017729482b6e9966b41b9610c03e0 *man/gWidgetsRGtk2-undocumented.Rd
 55f36890089c39b2215f9164b8f33921 *man/gdfedit.Rd
-bdd994c0b83df6420b2ccc77ad73004a *tests/RunTests.R
-36c9ae2f7a00ba3c780ad5eb69dfb50d *tests/runRUnit.R
+783e31fc254f6ed46dbb53c7a70b2b22 *tests/RunTests.R
+e20ce11d67ecb783e0454feaf118907c *tests/runRUnit.R
