@@ -719,6 +719,7 @@
 \alias{.font<-,gButtonRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.font<-,gStatusbarRGtk,guiWidgetsToolkitRGtk2-method} 
 \alias{.font<-,gTextRGtk,guiWidgetsToolkitRGtk2-method} 
+\alias{.font<-,gExpandgroupRGtk,guiWidgetsToolkitRGtk2-method} 
 %%
 %% --  tag --
 %%

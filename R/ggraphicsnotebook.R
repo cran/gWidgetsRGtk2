@@ -66,10 +66,10 @@ setMethod(".ggraphicsnotebook",
 
             toolbar$tmp3$separator = TRUE
 
-            toolbar$Record$handler = function(h,...) {
-              recordCurrentPage(obj)
-            }
-            toolbar$Record$icon = "media-record"
+            ## toolbar$Record$handler = function(h,...) {
+            ##   recordCurrentPage(obj)
+            ## }
+            ## toolbar$Record$icon = "media-record"
             
             toolbar$Replay$handler = function(h,...) {
               replayAPlot(obj)
@@ -180,14 +180,14 @@ printCurrentPage = function(obj,...) {
            )
 }
 
-recordCurrentPage = function(obj,...) {
-  ## get variable name, record to this
-  ginput(message="Enter a variable to assign recorded plot to:",
-         icon="question",
-         handler = function(h,...) {
-           assign(h$input,recordPlot(),envir=.GlobalEnv)
-         })
-}
+## recordCurrentPage = function(obj,...) {
+##   ## get variable name, record to this
+##   ginput(message="Enter a variable to assign recorded plot to:",
+##          icon="question",
+##          handler = function(h,...) {
+##            assign(h$input,recordPlot(),envir=.GlobalEnv)
+##          })
+## }
 
 replayAPlot = function(...) {
 

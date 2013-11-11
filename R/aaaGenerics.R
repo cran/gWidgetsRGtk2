@@ -368,10 +368,14 @@ setMethod(".visible",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           function(obj, toolkit, set=TRUE, ...) {
             widget <- getWidget(obj)
-            if(as.logical(set))
-              widget$Show()
+            if(is.null(set))
+              widget['visible']
             else
-              widget$Hide()
+              if(as.logical(set))
+                widget$Show()
+              else
+                widget$Hide()
+
           })
 
 
@@ -1132,7 +1136,7 @@ setMethod(".addHandler",
 
 setMethod(".addHandler",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
-          function(obj, toolkit, signal, handler, action=NULL, ...) {
+          function(obj, toolkit, signal, handler, action=NULL, ..., after=FALSE) {
 
             theArgs = list(...)
 
@@ -1163,7 +1167,7 @@ setMethod(".addHandler",
                                             f=modifyHandler,
                                             data=h,
                                             user.data.first = TRUE,
-                                            after = FALSE),
+                                            after = after),
                                  silent=TRUE)
             ## can't' stuff in handler IDS
             if(inherits(callbackID,"try-error")) {
@@ -1180,19 +1184,6 @@ setMethod(".addHandler",
               invisible(callbackID)
             }
           })
-
-## removew handler
-## this hack is to change id
-gtkObjectDisconnectCallbackHack = function (obj, id) {
-  checkPtrType(obj, "GObject")
-  checkPtrType(id, "CallbackID")
-  ID = gtktry(.Call("R_disconnectGSignalHandler", obj, id, # no as.numeric(id)
-        PACKAGE = "RGtk2"), silent=TRUE)
-  if(inherits(ID,"try-error"))
-    return(FALSE)
-  else
-    return(TRUE)
-}
 
   ## removehandler
 setMethod("removehandler", signature("gWidgetRGtk"),
@@ -1273,7 +1264,7 @@ setMethod(".removehandler",
                   for(i in callbackIDs[[i]]) .removehandler(obj, toolkit, i)
                 isCallbackID = gtktry(checkPtrType(callbackIDs[[i]],"CallbackID"),silent=TRUE)
                 if(!inherits(isCallbackID,"try-error")) {
-                  retval[i] = gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
+                  retval[i] = widget$disconnectCallback(callbackIDs[[i]]) #gtkObjectDisconnectCallbackHack(widget, callbackIDs[[i]])
                 } else {
                   gwCat("DEBUG: ID not of callbackID\n")
                   retval[i] = FALSE
@@ -1579,7 +1570,7 @@ setMethod(".addhandlerrightclick",
 #          signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWidgetRGtk"),
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="RGtkObject"),
           function(obj, toolkit,
-                   handler, action=NULL, ...) {
+                   handler, action=NULL, ..., after=FALSE) {
             theArgs = list(...)
 
             ## fix value passed into gWidgets handlers
@@ -1602,13 +1593,13 @@ setMethod(".addhandlerrightclick",
                               signal = "button-press-event",
                               f = function(h, w, eventButton,...) {
                                 if(isRightMouseClick(eventButton)) {
-                                  h$handler(h,...)
+                                  h$handler(h,w, eventButton, ...)
                                 }
                                 return(FALSE)         # stop propagation
                               },
                               data = h,
                               user.data.first = TRUE,
-                              after = FALSE
+                              after = after
                               ),
                 silent=TRUE)
           })

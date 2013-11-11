@@ -82,6 +82,14 @@ setMethod(".gfile",
             
             ## add a filter
             if(!is.null(filter) && type %in% c("open","save")) {
+              if(is.character(filter)) {
+                ## make alist
+                filter <- sapply(names(filter), function(nm) {
+                  list(patterns=paste("*.", filter[nm], sep=""))
+                }, simplify=FALSE)
+                filter[[gettext("All files")]]$patterns <- "*.*"
+              }
+
               for(i in names(filter)) {
                 filefilter = gtkFileFilterNew()
                 filefilter$SetName(i)
@@ -101,7 +109,7 @@ setMethod(".gfile",
             ## initialize
             if(!is.null(initialfilename)) {
               if(type == "open") {
-                filechooser$SetFilename(Paste(getwd(),"/",initialfilename))
+                filechooser$SetFilename(Paste(getwd(),.Platform$file.sep,initialfilename))
               } else if(type == "save") {
                 filechooser$setCurrentFolder(getwd())
                 filechooser$setCurrentName(initialfilename)
@@ -115,6 +123,7 @@ setMethod(".gfile",
             
             ## return a vector of chars for multi select - TT
             file=unlist(filechooser$GetFilenames())
+            Encoding(file) <- "UTF-8"
             
             h = list(obj=filechooser,action=action,file=file)
             if(response == GtkResponseType["cancel"]) {

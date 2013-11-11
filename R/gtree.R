@@ -128,7 +128,7 @@ setMethod(".gtree",
             tag(obj,"view") <- view
             tag(obj,"offspring") =offspring
             tag(obj,"hasOffspring") = hasOffspring
-            tag(obj,"noffspring.data") = offspring.data
+            tag(obj,"offspring.data") = offspring.data
             tag(obj,"icon.FUN") = icon.FUN
             tag(obj,"iconFudge") = iconFudge
             tag(obj,"chosencol") = chosencol
@@ -139,13 +139,14 @@ setMethod(".gtree",
             addChildren(treestore, children, doExpand, iconFudge, parent.iter=NULL)
             
             ## now add a handler to row-exapnd
-            addhandler(obj,"row-expanded",action = offspring.data,
+            addhandler(obj,"row-expanded",
                        handler = function(h,view, iter, path,...) {
                          ## get unsorted iter from path
                          uspath <- treestoreModel$ConvertPathToChildPath(path)
                          iter <- treestore$GetIter(uspath)$iter
                          path <- .getValuesFromIter(h$obj,iter)
-                         children <- offspring(path,h$action)
+                         children <- offspring(path,tag(obj, "offspring.data"))
+
 
                          lst <- getOffSpringIcons(children, hasOffspring, icon.FUN)
                          children <- lst$children
@@ -263,10 +264,13 @@ setMethod(".update",
             offspring.data = theArgs$offspring.data
             if(is.null(offspring.data) && length(theArgs))
               offspring.data = theArgs[[1]]
+            if(!is.null(offspring.data))
+              tag(object, "offspring.data") <- offspring.data
+            
 
             obj = object                          # rename, object from update generic
             ## what should now be in this part of the tree
-            newchildren <- tag(obj,"offspring")(c(), offspring.data)
+            newchildren <- tag(object,"offspring")(c(), tag(object, "offspring.data"))
             newvalues <- newchildren
             stillThere <- c()
 

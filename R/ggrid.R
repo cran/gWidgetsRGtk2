@@ -438,8 +438,8 @@ setMethod(".ggrid",
             ## do we add subsetBy
             if(doSubsetBy) {
               ## now add subset by to group.cycling
-              subsetByGroup = gexpandgroup("subset=", cont=group)
-              subsetBy = gsubsetby(obj, cont=subsetByGroup,
+              subsetByGroup = gexpandgroup("subset=", container=group)
+              subsetBy = gsubsetby(obj, container=subsetByGroup,
                 handler = function(h,...) {
                   visValues = h$value
                   return()
@@ -1128,6 +1128,7 @@ setMethod(".addhandlerdoubleclick",
 
 ## gdf: click on headers -- passed on to each treeview
 ## gtable: click on row
+##         note: to block gtable, need blockHandler(getToolkitWidget(b)$getSelection(), id)
 setMethod(".addhandlerclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGridRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {

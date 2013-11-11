@@ -95,15 +95,15 @@ setReplaceMethod(".svalue",
                    return(obj)
                  })
 
-## names refers to label
-setMethod(".names",signature(toolkit="guiWidgetsToolkitRGtk2",
-                             x="gExpandgroupRGtk"),
+## ## names refers to label
+setMethod(".names",
+          signature(toolkit="guiWidgetsToolkitRGtk2", x="gExpandgroupRGtk"),
           function(x,toolkit) {
             x@block$GetLabel()
           })
 
 setReplaceMethod(".names",
-                 signature(toolkit="guiWidgetsToolkitRGtk2",x = "gExpandgroupRGtk"),
+                 signature(toolkit="guiWidgetsToolkitRGtk2",x="gExpandgroupRGtk"),
                  function(x,toolkit,value) {
                    obj@block$SetLabel(value)
                    return(x)
@@ -138,6 +138,15 @@ setReplaceMethod(".names",
                    return(x)
                  })
 
+## set font
+setReplaceMethod(".font",
+                 signature(toolkit="guiWidgetsToolkitRGtk2",obj="gExpandgroupRGtk"),
+                 function(obj, toolkit, value) {
+                   label <- obj@block[[2]]
+                   label <- gWidgetsRGtk2:::as.gWidgetsRGtk2(label)
+                   font(label) <- value
+                   return(obj)
+                 })
 
 
 ## handlers

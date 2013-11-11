@@ -357,7 +357,7 @@ setReplaceMethod(".font",
 
                    
                    ## we have family, style, weight, size, color
-                   weights <- RGtk2:::PangoWeight
+                   weights <- RGtk2::PangoWeight
                    if(!is.null(wt <- tags$weight) && wt %in% names(weights)) {
                      if(is.null(tagtbl$lookup(wt)))
                        buffer$createTag(wt, weight=weights[wt])
@@ -366,7 +366,7 @@ setReplaceMethod(".font",
 
                    
                    ## style
-                   styles <- RGtk2:::PangoStyle
+                   styles <- RGtk2::PangoStyle
                    if(!is.null(style <- tags$style) && style %in% names(styles)) {
                      if(is.null(tagtbl$lookup(style)))
                        buffer$createTag(style, style=styles[style])
@@ -380,6 +380,22 @@ setReplaceMethod(".font",
                        buffer$createTag(family, family=family)
                      buffer$ApplyTagByName(family, start, end)
                    }
+
+                   ## size
+                   ## Pango Scale for converting between name and numeric value
+                   
+                   if(!is.null(size <- tags$size)) {
+                     if(is.character(size)) 
+                       size <- fontSizes[size]
+                     else
+                       size <- size/12
+                     if(is.null(tagtbl$lookup(size)))
+                       buffer$createTag(size, scale=size)
+                     buffer$ApplyTagByName(size, start, end)
+                   }
+                   
+
+                   
                    
                    ## color
                    if(!is.null(color <- tags$color) && color %in% colors()) {

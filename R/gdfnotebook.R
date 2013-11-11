@@ -39,9 +39,9 @@ setMethod(".gdfnotebook",
             openButton = gbutton("open",handler = function(h,...) {
               openPageDfNotebookDialog(obj)
             }, action=obj, container=buttonGroup)
-            saveButton = gbutton("save",handler = function(h,...) {
-              savePageDfNotebook(h$action)
-            }, action=obj, container=buttonGroup)
+            ## saveButton = gbutton("save",handler = function(h,...) {
+            ##   savePageDfNotebook(h$action)
+            ## }, action=obj, container=buttonGroup)
             closeButton = gbutton("close",handler = function(h,...) {
               dispose(h$action)
               ##    closePageDfNotebook(h$action)
@@ -103,10 +103,10 @@ setMethod(".add",
                 newBlankPage(obj@gnotebook)
               }
 
-              lst$"Save sheet"$handler = function(h,...) {
-                savePageDfNotebook(obj)
-              }
-              lst$"Save sheet"$icon = "save"
+              ## lst$"Save sheet"$handler = function(h,...) {
+              ##   savePageDfNotebook(obj)
+              ## }
+              ## lst$"Save sheet"$icon = "save"
 
               lst$"Close sheet"$handler = function(h,...) {
                 dispose(obj)
@@ -284,58 +284,58 @@ addPopupToPage = function(obj, nb) {    # obj is gdf instance
 }
 
 ## save current page
-savePageDfNotebook = function(nb, ...) {
-  if(! inherits(nb,"gDfNotebookRGtk"))
-    stop("Must be a dfNotebook to use me")
+## savePageDfNotebook = function(nb, ...) {
+##   if(! inherits(nb,"gDfNotebookRGtk"))
+##     stop("Must be a dfNotebook to use me")
   
-  ## dataframe
+##   ## dataframe
 
-  ## nb stores gridobject, and tab is name
-  curPage = svalue(nb)
-  if(curPage == 0)                      # nothing to save
-    return(TRUE)
+##   ## nb stores gridobject, and tab is name
+##   curPage = svalue(nb)
+##   if(curPage == 0)                      # nothing to save
+##     return(TRUE)
 
-  ## save it
-  gridObj = nb[curPage]                   # widget store
-  dfName = names(nb)[curPage]             # for tab label
+##   ## save it
+##   gridObj = nb[curPage]                   # widget store
+##   dfName = names(nb)[curPage]             # for tab label
 
 
-  df = gridObj[,, drop=FALSE]
-  names(df) <- names(gridObj)           # fix names
+##   df = gridObj[,, drop=FALSE]
+##   names(df) <- names(gridObj)           # fix names
 
   
-  ## if name match *scratch:no* then we save variables, not as data frame
-  if(length(grep("^\\*scratch:[[:digit:]]+\\*$", dfName)) > 0) {
+##   ## if name match *scratch:no* then we save variables, not as data frame
+##   if(length(grep("^\\*scratch:[[:digit:]]+\\*$", dfName)) > 0) {
 
-    for(i in names(df)) {
-      val = df[,i]
+##     for(i in names(df)) {
+##       val = df[,i]
 
-      ind <- which(val != "")
-      if(length(ind)) 
-        val <- val[1:max(ind)]
-      else
-        val <- val
+##       ind <- which(val != "")
+##       if(length(ind)) 
+##         val <- val[1:max(ind)]
+##       else
+##         val <- val
 
-      if(is.character(val)) {
-        tmpfile = tempfile()
-        sink(tmpfile)
-        tmp = as.numeric(val)
-        if(all(!is.na(tmp)))
-          val = tmp
-        sink(NULL)
-        unlink(tmpfile)
-      }
-      assign(i, val, envir=.GlobalEnv)
-    }
-  } else {
-    ## save entire data set, only trick is $ possibility
-    if(length(grep("\\$",dfName)) > 0) {
-      cat(gettext("Can't save with $ in name. Rename data set.\n"))
-    } else {
-      assign(dfName, df, envir=.GlobalEnv)
-    }
-  }
-}
+##       if(is.character(val)) {
+##         tmpfile = tempfile()
+##         sink(tmpfile)
+##         tmp = as.numeric(val)
+##         if(all(!is.na(tmp)))
+##           val = tmp
+##         sink(NULL)
+##         unlink(tmpfile)
+##       }
+##       assign(i, val, envir=.GlobalEnv)
+##     }
+##   } else {
+##     ## save entire data set, only trick is $ possibility
+##     if(length(grep("\\$",dfName)) > 0) {
+##       cat(gettext("Can't save with $ in name. Rename data set.\n"))
+##     } else {
+##       assign(dfName, df, envir=.GlobalEnv)
+##     }
+##   }
+## }
 
 ## rename the page
 renamePageDfNotebook = function(nb, ...) {

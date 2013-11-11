@@ -65,18 +65,18 @@ setMethod(".getToolkitWidget",
           signature(obj="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
           function(obj, toolkit) getWidget(obj))
 
-setMethod(".callToolkitMethod",
-          signature(x="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
-          function(x, toolkit, meth_name) {
-            widget <- getWidget(x)
-            RGtk2:::.getAutoMethodByName(widget, meth_name, parent.frame())
-          })
+## setMethod(".callToolkitMethod",
+##           signature(x="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
+##           function(x, toolkit, meth_name) {
+##             widget <- getWidget(x)
+##             RGtk2:::.getAutoMethodByName(widget, meth_name, parent.frame())
+##           })
 
 setMethod(".getToolkitProperty",
           signature(x="gWidgetRGtk", toolkit="guiWidgetsToolkitRGtk2"),
           function(x, toolkit, property) {
             widget <- getWidget(x)
-            RGtk2:::gObjectGet(widget,property)
+            RGtk2::gObjectGet(widget,property)
           })
 
 setMethod(".setToolkitProperty",
@@ -282,7 +282,7 @@ isRightMouseClick <- function(e) {
     stop("Must pass in an event")
   
   e$GetButton() == 3 ||
-  (e$GetState() == GdkModifierType['control-mask'] && e$GetButton() == 1) 
+  (Sys.info()["sysname"] == "Darwin" && e$GetState() == GdkModifierType['control-mask'] && e$GetButton() == 1) 
 }
 
 
