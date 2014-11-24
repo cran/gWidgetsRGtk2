@@ -2,6 +2,12 @@ Dear Emacs, please make this -*-Text-*- mode!
 
      	    NEWS for gWidgetsRGtk2
 
+Changes for version 0.0-83
+--------------------------
+
+* add Rbuildignore
+
+
 Changes for version 0.0-82
 --------------------------
 

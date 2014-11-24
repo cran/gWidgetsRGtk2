@@ -40,7 +40,7 @@ gdfedit(items = NULL,
 % \references{}
 % \author{}
 % \note{}
-\seealso{\code{\link{gtable}}}
+\seealso{\code{gtable}}
 \examples{
 \dontrun{
 w<-gwindow()

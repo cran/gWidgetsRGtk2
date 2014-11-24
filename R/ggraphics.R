@@ -20,8 +20,6 @@ setMethod(".ggraphics",
 
             force(toolkit)
             
-            require(cairoDevice)
-            
             da <- gtkDrawingAreaNew()
             asCairoDevice(da, pointsize=ps)
             ## set size

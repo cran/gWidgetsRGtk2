@@ -1,6 +1,7 @@
 import(methods)
 import(RGtk2)
 import(gWidgets)
+import(cairoDevice)
 
 exportMethods(
 "[", 
