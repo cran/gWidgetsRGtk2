@@ -704,7 +704,7 @@ setReplaceMethod(".font",
 
                    ## colors
                    if(!is.null(value$color))
-                     obj$modifyFg(GtkStateType[1], value[['color']])
+                     obj$modifyFg(GtkStateType["normal"], value[['color']])
 
                    
                    return(obj)

@@ -30,11 +30,11 @@ setMethod(".gedit",
             tag(obj, "init_msg_flag") <- FALSE            
             tag(obj, "init_msg") <-  initial.msg
             if(nchar(text) == 0 && nchar(initial.msg) > 0) {
-              entry$modifyText(GtkStateType[1], "gray")
+              entry$modifyText(GtkStateType["normal"], "gray")
               entry$setText(initial.msg)
               id <- gSignalConnect(entry, "focus-in-event", function(...) {
                 entry$setText("")
-                entry$modifyText(GtkStateType[1], "black")
+                entry$modifyText(GtkStateType["normal"], "black")
                 gSignalHandlerDisconnect(entry,id)
                 tag(obj, "init_msg_flag") <- FALSE
               })
@@ -134,7 +134,7 @@ setReplaceMethod(".svalue",
                    ## initial message, clear
                    flag <- tag(obj, "init_msg_flag")
                    if(!is.null(flag) && flag) {
-                     widget$modifyText(GtkStateType[1], "black")
+                     widget$modifyText(GtkStateType["normal"], "black")
                      gSignalHandlerDisconnect(widget, tag(obj, "init_msg_id"))
                      tag(obj, "init_msg_flag") <- FALSE
                    }
