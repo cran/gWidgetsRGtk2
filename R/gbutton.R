@@ -121,14 +121,14 @@ setMethod(".gbutton",
           })
 
 ### methods
-##' return button text
+## return button text
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL, ...) {
             return(obj@widget$GetLabel())
           })
 
-##' set button text
+## set button text
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gButtonRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {

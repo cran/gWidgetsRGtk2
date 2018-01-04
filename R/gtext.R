@@ -154,7 +154,7 @@ as.gWidgetsRGtk2.GtkTextView <- function(widget, ...) {
   ##               buffer$createTag(Paste(i,".background"),background = i)
   ##             }
   fontColors <-  grDevices::colors()
-  lapply(fontColors(), function(i) {
+  lapply(fontColors, function(i) {
     if(is.null(tagtbl$lookup(i))) 
       buffer$createTag(i,foreground = i)
     if(is.null(tagtbl$lookup(Paste(i,".background"))))

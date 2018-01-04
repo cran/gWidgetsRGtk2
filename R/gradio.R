@@ -116,7 +116,7 @@ setMethod(".gradio",
             invisible(obj)
           })
 
-##' NOOP
+## NOOP
 as.gWidgetsRGtk2.GtkRadioButton <- function(widget,...) {}
 
 ## methods
@@ -299,7 +299,7 @@ setMethod(".addhandlerchanged",
 ##             invisible(obj)
 ##           })
 
-## ##' coercion method from a gtkRadioButton widget. Pass in container via bloc
+## ## coercion method from a gtkRadioButton widget. Pass in container via bloc
 ## as.gWidgetsRGtk2.GtkRadioButton <- function(widget,...) {
 ##   theArgs <- list(...)
 ##   if(!is.null(theArgs$block))

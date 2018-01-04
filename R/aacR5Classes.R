@@ -1,6 +1,6 @@
 ## Some reference classes for clearing up programming
 
-##' Observable class sets up objects that can be observed. Inherited by Model
+## Observable class sets up objects that can be observed. Inherited by Model
 Observable <- setRefClass("Observable",
                           fields=list(
                             ..observers="list",
@@ -67,7 +67,7 @@ Observable <- setRefClass("Observable",
                             )
                           )
 
-##' Observer class is used to observe an observable
+## Observer class is used to observe an observable
 Observer <- setRefClass("Observer",
                         fields=list(
                           o = "ANY",    # want "function", but doesn't work with proto objects
@@ -89,8 +89,8 @@ Observer <- setRefClass("Observer",
                           )
                         )
 
-##' Base class for widgets -- just a widget and block, but could
-##' put much more here later
+## Base class for widgets -- just a widget and block, but could
+## put much more here later
 GWidgetGtk <- setRefClass("GWidgetGtk",
                           contains="Observable",
                           fields=list(
@@ -140,9 +140,9 @@ setClass("gComponentWithRefClassWithItemsRGtk",
          prototype=prototype(new("gComponentWithRefClassRGtk"))
          )
 
-##' enabled <- enables/disable the block
-##' 
-##' @param value a logical
+## enabled <- enables/disable the block
+## 
+## @param value a logical
 setReplaceMethod(".enabled",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gComponentWithRefClassWithItemsRGtk"),
                  function(obj, toolkit, ..., value) {
@@ -151,9 +151,9 @@ setReplaceMethod(".enabled",
                    return(obj)
                  })
 
-##' visible<- hides or shows the block
-##'
-##' @param value a logical
+## visible<- hides or shows the block
+##
+## @param value a logical
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gComponentWithRefClassWithItemsRGtk"),
                  function(obj, toolkit, ..., value) {

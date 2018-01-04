@@ -436,7 +436,7 @@ setMethod(".add",
             
           })
 
-##' dispose of dialog
+## dispose of dialog
 setMethod(".dispose", signature(toolkit="guiWidgetsToolkitRGtk2",
                                 obj="gBasicDialogNoParentRGtk"),
           function(obj, toolkit,...) {

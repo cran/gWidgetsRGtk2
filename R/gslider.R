@@ -58,7 +58,7 @@ setMethod(".gslider",
             invisible(obj)
           })
 
-##' coercoe gtkwidget into scale widget so that methods can work
+## coerce gtkwidget into scale widget so that methods can work
 as.gWidgetsRGtk2.GtkHScale <-  function(widget, ...) {
   asgWidgetsRGtk2.SCALE(widget, yscale=0, ...)
 }
@@ -104,15 +104,15 @@ setReplaceMethod(".svalue",
                    return(obj)
                  })
 
-##' return values
-##' @param i, j, drop ignored
+## return values
+## @param i, j, drop ignored
 setMethod(".leftBracket",
           signature(toolkit="guiWidgetsToolkitRGtk2",x="gSliderRGtk"),
           function(x, toolkit, i, j, ..., drop=TRUE) {
             tag(x, "..byIndexValues")
           })
 
-##' non-essential method to dispatch done to leftBracket
+## non-essential method to dispatch done to leftBracket
 setReplaceMethod("[",
                  signature(x="gSliderRGtk"),
                  function(x, i, j,..., value) {

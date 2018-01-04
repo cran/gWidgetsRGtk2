@@ -208,7 +208,7 @@ setReplaceMethod("[",
                    return(x)
                  })
 
-##' visible<- if FALSE, for password usage
+## visible<- if FALSE, for password usage
 setReplaceMethod(".visible",
                  signature(toolkit="guiWidgetsToolkitRGtk2", obj="gEditRGtk"),
                  function(obj, toolkit, ..., value) {

@@ -107,15 +107,15 @@ setMethod(".addhandlerchanged",
 
 
 ##################################################
-##' class to provide a toggle button alternative to a checkbox. The toggle button
-##' is very similar
+## class to provide a toggle button alternative to a checkbox. The toggle button
+## is very similar
 setClass("gToggleButtonRGtk",
          contains="gCheckboxRGtk"
          )
 
-##' Provides a toggle button alternative to a check box.
-##' 
-##' constructor, not a method as called internally
+## Provides a toggle button alternative to a check box.
+## 
+## constructor, not a method as called internally
 gtogglebutton <- function(text, checked=FALSE, handler=NULL, action=NULL,
                           container=NULL, ...) {
 

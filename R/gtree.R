@@ -5,7 +5,7 @@ setClass("gTreeRGtk",
 
 ## offspring takes two argument
 
-##' toolkit constructor for gtree
+## toolkit constructor for gtree
 setMethod(".gtree",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
@@ -335,8 +335,8 @@ setMethod(".update",
           })
 
 ## XXX OLDuse index for the column to override the column returned
-##' XXX Index should be for index of selected, e.g 1:2:3 type thing -- aka the path
-##' @param index if TRUE, then return either a numeric vector or list of numeric vectors (if multiple selection)
+## XXX Index should be for index of selected, e.g 1:2:3 type thing -- aka the path
+## @param index if TRUE, then return either a numeric vector or list of numeric vectors (if multiple selection)
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL,...) {
@@ -392,11 +392,11 @@ setMethod(".svalue",
           })
 
 
-##' svalue<-
-##'
-##' Set selection by index. A path looks like c(a,b,c) 1-based
-##' @param value indices. Either a vector for single selection or list of vectors for multiple selection.
-##' @param index must be TRUE
+## svalue<-
+##
+## Set selection by index. A path looks like c(a,b,c) 1-based
+## @param value indices. Either a vector for single selection or list of vectors for multiple selection.
+## @param index must be TRUE
 setReplaceMethod(".svalue",
                  signature(toolkit="guiWidgetsToolkitRGtk2",obj="gTreeRGtk"),
                  function(obj, toolkit, index=NULL, ..., value) {

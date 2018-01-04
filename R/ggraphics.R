@@ -321,13 +321,13 @@ setMethod(".addhandlerclicked",
           })
 
 
-##' Changed handler is called after rubber band selection is updated
-##'
-##' Just click and drag out a rubber band
-##' The "h" list has components
-##' h$x for the x values in user coordinates
-##' h$y for the y values in user coordinates
-##' These can be converted as in grconvertX(h$x, from="ndc", to="user")
+## Changed handler is called after rubber band selection is updated
+##
+## Just click and drag out a rubber band
+## The "h" list has components
+## h$x for the x values in user coordinates
+## h$y for the y values in user coordinates
+## These can be converted as in grconvertX(h$x, from="ndc", to="user")
 setMethod(".addhandlerchanged",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gGraphicsRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {
@@ -345,7 +345,7 @@ setMethod(".addhandlerchanged",
             })
           })
 
-##' Draw a rectangle for rubber banding
+## Draw a rectangle for rubber banding
 daDrawRectangle <- function(da,  x0, x, y0, y) {
 
   x <- c(x0, x); y <- c(y0, y)
@@ -391,7 +391,7 @@ daDrawRectangle <- function(da,  x0, x, y0, y) {
 }
 
 
-##' find width and height from allocation, which surprisingly seems to change from time to time
+## find width and height from allocation, which surprisingly seems to change from time to time
 daGetWidthHeight <- function(da) {
   allocation <- da$getAllocation()
   ## now, do we have width, height?
@@ -404,7 +404,7 @@ daGetWidthHeight <- function(da) {
   }
 }
 
-##' clear all rectangles that came from rubber banding
+## clear all rectangles that came from rubber banding
 daClearRectangle <- function(da) {
 
   last <- da$getData("lastRect")
@@ -415,7 +415,7 @@ daClearRectangle <- function(da) {
   while (gtkEventsPending()) gtkMainIterationDo(blocking=FALSE)
 }
 
-##' convert rectangle on drawable into NDC coordinates
+## convert rectangle on drawable into NDC coordinates
 drawableToNDC <- function(da) {
   ## convert to normalized device coordinates
   e <- da$getData("env")
@@ -433,12 +433,12 @@ drawableToNDC <- function(da) {
 
 
           
-##' copy graphic to clipboard for cut-and-paste
-##'
-##' I can't seem to bind this to ctrl-c (or some such), as I can't get key-press-event
-##' to work on tihs widget. Here as an example:
-##' http://ruby-gnome2.sourceforge.jp/hiki.cgi?tut-gtk2-agtkw-draww
-##' da['can-focus'] <- TRUE; da$addEvents(GdkEventMask["key-press-mask"]) were tried
+## copy graphic to clipboard for cut-and-paste
+##
+## I can't seem to bind this to ctrl-c (or some such), as I can't get key-press-event
+## to work on tihs widget. Here as an example:
+## http://ruby-gnome2.sourceforge.jp/hiki.cgi?tut-gtk2-agtkw-draww
+## da['can-focus'] <- TRUE; da$addEvents(GdkEventMask["key-press-mask"]) were tried
 ## @param da either the drawable object (from a callback say) or the ggraphics object.
 copyToClipboard <- function(da) {
   if(!is(da, "GtkDrawingArea"))

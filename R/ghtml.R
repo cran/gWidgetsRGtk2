@@ -14,8 +14,8 @@
 ##  http://www.r-project.org/Licenses/
 
 
-##' Should be basic html display widget
-##' not implemented
+## Should be basic html display widget
+## not implemented
 setMethod(".ghtml",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,

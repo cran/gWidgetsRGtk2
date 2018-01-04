@@ -155,12 +155,12 @@ setMethod(".visible<-",
             return(obj)
           })
 
-##' focus will raise window
-##'
-##' @param object gwindow object
-##' @param toolkit name of toolkit
-##' @param ... ignored
-##' @return NULL called for side effect of raising window
+## focus will raise window
+##
+## @param object gwindow object
+## @param toolkit name of toolkit
+## @param ... ignored
+## @return NULL called for side effect of raising window
 setMethod(".focus",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gWindowRGtk"),
           function(obj, toolkit, ...) {

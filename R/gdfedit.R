@@ -1,7 +1,7 @@
 
-#' Constructor for gdfedit widget
-#'
-#" gdfedit is a light-weight interface to RGtk2Extra's excellent data editor widget by Thomas Taverner
+# Constructor for gdfedit widget
+#
+# gdfedit is a light-weight interface to RGtk2Extra's excellent data editor widget by Thomas Taverner
 
 gdfedit <- function(
                     items = NULL,
@@ -15,7 +15,7 @@ gdfedit <- function(
   return(obj)
 }
 
-#' class for the widget
+# class for the widget
 setClass("gDfEditRGtk",
          contains="gComponentRGtk",
          prototype=prototype(new("gComponentRGtk"))
@@ -23,7 +23,7 @@ setClass("gDfEditRGtk",
 
 
 
-#' generic for toolkit dispatch
+# generic for toolkit dispatch
 setGeneric( '.gdfedit' ,
            function(toolkit,
                     items = NULL, name = paste(deparse(substitute(items)),"1", sep="."),
@@ -31,7 +31,7 @@ setGeneric( '.gdfedit' ,
            standardGeneric( '.gdfedit' ))
 
 
-#' gWidgetsRGtk2 interface to constructor
+# gWidgetsRGtk2 interface to constructor
 setMethod(".gdfedit",
           signature(toolkit="guiWidgetsToolkitRGtk2"),
           function(toolkit,
@@ -65,7 +65,7 @@ setMethod(".gdfedit",
           })
 
 
-##' needed when adding as child
+## needed when adding as child
 setOldClass("GtkDfEdit")
 setMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkDfEdit"),
           function(obj, toolkit, i, drop=TRUE, ...) {
@@ -75,7 +75,7 @@ setMethod(".tag", signature(toolkit="guiWidgetsToolkitRGtk2",obj="GtkDfEdit"),
 
 ## data frame methods
 
-#' return selected value
+# return selected value
 setMethod(".svalue",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDfEditRGtk"),
           function(obj, toolkit, index=NULL, drop=NULL,...) {
@@ -136,8 +136,8 @@ setReplaceMethod("[",
                   return(x)
                  })
 
-#' Method for [<-
-#' really needs to have check on column type
+# Method for [<-
+# really needs to have check on column type
 setReplaceMethod(".leftBracket",
                  signature(toolkit="guiWidgetsToolkitRGtk2",x="gDfEditRGtk"),
                  function(x, toolkit, i, j, ..., value) {
@@ -246,9 +246,9 @@ setReplaceMethod(".names",
 
 ## handlers to add
 ## for gdfedit -- change a value
-#' @param handler function to call when column is clicked. Along with usual obj, action, first argument
-#'        (typically h) has components df for the data frame, and column.no to return the column number that
-#'        was clicked on
+# @param handler function to call when column is clicked. Along with usual obj, action, first argument
+#        (typically h) has components df for the data frame, and column.no to return the column number that
+#        was clicked on
 setMethod(".addhandlercolumnclicked",
           signature(toolkit="guiWidgetsToolkitRGtk2",obj="gDfEditRGtk"),
           function(obj, toolkit, handler, action=NULL, ...) {

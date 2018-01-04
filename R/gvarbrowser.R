@@ -39,7 +39,7 @@ lsModels = function(envir=.GlobalEnv)  lsType(.models, envir)
 lsTs = function(envir=.GlobalEnv)  lsType(.ts, envir)
 lsFunctions = function(envir=.GlobalEnv)  lsType(.functions, envir)
 
-##' function to capture summary (in string) of object
+## function to capture summary (in string) of object
 ourStr <- function(x) UseMethod("ourStr")
 ourStr.default <- function(x) ""        # say nothing if nothing good to say -- thanks Mom.
 ourStr.character <- ourStr.logical <- ourStr.numeric <- function(x) sprintf("length %s", length(x))
@@ -53,7 +53,7 @@ ourStr.lm <- function(x) deparse(x$call)
 
 
 
-##' Make offspring data frame
+## Make offspring data frame
 offspring = function(path=c(), data=NULL) {
   emptyDf <- data.frame(names="",hasSubTree=FALSE,type="", summary="", stringsAsFactors=FALSE)
 
@@ -134,23 +134,23 @@ setClass("gVarbrowserRGtk",
          prototype=prototype(new("gComponentRGtk"))
          )
 
-##' Toolkit constructor for gvarbrowser widget
-##'
-##' Call the update method to update the object
-##' 
-##' 
-##' @example
-##' Make a popup menu for actions. Issue: works with selection, but selection updated first by left click
-##' is needed.
-##' library(gWidgets)
-##' options(guiToolkit="RGtk2")
-##' v <- gvarbrowser(container =gwindow("Object broser"), handler=function(h,...) {
-##' varname <- h$obj[]
-##' if(length(varname) == 1) {
-##' do.call("fix", list(varname))
-##' }
-##' })
-##' Helper function to get object from argument h passed in to menulist
+## Toolkit constructor for gvarbrowser widget
+##
+## Call the update method to update the object
+## 
+## 
+## @example
+## Make a popup menu for actions. Issue: works with selection, but selection updated first by left click
+## is needed.
+## library(gWidgets)
+## options(guiToolkit="RGtk2")
+## v <- gvarbrowser(container =gwindow("Object broser"), handler=function(h,...) {
+## varname <- h$obj[]
+## if(length(varname) == 1) {
+## do.call("fix", list(varname))
+## }
+## })
+## Helper function to get object from argument h passed in to menulist
 ## getObjectFrom_h <- function(h) {
 ##   varname <- h$action[]                 # note action, not obj
 ##   obj <- get(varname[1], envir=.GlobalEnv)
@@ -159,7 +159,7 @@ setClass("gVarbrowserRGtk",
 ##   obj
 ## }
 
-## ##' a list of gaction items or separators
+## ## a list of gaction items or separators
 ## ml <- list(
 ##            summary=gaction("summary...", action=v, handler=function(h,...) {
 ##              obj <- getObjectFrom_h(h)
