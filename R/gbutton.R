@@ -99,7 +99,7 @@ setMethod(".gbutton",
             ## icon
             icon <- gtkaction['stock-id']
             if(!is.null(icon)) {
-              image <- gtkaction$createIcon(GtkIconSize[4])
+              image <- gtkaction$createIcon(GtkIconSize["button"])
               button$setImage(image)
             }
             ## tooltip
