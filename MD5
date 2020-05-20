@@ -1,6 +1,6 @@
 023c43c238f84fecd19164e20edc35ed *ChangeLog
-ea6e2f0659eabd69feae04fdff51f7ae *DESCRIPTION
-a184b3923492d1f235021e6cc834ef87 *NAMESPACE
+0c9b43048464db20053b344bfea89d62 *DESCRIPTION
+b1c90b5c579d3dec3821a6475893dec7 *NAMESPACE
 b48b89d5be9a262b8e6367d445314595 *NEWS
 4d497d9ae0d1d01e1e683c967785b080 *R/aaaGenerics.R
 de4286e642f90463d6bce19d5b8afa8b *R/aabClasses.R
@@ -13,7 +13,6 @@ fd791a66c5975219ed2dd2c431ad079d *R/gbutton.R
 4b96bbce1e61d95011d70d85333af20e *R/gcheckbox.R
 ef13f0164c232755a94b11422b2f10bd *R/gcheckboxgroup.R
 1c63fd50d6b9b0ad1e7cfcee54e38e59 *R/gcommandline.R
-9b9687aa810318a1a718fb8abd4f0ace *R/gdfedit.R
 771b27493f6b75687f943a6fb8814840 *R/gdfnotebook.R
 0dcc9b215e2bb5df33029243fbf874d8 *R/gdialogs.R
 a9a1b54641902cf3f797d2621086e9b7 *R/gdroplist.R
@@ -114,6 +113,5 @@ f900afb8c7485e59265e9e27b5da5549 *man/as.gWidgetsRGtk2.Rd
 0248043ee1a3ee80b60d7381c40ae677 *man/gWidgetsRGtk2-misc.Rd
 90722b1a2edff3dfb0b4ed1376a43d0b *man/gWidgetsRGtk2-package.Rd
 db1f006a3690c4ff713fa1651e3d8b68 *man/gWidgetsRGtk2-undocumented.Rd
-939bad23768c5894431b7a118b546196 *man/gdfedit.Rd
 783e31fc254f6ed46dbb53c7a70b2b22 *tests/RunTests.R
 e20ce11d67ecb783e0454feaf118907c *tests/runRUnit.R
